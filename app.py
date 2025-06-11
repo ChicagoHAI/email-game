@@ -260,7 +260,7 @@ def show_game_page():
         st.subheader("🛠️ Grading Instructions")
         st.markdown("*Tell the AI evaluator how to assess the email*")
         
-        default_prompt = """Given the following scenario, how would you evaluate the email? Please come up with some criteria and then evaluate the email based on those criteria. Give a numerical scale for each criterion and tally up a total score for the email"""
+        default_prompt = """Given the following scenario, how would you evaluate the email? Please come up with some criteria and then evaluate the email based on those criteria. Give a numerical scale for each criterion and tally up a total score for the email."""
         
         evaluator_prompt = st.text_area(
             "Grading Instructions",
