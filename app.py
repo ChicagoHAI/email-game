@@ -89,7 +89,7 @@ class EmailEvaluator:
             st.error(f"Error evaluating email: {str(e)}")
             return None
 
-def load_scenarios_from_folder(folder_path: str = "../../outputs/scenarios/manual") -> Dict[str, str]:
+def load_scenarios_from_folder(folder_path: str = "scenarios") -> Dict[str, str]:
     """Load all scenario files from the specified folder"""
     scenarios = {}
     
