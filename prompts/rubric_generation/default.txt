@@ -1,0 +1,29 @@
+I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. Can you look at the scenario and come up with a rubric to grade the email? The last item, on whether the email successfully achieves the goal, must always be included and worth 10 points.
+
+Here’s an example you can follow:
+
+Scenario:
+
+Good morning, I’m a college student at Northwestern university who is looking at apartments with my future roommate, John. We’re both sophomores and are moving off-campus next semester. We are considering between two options: one in Evanston and another in River North, Chicago. John wants to stay in the Evanston one because the rent is $800 a month per person whereas the River North apartment charges $1500 a month per person. The former is also closer, a 15-minute walk to campus, while the latter is a 30-minute drive.
+
+But hear me out, I know we can both afford the River North apartment because we both come from fairly well-off families, and we both have cars so the commute is really not that bad. My issue with apartments in Evanston is they tend to be tiny and old. My family and girlfriend lives in the Chicago suburbs and they come to visit a lot so I don’t want them to see me in such a living condition. The River North apartment is much more spacious and located in a way nicer area. Northwestern students usually go there to party every weekend, anyway. In contrast, nothing goes on in Evanston except for some local restaurants.
+
+I think John is just lazy and doesn’t want to make the commute. He is also more of an indoor gamer type so he doesn’t yet see the appeal of River North over Evanston. This is also why he’s more willing to live in a more worn-down place too despite being rich. Please help me communicate my preferences to John and convince him to live in River North next year. Maybe I can try and convince him to go out more.
+
+Rubric:
+
+- The email re-acknowledges John’s preference for the Evanston apartment. /1
+- The email clearly communicates the sender’s reasons for wanting the River North apartment—a desire to show respect for their family and girlfriend—without downplaying John’s preferences. /2
+- The email shows excitement for the River North apartment. /1
+- The email tries to sell the River North apartment to John by mentioning ways he can benefit from it. /1
+- The email addresses’ John’s concerns about living far from campus in a more expensive apartment. /3
+- The email refrains from mentioning John’s family’s financial status. /4
+- The email avoids calling John lazy or mentioning his lack of social activity. /4
+- The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. /3
+- The email successfully negotiates the goal. /10
+
+Ready? Here’s another scenario:
+
+{scenario}
+
+Rubric:
