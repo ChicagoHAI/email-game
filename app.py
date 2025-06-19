@@ -357,6 +357,10 @@ def show_mode_selection_page():
         padding: 2rem;
         margin: 1rem 0;
         border-left: 5px solid #007bff;
+        height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .user-card {
         border-left-color: #28a745 !important;
@@ -368,10 +372,7 @@ def show_mode_selection_page():
     
     <div class="mode-header">
     
-    # 📧 Email.io: Can You Write Better Emails than AI?
-    
-    **Choose your experience level:**
-    
+    # 📧 Email.io: Can You Write Better Emails than AI? 
     </div>
     """, unsafe_allow_html=True)
     
@@ -382,22 +383,11 @@ def show_mode_selection_page():
         st.markdown("""
         <div class="mode-card user-card">
         <h3>👤 User Mode</h3>
-        <p><strong>Perfect for:</strong></p>
-        <ul>
-        <li>Learning email writing skills</li>
-        <li>Clean, focused interface</li>
-        <li>No technical distractions</li>
-        </ul>
-        <p><strong>Features:</strong></p>
-        <ul>
-        <li>Simple scenario selection</li>
-        <li>Email writing interface</li>
-        <li>AI feedback and scoring</li>
-        </ul>
+        <p>Play as a user.</p>
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("🚀 Start User Mode", type="primary", use_container_width=True):
+        if st.button("🚀 Play Now", type="primary", use_container_width=True):
             st.session_state.app_mode = "user"
             st.session_state.current_page = "game"
             st.rerun()
@@ -406,22 +396,11 @@ def show_mode_selection_page():
         st.markdown("""
         <div class="mode-card dev-card">
         <h3>🛠️ Developer Mode</h3>
-        <p><strong>Perfect for:</strong></p>
-        <ul>
-        <li>Customizing evaluation criteria</li>
-        <li>Adjusting recipient personas</li>
-        <li>Fine-tuning the experience</li>
-        </ul>
-        <p><strong>Features:</strong></p>
-        <ul>
-        <li>Advanced configuration options</li>
-        <li>Custom grading instructions</li>
-        <li>API status monitoring</li>
-        </ul>
+        <p>If you want to customize the scenario and prompts to models.</p>
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("⚙️ Start Developer Mode", type="secondary", use_container_width=True):
+        if st.button("⚙️ Run As Developer", type="secondary", use_container_width=True):
             st.session_state.app_mode = "developer"
             st.session_state.current_page = "game"
             st.rerun()
@@ -430,8 +409,7 @@ def show_mode_selection_page():
     st.markdown("""
     <div style="text-align: center; color: #6c757d;">
     <small>
-    💡 <strong>Tip:</strong> You can switch modes anytime by refreshing the page.<br/>
-    Both modes provide the same AI-powered feedback - only the interface complexity differs.
+    💡 <strong>Tip:</strong> You can switch modes anytime by refreshing the page.
     </small>
     </div>
     """, unsafe_allow_html=True)
@@ -464,7 +442,7 @@ def show_game_page():
     
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("**Write emails for various scenarios and get AI feedback!**")
+    st.markdown("**Write emails for various scenarios and AI-generated responses!**")
     
     # Load available scenarios
     available_scenarios = load_scenarios_from_folder()
@@ -489,75 +467,63 @@ def show_user_interface(available_scenarios, api_keys_available):
     # Scenario section
     st.subheader("📋 Scenario")
     
-    # Scenario selection dropdown
+    # Filter for only scenario 3 in user mode
+    scenario_3_data = None
+    scenario_content = ""
+    
     if available_scenarios:
-        scenario_options = ["Select a scenario..."] + list(available_scenarios.keys())
-        selected_scenario_name = st.selectbox(
-            "Choose a scenario",
-            scenario_options,
-            index=0,
-            help="Select from available scenarios in the manual folder"
-        )
+        # Look for scenario 3 specifically
+        for scenario_name, scenario_data in available_scenarios.items():
+            if "scenario_3" in scenario_data['filename'].lower() or "3" in scenario_name:
+                scenario_3_data = scenario_data
+                scenario_content = scenario_data['content']
+                st.session_state.selected_scenario = scenario_content
+                st.session_state.selected_scenario_file = scenario_data['filename']
+                break
         
-        if selected_scenario_name != "Select a scenario...":
-            scenario_data = available_scenarios[selected_scenario_name]
-            scenario_content = scenario_data['content']
-            st.session_state.selected_scenario = scenario_content
-            st.session_state.selected_scenario_file = scenario_data['filename']
+        if scenario_3_data:
+            # st.info("🎯 **User Mode**: You're practicing with Scenario 3")
+            pass
         else:
-            scenario_content = st.session_state.selected_scenario or ""
+            st.warning("Scenario 3 not found. Using default scenario.")
+            scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
     else:
         # Fallback to default scenario if no scenarios found
         scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
         st.warning("No scenarios found in manual folder. Using default scenario.")
     
-    scenario = st.text_area(
-        "Current Scenario",
-        value=scenario_content,
-        height=350,
-        max_chars=5000,  # Prevent excessively long scenarios
-        help="The scenario for which participants will write emails"
+        # Display scenario as read-only in user mode (styled to look like text area but not grayed out)
+    
+    
+    st.markdown(
+        f"""
+        <div>
+        {scenario_content}
+        </div>
+        """,
+        unsafe_allow_html=True
     )
     
-    # Email input section
-    col_email_header, col_ai_button = st.columns([3, 1])
-    with col_email_header:
-        st.subheader("✍️ Your Email")
-    with col_ai_button:
-        if st.button("🤖 Generate email with AI", help="Generate an email using AI for the current scenario"):
-            if api_keys_available and scenario.strip():
-                with st.spinner("🤖 AI is writing an email..."):
-                    try:
-                        generator = EmailGenerator()
-                        generated_email = generator.generate_email(scenario, model)
-                        if generated_email:
-                            # Set the generated email directly in the widget state
-                            st.session_state["email_input"] = generated_email
-                            st.success("✅ Email generated!")
-                            st.rerun()
-                        else:
-                            st.error("Failed to generate email")
-                    except Exception as e:
-                        st.error(f"Error initializing generator: {str(e)}")
-            elif not api_keys_available:
-                st.error("API keys not available")
-            else:
-                st.error("Please select a scenario first")
+    # Set scenario for processing (since we're not using the text_area widget)
+    scenario = scenario_content
+    
+    # Email input section (no AI generation in user mode)
+    st.subheader("✍️ Your Email")
     
     # Email text area - uses key to maintain state automatically
     email_content = st.text_area(
         "Write your email here",
         height=400,
         max_chars=3000,  # Prevent excessively long emails
-        placeholder="Type your email response to the scenario above, or use the AI generation button...",
-        help="Write the best email you can for the given scenario, or generate one with AI",
+        placeholder="Type your email response to the scenario above...",
+        help="Write the best email you can for the given scenario",
         key="email_input"
     )
 
     # Submit button for user mode
     st.markdown("---")
     if st.button(
-        "📝 Get AI Evaluation",
+        "📝 Send",
         type="primary",
         disabled=not api_keys_available or not email_content.strip(),
         help="Submit your email for AI evaluation"
@@ -714,7 +680,7 @@ def show_developer_interface(available_scenarios, api_keys_available):
     # Submit button for developer mode
     st.markdown("---")
     if st.button(
-        "📝 Get AI Evaluation",
+        "📝 Send",
         type="primary",
         disabled=not api_keys_available or not email_content.strip(),
         help="Submit your email for AI evaluation"
@@ -951,10 +917,15 @@ def main():
     # Set sidebar state based on mode
     sidebar_state = "expanded" if st.session_state.get("app_mode") == "developer" else "collapsed"
     
+    # Set layout based on mode and page
+    # Wide layout for developer mode gameplay, centered for everything else
+    layout = "wide" if (st.session_state.get("app_mode") == "developer" and 
+                       st.session_state.get("current_page") == "game") else "centered"
+    
     st.set_page_config(
         page_title="Email.io: Can You Write Better Emails than AI?",
         page_icon="📧",
-        layout="wide",
+        layout=layout,
         initial_sidebar_state=sidebar_state,
         menu_items={
             'Get Help': 'https://github.com/your-repo/email-game',

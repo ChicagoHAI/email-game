@@ -1,6 +1,6 @@
 I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. After they write the email, the recipient will write back with a response. Can you look at all of this—the scenario, the email, the response, the given rubric—and evaluate whether the user-generated email satisfactorily negotiates the goal? 
 
-Check whether each criteria is satisfied before tallying up the total score. Give a quote and brief rationale to justify why a score is given on each criteria. Once that is done, make any score adjustments necessary based on how successful the goal was hit. You can either add or take away scores.
+Check whether each criteria is satisfied before tallying up the total score. Give a quote and brief rationale to justify why a score is given on each criteria. Once that is done, make any score adjustments necessary based on how successful the goal was hit. You can either add or take away scores. Do not let the score go below 0 or above the maximum.
 
 Here’s an example you can follow:
 
