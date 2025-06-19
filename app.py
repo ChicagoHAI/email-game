@@ -40,7 +40,7 @@ if 'evaluating' not in st.session_state:
 if 'selected_scenario' not in st.session_state:
     st.session_state.selected_scenario = None
 if 'current_page' not in st.session_state:
-    st.session_state.current_page = "game"
+    st.session_state.current_page = "mode_selection"
 if 'evaluation_result' not in st.session_state:
     st.session_state.evaluation_result = None
 if 'recipient_reply' not in st.session_state:
@@ -49,6 +49,8 @@ if 'selected_scenario_file' not in st.session_state:
     st.session_state.selected_scenario_file = None
 if 'cached_rubrics' not in st.session_state:
     st.session_state.cached_rubrics = {}
+if 'app_mode' not in st.session_state:
+    st.session_state.app_mode = None
 
 class EmailGenerator:
     """
@@ -341,8 +343,113 @@ def save_rubric_to_file(scenario_filename: str, rubric: str) -> bool:
         st.error(f"Error saving rubric: {str(e)}")
         return False
 
+def show_mode_selection_page():
+    """Show the mode selection page"""
+    st.markdown("""
+    <style>
+    .mode-header {
+        text-align: center;
+        padding: 2rem 0;
+    }
+    .mode-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem;
+        margin: 1rem 0;
+        border-left: 5px solid #007bff;
+    }
+    .user-card {
+        border-left-color: #28a745 !important;
+    }
+    .dev-card {
+        border-left-color: #ffc107 !important;
+    }
+    </style>
+    
+    <div class="mode-header">
+    
+    # 📧 Email.io: Can You Write Better Emails than AI?
+    
+    **Choose your experience level:**
+    
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Create two columns for the mode selection
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="mode-card user-card">
+        <h3>👤 User Mode</h3>
+        <p><strong>Perfect for:</strong></p>
+        <ul>
+        <li>Learning email writing skills</li>
+        <li>Clean, focused interface</li>
+        <li>No technical distractions</li>
+        </ul>
+        <p><strong>Features:</strong></p>
+        <ul>
+        <li>Simple scenario selection</li>
+        <li>Email writing interface</li>
+        <li>AI feedback and scoring</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("🚀 Start User Mode", type="primary", use_container_width=True):
+            st.session_state.app_mode = "user"
+            st.session_state.current_page = "game"
+            st.rerun()
+    
+    with col2:
+        st.markdown("""
+        <div class="mode-card dev-card">
+        <h3>🛠️ Developer Mode</h3>
+        <p><strong>Perfect for:</strong></p>
+        <ul>
+        <li>Customizing evaluation criteria</li>
+        <li>Adjusting recipient personas</li>
+        <li>Fine-tuning the experience</li>
+        </ul>
+        <p><strong>Features:</strong></p>
+        <ul>
+        <li>Advanced configuration options</li>
+        <li>Custom grading instructions</li>
+        <li>API status monitoring</li>
+        </ul>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("⚙️ Start Developer Mode", type="secondary", use_container_width=True):
+            st.session_state.app_mode = "developer"
+            st.session_state.current_page = "game"
+            st.rerun()
+    
+    st.markdown("---")
+    st.markdown("""
+    <div style="text-align: center; color: #6c757d;">
+    <small>
+    💡 <strong>Tip:</strong> You can switch modes anytime by refreshing the page.<br/>
+    Both modes provide the same AI-powered feedback - only the interface complexity differs.
+    </small>
+    </div>
+    """, unsafe_allow_html=True)
+
 def show_game_page():
     """Show the main game interface"""
+    
+    # Add mode indicator and back button
+    mode_col, back_col = st.columns([4, 1])
+    with mode_col:
+        mode_display = "👤 User Mode" if st.session_state.app_mode == "user" else "🛠️ Developer Mode"
+        st.markdown(f"**Current Mode:** {mode_display}")
+    with back_col:
+        if st.button("↩️ Change Mode", help="Go back to mode selection"):
+            st.session_state.current_page = "mode_selection"
+            st.session_state.app_mode = None
+            st.rerun()
+    
     st.markdown("""
     <style>
     .compact-header h2 {
@@ -368,6 +475,103 @@ def show_game_page():
     except Exception as e:
         api_keys_available = False
     
+    # Render UI based on mode
+    if st.session_state.app_mode == "developer":
+        show_developer_interface(available_scenarios, api_keys_available)
+    else:  # user mode
+        show_user_interface(available_scenarios, api_keys_available)
+
+def show_user_interface(available_scenarios, api_keys_available):
+    """Show the simplified user interface"""
+    # Set default model for user version (no sidebar configuration)
+    model = "gpt-4o"
+    
+    # Scenario section
+    st.subheader("📋 Scenario")
+    
+    # Scenario selection dropdown
+    if available_scenarios:
+        scenario_options = ["Select a scenario..."] + list(available_scenarios.keys())
+        selected_scenario_name = st.selectbox(
+            "Choose a scenario",
+            scenario_options,
+            index=0,
+            help="Select from available scenarios in the manual folder"
+        )
+        
+        if selected_scenario_name != "Select a scenario...":
+            scenario_data = available_scenarios[selected_scenario_name]
+            scenario_content = scenario_data['content']
+            st.session_state.selected_scenario = scenario_content
+            st.session_state.selected_scenario_file = scenario_data['filename']
+        else:
+            scenario_content = st.session_state.selected_scenario or ""
+    else:
+        # Fallback to default scenario if no scenarios found
+        scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
+        st.warning("No scenarios found in manual folder. Using default scenario.")
+    
+    scenario = st.text_area(
+        "Current Scenario",
+        value=scenario_content,
+        height=350,
+        max_chars=5000,  # Prevent excessively long scenarios
+        help="The scenario for which participants will write emails"
+    )
+    
+    # Email input section
+    col_email_header, col_ai_button = st.columns([3, 1])
+    with col_email_header:
+        st.subheader("✍️ Your Email")
+    with col_ai_button:
+        if st.button("🤖 Generate email with AI", help="Generate an email using AI for the current scenario"):
+            if api_keys_available and scenario.strip():
+                with st.spinner("🤖 AI is writing an email..."):
+                    try:
+                        generator = EmailGenerator()
+                        generated_email = generator.generate_email(scenario, model)
+                        if generated_email:
+                            # Set the generated email directly in the widget state
+                            st.session_state["email_input"] = generated_email
+                            st.success("✅ Email generated!")
+                            st.rerun()
+                        else:
+                            st.error("Failed to generate email")
+                    except Exception as e:
+                        st.error(f"Error initializing generator: {str(e)}")
+            elif not api_keys_available:
+                st.error("API keys not available")
+            else:
+                st.error("Please select a scenario first")
+    
+    # Email text area - uses key to maintain state automatically
+    email_content = st.text_area(
+        "Write your email here",
+        height=400,
+        max_chars=3000,  # Prevent excessively long emails
+        placeholder="Type your email response to the scenario above, or use the AI generation button...",
+        help="Write the best email you can for the given scenario, or generate one with AI",
+        key="email_input"
+    )
+
+    # Submit button for user mode
+    st.markdown("---")
+    if st.button(
+        "📝 Get AI Evaluation",
+        type="primary",
+        disabled=not api_keys_available or not email_content.strip(),
+        help="Submit your email for AI evaluation"
+    ):
+        if not email_content.strip():
+            st.error("Please write an email before submitting!")
+        elif not api_keys_available:
+            st.error("API keys not available")
+        else:
+            # Process email evaluation using default settings for user mode
+            process_email_evaluation_user_mode(scenario, email_content, model)
+
+def show_developer_interface(available_scenarios, api_keys_available):
+    """Show the full developer interface with all controls"""
     # Sidebar for configuration
     with st.sidebar:
         st.subheader("Configuration")
@@ -507,7 +711,7 @@ def show_game_page():
                 key="evaluator_prompt"
             )
     
-    # Submit button
+    # Submit button for developer mode
     st.markdown("---")
     if st.button(
         "📝 Get AI Evaluation",
@@ -520,75 +724,157 @@ def show_game_page():
         elif not api_keys_available:
             st.error("API keys not available")
         else:
-            # Show loading screen with multiple steps
-            progress_text = st.empty()
-            progress_bar = st.progress(0)
-            
-            try:
-                # Step 1: Load or generate rubric
-                progress_text.text("🔄 Loading evaluation rubric...")
-                progress_bar.progress(0.25)
-                
-                rubric_generator = RubricGenerator()
-                scenario_filename = st.session_state.get("selected_scenario_file", "")
-                
-                if scenario_filename:
-                    rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
-                else:
-                    # Fallback to direct generation if no filename available
-                    rubric = rubric_generator.generate_rubric(scenario, model)
-                
-                if not rubric:
-                    st.error("Failed to generate rubric")
-                    return
-                
-                # Step 2: Generate recipient reply
-                progress_text.text("📨 Awaiting response from recipient...")
-                progress_bar.progress(0.5)
-                
-                recipient_prompt_value = st.session_state.get("recipient_prompt", "")
-                recipient = EmailRecipient()
-                recipient_reply = recipient.generate_reply(
-                    recipient_prompt_value, email_content, model
-                )
-                
-                if not recipient_reply:
-                    st.error("Failed to generate recipient reply")
-                    return
-                
-                # Step 3: Evaluate the email using the generated rubric
-                progress_text.text("📊 Evaluating your email...")
-                progress_bar.progress(0.75)
-                
-                evaluator = EmailEvaluator()
-                evaluation_result = evaluator.evaluate_email(
-                    scenario, email_content, rubric, recipient_reply, model
-                )
-                
-                if not evaluation_result:
-                    st.error("Failed to evaluate email")
-                    return
-                
-                # Step 4: Complete
-                progress_text.text("✅ Evaluation complete!")
-                progress_bar.progress(1.0)
-                
-                # Store all data for results page
-                st.session_state.evaluation_result = {
-                    "scenario": scenario,
-                    "email": email_content,
-                    "rubric": rubric,
-                    "recipient_reply": recipient_reply,
-                    "evaluation": evaluation_result,
-                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                }
-                
-                # Switch to results page
-                st.session_state.current_page = "results"
-                st.rerun()
-                
-            except Exception as e:
-                st.error(f"Error during processing: {str(e)}")
+            # Process email evaluation using custom settings from developer mode
+            process_email_evaluation_developer_mode(scenario, email_content, model)
+
+def process_email_evaluation_user_mode(scenario, email_content, model):
+    """Process email evaluation using default settings for user mode"""
+    # Show loading screen with multiple steps
+    progress_text = st.empty()
+    progress_bar = st.progress(0)
+    
+    try:
+        # Step 1: Load or generate rubric
+        progress_text.text("🔄 Loading evaluation rubric...")
+        progress_bar.progress(0.25)
+        
+        rubric_generator = RubricGenerator()
+        scenario_filename = st.session_state.get("selected_scenario_file", "")
+        
+        if scenario_filename:
+            rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+        else:
+            # Fallback to direct generation if no filename available
+            rubric = rubric_generator.generate_rubric(scenario, model)
+        
+        if not rubric:
+            st.error("Failed to generate rubric")
+            return
+        
+        # Step 2: Generate recipient reply (using default recipient prompt for user version)
+        progress_text.text("📨 Awaiting response from recipient...")
+        progress_bar.progress(0.5)
+        
+        # Load default recipient prompt based on selected scenario
+        if st.session_state.get("selected_scenario_file"):
+            default_recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+        else:
+            default_recipient_prompt = "You are the recipient of an email. Please respond naturally and appropriately to the email you receive."
+        
+        recipient = EmailRecipient()
+        recipient_reply = recipient.generate_reply(
+            default_recipient_prompt, email_content, model
+        )
+        
+        if not recipient_reply:
+            st.error("Failed to generate recipient reply")
+            return
+        
+        # Step 3: Evaluate the email using the generated rubric (using default evaluator prompt)
+        progress_text.text("📊 Evaluating your email...")
+        progress_bar.progress(0.75)
+        
+        evaluator = EmailEvaluator()
+        evaluation_result = evaluator.evaluate_email(
+            scenario, email_content, rubric, recipient_reply, model
+        )
+        
+        if not evaluation_result:
+            st.error("Failed to evaluate email")
+            return
+        
+        # Step 4: Complete
+        progress_text.text("✅ Evaluation complete!")
+        progress_bar.progress(1.0)
+        
+        # Store all data for results page
+        st.session_state.evaluation_result = {
+            "scenario": scenario,
+            "email": email_content,
+            "rubric": rubric,
+            "recipient_reply": recipient_reply,
+            "evaluation": evaluation_result,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        # Switch to results page
+        st.session_state.current_page = "results"
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"Error during processing: {str(e)}")
+
+def process_email_evaluation_developer_mode(scenario, email_content, model):
+    """Process email evaluation using custom settings from developer mode"""
+    # Show loading screen with multiple steps
+    progress_text = st.empty()
+    progress_bar = st.progress(0)
+    
+    try:
+        # Step 1: Load or generate rubric
+        progress_text.text("🔄 Loading evaluation rubric...")
+        progress_bar.progress(0.25)
+        
+        rubric_generator = RubricGenerator()
+        scenario_filename = st.session_state.get("selected_scenario_file", "")
+        
+        if scenario_filename:
+            rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+        else:
+            # Fallback to direct generation if no filename available
+            rubric = rubric_generator.generate_rubric(scenario, model)
+        
+        if not rubric:
+            st.error("Failed to generate rubric")
+            return
+        
+        # Step 2: Generate recipient reply
+        progress_text.text("📨 Awaiting response from recipient...")
+        progress_bar.progress(0.5)
+        
+        recipient_prompt_value = st.session_state.get("recipient_prompt", "")
+        recipient = EmailRecipient()
+        recipient_reply = recipient.generate_reply(
+            recipient_prompt_value, email_content, model
+        )
+        
+        if not recipient_reply:
+            st.error("Failed to generate recipient reply")
+            return
+        
+        # Step 3: Evaluate the email using the generated rubric
+        progress_text.text("📊 Evaluating your email...")
+        progress_bar.progress(0.75)
+        
+        evaluator = EmailEvaluator()
+        evaluation_result = evaluator.evaluate_email(
+            scenario, email_content, rubric, recipient_reply, model
+        )
+        
+        if not evaluation_result:
+            st.error("Failed to evaluate email")
+            return
+        
+        # Step 4: Complete
+        progress_text.text("✅ Evaluation complete!")
+        progress_bar.progress(1.0)
+        
+        # Store all data for results page
+        st.session_state.evaluation_result = {
+            "scenario": scenario,
+            "email": email_content,
+            "rubric": rubric,
+            "recipient_reply": recipient_reply,
+            "evaluation": evaluation_result,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        # Switch to results page
+        st.session_state.current_page = "results"
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"Error during processing: {str(e)}")
 
 def show_results_page():
     """Show the evaluation results"""
@@ -662,17 +948,22 @@ def show_results_page():
             st.rerun()
 
 def main():
+    # Set sidebar state based on mode
+    sidebar_state = "expanded" if st.session_state.get("app_mode") == "developer" else "collapsed"
+    
     st.set_page_config(
         page_title="Email.io: Can You Write Better Emails than AI?",
         page_icon="📧",
         layout="wide",
-        initial_sidebar_state="expanded",
+        initial_sidebar_state=sidebar_state,
         menu_items={
             'Get Help': 'https://github.com/your-repo/email-game',
             'Report a bug': 'https://github.com/your-repo/email-game/issues',
             'About': """
             # Email Writing Game
             Practice your email communication skills with AI-powered feedback!
+            
+            Choose between User Mode (clean interface) or Developer Mode (full controls).
             
             This app helps you improve professional email writing through:
             - Realistic scenarios
@@ -689,6 +980,8 @@ def main():
         show_game_page()
     elif st.session_state.current_page == "results":
         show_results_page()
+    elif st.session_state.current_page == "mode_selection":
+        show_mode_selection_page()
     else:
         # Default to game page
         st.session_state.current_page = "game"
