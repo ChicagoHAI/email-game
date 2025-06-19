@@ -1,101 +1,239 @@
-# Email Writing Game
+# 📧 Email.io: Email Writing Game
 
-A competitive email-writing game where players compete to write the best emails for specific scenarios, evaluated by AI.
+An interactive email-writing application where users practice professional communication skills and receive AI-powered feedback on their emails.
 
-## Features
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.39+-red?style=flat&logo=streamlit)](https://streamlit.io)
+[![OpenAI](https://img.shields.io/badge/OpenAI-1.13+-blue?style=flat&logo=openai)](https://openai.com)
+[![Python](https://img.shields.io/badge/Python-3.8+-green?style=flat&logo=python)](https://python.org)
 
-- **Scenario-based email writing**: Write emails for various communication scenarios
-- **AI-powered evaluation**: Uses GPT-4o to grade emails based on clarity, appropriateness, effectiveness, and grammar  
-- **Developer mode**: Customize the evaluator prompt to change grading criteria
-- **Real-time leaderboard**: Track scores and compare with other players
-- **Detailed feedback**: Get comprehensive feedback on your email writing
-- **Score breakdown**: Toggle detailed breakdown of evaluation criteria
+## ✨ Features
 
-## Setup
+### Core Functionality
+- **📋 Scenario-based Writing**: Multiple realistic communication scenarios
+- **🤖 AI-Powered Evaluation**: GPT-4o generates detailed feedback and scoring
+- **👥 Recipient Simulation**: AI generates realistic responses to your emails
+- **📊 Custom Rubrics**: Automatic rubric generation tailored to each scenario
+- **🎯 Progress Tracking**: View detailed evaluation results and improvement suggestions
 
-1. **Install dependencies**:
+### Advanced Features
+- **🛠️ Developer Mode**: Customize evaluation criteria and recipient personas
+- **📎 File Support**: Upload and reference documents in scenarios
+- **⚡ Smart Caching**: Session-based caching for improved performance
+- **🎨 Modern UI**: Clean, responsive design with intuitive navigation
+- **📱 Mobile Friendly**: Works seamlessly on desktop and mobile devices
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+ 
+- OpenAI API key ([Get one here](https://platform.openai.com/))
+
+### Installation
+
+1. **Clone or download the project**:
+   ```bash
+   git clone <repository-url>
+   cd email-game
+   ```
+
+2. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-2. **Get OpenAI API Key**:
-   - Sign up at [OpenAI](https://platform.openai.com/)
-   - Generate an API key
-   - Keep it secure - you'll enter it in the app
+3. **Set up your API key**:
+   ```bash
+   export OPENAI_API_KEY_CLAB="your-api-key-here"
+   ```
+   
+   Or create a `.env` file:
+   ```env
+   OPENAI_API_KEY_CLAB=your-api-key-here
+   ```
 
-3. **Run the application**:
+4. **Run the application**:
    ```bash
    streamlit run app.py
    ```
 
-4. **Open in browser**:
-   - The app will automatically open in your default browser
-   - Usually at `http://localhost:8501`
+5. **Open in browser**:
+   - Navigate to `http://localhost:8501`
+   - The app will open automatically in most cases
 
-## How to Play
+## 🎮 How to Use
 
-1. **Configure the app**:
-   - Enter your OpenAI API key in the sidebar
-   - Select the evaluator model (GPT-4o)
+### Getting Started
+1. **Select a Scenario**: Choose from pre-built scenarios or create your own
+2. **Write Your Email**: Craft your response considering the context and goals
+3. **Get AI Feedback**: Submit for evaluation and receive detailed scoring
+4. **Review Results**: See your email, the recipient's response, and evaluation breakdown
+5. **Iterate & Improve**: Try different approaches to improve your communication skills
 
-2. **Read the scenario**:
-   - A communication scenario will be displayed
-   - You can modify scenarios for different challenges
+### Developer Mode
+Access advanced customization options:
+- **Recipient Personas**: Define how the email recipient should respond
+- **Evaluation Criteria**: Customize how emails are scored
+- **Scenario Editing**: Modify scenarios in real-time
 
-3. **Write your email**:
-   - Craft the best possible email response
-   - Consider clarity, tone, and effectiveness
+## 🏗️ Technical Architecture
 
-4. **Developer mode** (optional):
-   - Modify the evaluator prompt to change grading criteria
-   - Experiment with different evaluation approaches
+### Dependencies
+- **Streamlit**: `>=1.39.0` - Modern web app framework
+- **OpenAI**: `>=1.13.0` - AI API for content generation and evaluation
 
-5. **Submit for evaluation**:
-   - Enter your player name
-   - Click "Submit Email for Evaluation"
-   - Wait for AI grading (usually 10-30 seconds)
+### Key Components
+- **EmailGenerator**: Generates sample emails using GPT-4o
+- **EmailEvaluator**: Provides detailed feedback and scoring
+- **EmailRecipient**: Simulates realistic recipient responses
+- **RubricGenerator**: Creates custom evaluation criteria
 
-6. **View results**:
-   - See your overall score out of 100
-   - Toggle score breakdown for detailed metrics
-   - Read AI feedback for improvement tips
+### Data Management
+- **Session State**: Maintains user data across interactions
+- **File System**: Stores scenarios, prompts, and generated rubrics
+- **Caching**: Optimizes performance with intelligent caching
 
-7. **Compete**:
-   - View the leaderboard to see how you rank
-   - Try different approaches to improve your score
+## 🧪 Testing
 
-## Game Mechanics
+Run the test suite to verify functionality:
 
-### Scoring Criteria
-- **Clarity** (0-100): How clear and easy to understand is the message?
-- **Appropriateness** (0-100): How appropriate is the tone and content?
-- **Effectiveness** (0-100): How likely is the email to achieve its purpose?
-- **Grammar** (0-100): Quality of grammar, spelling, and writing
+```bash
+python test_app.py
+```
 
-### Leaderboard
-- Sorted by overall score (highest first)
-- Shows player name, score, and timestamp
-- Expandable entries show full email and detailed breakdown
-- Persists during the session (resets when server restarts)
+The tests cover:
+- ✅ Scenario loading and validation
+- ✅ File handling and error cases
+- ✅ API key management
+- ✅ Core functionality without API calls
 
-## Developer Features
+## 🚀 Deployment
 
-- **Custom evaluator prompts**: Modify how the AI grades emails
-- **Model selection**: Currently supports GPT-4o
-- **Score breakdown toggle**: Show/hide detailed scoring
-- **Leaderboard management**: Clear all entries when needed
+### Streamlit Community Cloud (Recommended)
 
-## Tips for Better Scores
+1. **Push to GitHub**: Upload your project to a GitHub repository
 
-1. **Be clear and concise**: Avoid ambiguous language
-2. **Match the tone**: Consider the relationship and context
-3. **Include key information**: Address all aspects of the scenario  
-4. **Proofread**: Check grammar and spelling
-5. **Call to action**: Make it clear what you want recipients to do
+2. **Deploy**: 
+   - Go to [share.streamlit.io](https://share.streamlit.io)
+   - Connect your GitHub repository
+   - Set main file: `experiment_scripts/email_game/app.py`
 
-## Technical Notes
+3. **Configure Secrets**:
+   ```toml
+   OPENAI_API_KEY_CLAB = "your-api-key-here"
+   ```
 
-- Built with Streamlit for the web interface
-- Uses OpenAI API for email evaluation
-- Session-based storage (no persistent database)
-- Responsive design for different screen sizes 
+### Alternative Platforms
+- **Railway**: Easy deployment with automatic builds
+- **Heroku**: Classic platform with custom domains
+- **DigitalOcean**: App Platform for scalable hosting
+- **Azure/AWS/GCP**: Enterprise cloud deployment
+
+See `DEPLOYMENT.md` for detailed deployment instructions.
+
+## 📊 Performance Features
+
+### Input Validation
+- **Character Limits**: Prevents excessively long inputs (5000 chars for scenarios, 3000 for emails)
+- **Error Handling**: Graceful error handling with specific exception types
+- **API Safety**: Built-in safeguards against API abuse
+
+### Optimization
+- **Session Caching**: Rubrics cached to minimize API calls
+- **Lazy Loading**: Resources loaded only when needed
+- **Error Recovery**: Robust fallback mechanisms
+
+## 🔧 Configuration
+
+### Environment Variables
+- `OPENAI_API_KEY_CLAB`: Your OpenAI API key (required)
+
+### Customization Options
+- **Models**: Switch between OpenAI models (default: GPT-4o)
+- **Temperature**: Adjust AI creativity (default: 0.7 for generation, 0.3 for evaluation)
+- **Scenarios**: Add custom scenarios in `/prompts/scenarios/`
+- **Rubrics**: Pre-define rubrics in `/rubrics/`
+
+## 💡 Tips for Better Emails
+
+### Writing Strategy
+1. **Understand the Context**: Read scenarios carefully and identify key stakeholders
+2. **Be Clear & Concise**: Avoid ambiguous language and unnecessary complexity
+3. **Match the Tone**: Consider the relationship and formality level required
+4. **Include Key Information**: Address all aspects mentioned in the scenario
+5. **Proofread**: Check grammar, spelling, and overall coherence
+6. **Call to Action**: Make your expectations and next steps clear
+
+### Using AI Assistance
+- **Generate Examples**: Use the AI generation feature for inspiration
+- **Iterate**: Try multiple approaches to see what works best
+- **Learn from Feedback**: Pay attention to specific scoring criteria
+
+## 🛠️ Development
+
+### Project Structure
+```
+email_game/
+├── app.py                 # Main application
+├── test_app.py           # Test suite
+├── requirements.txt      # Dependencies
+├── DEPLOYMENT.md         # Deployment guide
+├── .streamlit/           # Streamlit configuration
+├── prompts/              # System prompts and scenarios
+├── rubrics/              # Pre-defined evaluation rubrics
+└── README.md            # This file
+```
+
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Submit a pull request
+
+## 📈 Future Enhancements
+
+### Planned Features
+- **User Analytics**: Track learning progress over time
+- **Export Options**: Download evaluation reports
+- **Team Features**: Group challenges and competitions
+- **Advanced AI**: Integration with newer models and capabilities
+
+### Technical Improvements
+- **Database Integration**: Persistent user data storage
+- **Advanced Caching**: Redis for multi-user scenarios
+- **API Rate Limiting**: Production-ready throttling
+- **Monitoring**: Performance and usage analytics
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**API Key Errors**
+- Verify your API key is set correctly
+- Check that you have sufficient OpenAI credits
+- Ensure the environment variable name is correct
+
+**Import Errors**
+- Verify all dependencies are installed: `pip install -r requirements.txt`
+- Check Python version compatibility (3.8+)
+
+**File Not Found**
+- Ensure you're running from the correct directory
+- Verify prompt and scenario files exist
+
+**Performance Issues**
+- Check your internet connection for API calls
+- Clear browser cache if UI seems slow
+- Monitor API usage for rate limiting
+
+### Getting Help
+- **Documentation**: Check this README and `DEPLOYMENT.md`
+- **Issues**: Report bugs on the project's issue tracker
+- **Support**: Contact the development team
+
+## 📄 License
+
+This project is part of the Complex Communication Research Project. See the project documentation for license details.
+
+---
+
+**Built with ❤️ using Streamlit and OpenAI GPT-4o** 

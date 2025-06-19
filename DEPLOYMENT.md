@@ -25,7 +25,7 @@
    - Sign in with GitHub
    - Click "New app"
    - Select your repository: `YOUR_USERNAME/email-io-game`
-   - Set main file path: `experiments/email_game/app.py`
+   - Set main file path: `experiment_scripts/email_game/app.py`
    - Click "Deploy!"
 
 3. **Set Environment Variables**
@@ -49,13 +49,20 @@
 The app looks for these environment variables:
 - `OPENAI_API_KEY_CLAB` - Your OpenAI API key (required)
 
+### Performance Considerations
+- The app uses session state caching for rubrics to minimize API calls
+- File loading is optimized with error handling and fallbacks
+- Rate limiting should be considered for production deployments
+
 ### Troubleshooting
 - **Import errors**: Check `requirements.txt` has all dependencies
 - **API key errors**: Verify the secret is set correctly in Streamlit Cloud
 - **File not found**: Ensure the main file path is correct in deployment settings
+- **Rate limiting**: Consider implementing request throttling for high-traffic deployments
 
 ### Alternative Deployment Options
 - **Railway**: Great for more complex deployments
 - **Heroku**: Classic platform (requires Procfile)
 - **DigitalOcean App Platform**: Good performance
-- **Google Cloud Run**: For enterprise usage 
+- **Google Cloud Run**: For enterprise usage
+- **Azure Container Instances**: For Microsoft cloud environments 

@@ -1,3 +1,26 @@
+"""
+Email Writing Game - A Streamlit application for practicing email communication skills.
+
+This application provides an interactive game where users write emails for specific 
+scenarios and receive AI-powered feedback on their communication effectiveness.
+
+Features:
+- Multiple communication scenarios
+- AI-powered email generation assistance  
+- Recipient simulation and response generation
+- Custom rubric generation and evaluation
+- Interactive results page with detailed feedback
+
+Dependencies:
+- streamlit>=1.39.0
+- openai>=1.13.0
+
+Environment Variables:
+- OPENAI_API_KEY_CLAB: Required OpenAI API key for all AI functionalities
+
+Author: Complex Communication Research Project
+"""
+
 import streamlit as st
 import openai
 from datetime import datetime
@@ -16,8 +39,6 @@ if 'evaluating' not in st.session_state:
     st.session_state.evaluating = False
 if 'selected_scenario' not in st.session_state:
     st.session_state.selected_scenario = None
-if 'generated_email' not in st.session_state:
-    st.session_state.generated_email = ""
 if 'current_page' not in st.session_state:
     st.session_state.current_page = "game"
 if 'evaluation_result' not in st.session_state:
@@ -30,6 +51,18 @@ if 'cached_rubrics' not in st.session_state:
     st.session_state.cached_rubrics = {}
 
 class EmailGenerator:
+    """
+    Generates email content using OpenAI's language models.
+    
+    This class provides functionality to generate contextually appropriate 
+    email responses based on given scenarios using GPT-4o model.
+    
+    Attributes:
+        client (openai.OpenAI): OpenAI API client instance
+        
+    Methods:
+        generate_email(scenario, model): Generate email content for a scenario
+    """
     def __init__(self):
         # Try specific generator key first, fall back to general key
         api_key = os.getenv("OPENAI_API_KEY_CLAB")
@@ -73,7 +106,7 @@ class EmailEvaluator:
             eval_prompt_path = os.path.join(script_dir, "prompts", "evaluation", "default.txt")
             with open(eval_prompt_path, "r") as f:
                 evaluation_template = f.read()
-        except:
+        except (FileNotFoundError, PermissionError, OSError) as e:
             # Fallback template if file not found
             evaluation_template = """
             Please evaluate the email based on the rubric provided:
@@ -187,7 +220,7 @@ class RubricGenerator:
             rubric_prompt_path = os.path.join(script_dir, "prompts", "rubric_generation", "default.txt")
             with open(rubric_prompt_path, "r") as f:
                 rubric_template = f.read()
-        except:
+        except (FileNotFoundError, PermissionError, OSError) as e:
             rubric_template = """I'm creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. Can you look at the scenario and come up with a rubric to grade the email? The last item, on whether the email successfully achieves the goal, must always be included and worth 10 points.
 
 Ready? Here's the scenario:
@@ -332,7 +365,7 @@ def show_game_page():
     # Check API key availability
     try:
         api_keys_available = bool(os.getenv("OPENAI_API_KEY_CLAB"))
-    except:
+    except Exception as e:
         api_keys_available = False
     
     # Sidebar for configuration
@@ -393,6 +426,7 @@ def show_game_page():
             "Current Scenario",
             value=scenario_content,
             height=350,
+            max_chars=5000,  # Prevent excessively long scenarios
             help="The scenario for which participants will write emails"
         )
         
@@ -408,7 +442,8 @@ def show_game_page():
                             generator = EmailGenerator()
                             generated_email = generator.generate_email(scenario, model)
                             if generated_email:
-                                st.session_state.generated_email = generated_email
+                                # Set the generated email directly in the widget state
+                                st.session_state["email_input"] = generated_email
                                 st.success("✅ Email generated!")
                                 st.rerun()
                             else:
@@ -420,22 +455,15 @@ def show_game_page():
                 else:
                     st.error("Please select a scenario first")
         
-        # Use generated email if available, otherwise use empty string
-        email_value = st.session_state.generated_email if st.session_state.generated_email else ""
-        
+        # Email text area - uses key to maintain state automatically
         email_content = st.text_area(
             "Write your email here",
-            value=email_value,
             height=400,
+            max_chars=3000,  # Prevent excessively long emails
             placeholder="Type your email response to the scenario above, or use the AI generation button...",
             help="Write the best email you can for the given scenario, or generate one with AI",
             key="email_input"
         )
-        
-        # Clear AI state if user manually edits the email (different from generated)
-        if email_content != st.session_state.generated_email and st.session_state.generated_email:
-            if email_content.strip():  # Only clear if there's actual content
-                st.session_state.generated_email = ""
     
     with col2:
         # Developer mode section
@@ -468,7 +496,7 @@ def show_game_page():
                 eval_prompt_path = os.path.join(script_dir, "prompts", "evaluation", "default.txt")
                 with open(eval_prompt_path, "r") as f:
                     default_prompt = f.read()
-            except:
+            except (FileNotFoundError, PermissionError, OSError) as e:
                 default_prompt = """Given the following scenario, how would you evaluate the email? Please come up with some criteria and then evaluate the email based on those criteria. Give a numerical scale for each criterion and tally up a total score for the email."""
             
             evaluator_prompt = st.text_area(
@@ -637,7 +665,23 @@ def main():
     st.set_page_config(
         page_title="Email.io: Can You Write Better Emails than AI?",
         page_icon="📧",
-        layout="wide"
+        layout="wide",
+        initial_sidebar_state="expanded",
+        menu_items={
+            'Get Help': 'https://github.com/your-repo/email-game',
+            'Report a bug': 'https://github.com/your-repo/email-game/issues',
+            'About': """
+            # Email Writing Game
+            Practice your email communication skills with AI-powered feedback!
+            
+            This app helps you improve professional email writing through:
+            - Realistic scenarios
+            - AI feedback and scoring
+            - Recipient response simulation
+            
+            Built with Streamlit and OpenAI GPT-4o.
+            """
+        }
     )
     
     # Simple page navigation
