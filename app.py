@@ -27,6 +27,7 @@ from datetime import datetime
 from typing import Dict
 import os
 import glob
+import re
 
 # Initialize session state
 if 'leaderboard' not in st.session_state:
@@ -873,11 +874,6 @@ def show_results_page():
         st.subheader("📋 Scenario")
         st.text_area("", value=result["scenario"], height=200, disabled=True)
         
-        # Show the generated rubric
-        if "rubric" in result:
-            st.subheader("📏 Evaluation Rubric")
-            st.markdown(result["rubric"])
-        
         # Show the email
         st.subheader("✍️ Your Email")
         st.text_area("", value=result["email"], height=300, disabled=True)
@@ -887,17 +883,87 @@ def show_results_page():
             st.subheader("📨 Recipient's Reply")
             st.markdown(result["recipient_reply"])
         
-        # Show the evaluation
-        st.subheader("🤖 AI Evaluation")
-        st.markdown("""
-        <style>
-        .stMarkdown p {
-            font-size: 1.1rem !important;
-            line-height: 1.6 !important;
-        }
-        </style>
-        """, unsafe_allow_html=True)
-        st.markdown(result["evaluation"])
+        # Show the generated rubric (collapsible)
+        if "rubric" in result:
+            with st.expander("📏 Evaluation Rubric", expanded=False):
+                st.markdown(result["rubric"])
+        
+        # Show the evaluation with improved formatting (collapsible)
+        with st.expander("🤖 AI Evaluation", expanded=True):
+            st.markdown("""
+            <style>
+            .quote-box {
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 5px;
+                padding: 12px;
+                margin: 4px 0 24px 0;
+                font-style: italic;
+                white-space: pre-line;
+            }
+            .evaluation-content {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+            }
+            .evaluation-content p {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 1rem !important;
+            }
+            .evaluation-content ul {
+                list-style: none !important;
+                padding-left: 0 !important;
+            }
+            .evaluation-content li {
+                margin-bottom: 1rem !important;
+                font-size: 0.9rem !important;
+            }
+            .evaluation-item {
+                margin-bottom: 4px;
+            }
+            .evaluation-item:first-child {
+                margin-top: 0;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Process evaluation to add yellow boxes for quotes/rationales  
+            evaluation_text = result["evaluation"]
+            
+            # Remove bullet points first
+            processed_evaluation = re.sub(r'^\s*[-•*]\s*', '', evaluation_text, flags=re.MULTILINE)
+            
+            # Process evaluation to add yellow boxes for quotes and rationales
+            def process_quotes_and_rationales(text):
+                lines = text.split('\n')
+                # Remove empty lines
+                lines = [line for line in lines if line.strip()]
+                processed_lines = []
+
+                i = 0
+                while i < len(lines):
+                    line = lines[i].strip() 
+
+                    if line.startswith('Quote:') or line.startswith('Rationale:'):
+                        # Check if there's a next line and if it's a Rationale
+                        if i + 1 < len(lines):
+                            next_line = lines[i + 1].strip()
+                            if next_line.startswith('Rationale:'):
+                                line = f'{line}\n\n{next_line.strip()}'
+                                print(line)
+                                i += 1  # Skip the next line since we've processed it
+                        
+                        processed_lines.append(f'<div class="quote-box">{line.strip()}</div>')
+                    elif line:  # Only add non-empty lines
+                        processed_lines.append(f'<div class="evaluation-item">{line}</div>')
+                    
+                    i += 1  # Move to next line
+                
+                return '\n'.join(processed_lines)
+            
+            processed_evaluation = process_quotes_and_rationales(processed_evaluation)
+            
+            st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
         
         st.markdown("---")
         st.caption(f"Evaluated on {result['timestamp']}")
