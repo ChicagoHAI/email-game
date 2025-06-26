@@ -1,0 +1,1170 @@
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)
+/data/dangnguyen/info-elicitation/info-elicit/bin/streamlit:2
+# -*- coding: utf-8 -*-
+^
+
+SyntaxError: Invalid or unexpected token
+    at wrapSafe (node:internal/modules/cjs/loader:1486:18)
+    at Module._compile (node:internal/modules/cjs/loader:1528:20)
+    at Object..js (node:internal/modules/cjs/loader:1706:10)
+    at Module.load (node:internal/modules/cjs/loader:1289:32)
+    at Function._load (node:internal/modules/cjs/loader:1108:12)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/ProcessContainer.js:292:27
+    at wrapper (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/once.js:12:16)
+    at next (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/waterfall.js:96:20)
+    at /home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/node_modules/async/internal/onlyOnce.js:12:16
+    at WriteStream.<anonymous> (/home/dangnguyen/.nvm/versions/node/v22.14.0/lib/node_modules/pm2/lib/Utility.js:186:13)

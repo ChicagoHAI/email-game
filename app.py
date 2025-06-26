@@ -29,6 +29,15 @@ import os
 import glob
 import re
 
+# Game Configuration
+LEVEL_TO_SCENARIO_MAPPING = {
+    1: 3,  # User Level 1 maps to Backend Scenario 3
+    2: 4,  # User Level 2 maps to Backend Scenario 4
+    3: 2,  # User Level 3 maps to Backend Scenario 2
+    # Add more levels here: 4: 1, 5: 5, etc.
+}
+MAX_AVAILABLE_LEVEL = max(LEVEL_TO_SCENARIO_MAPPING.keys())
+
 # Initialize session state
 if 'leaderboard' not in st.session_state:
     st.session_state.leaderboard = []
@@ -344,6 +353,42 @@ def save_rubric_to_file(scenario_filename: str, rubric: str) -> bool:
         st.error(f"Error saving rubric: {str(e)}")
         return False
 
+def extract_goal_achievement_score(evaluation_text: str) -> bool:
+    """
+    Extract the goal achievement from the evaluation text and determine if user succeeded.
+    
+    The final rubric item uses a Yes/No format:
+    "The email successfully negotiates the goal: Yes" or "No"
+    
+    Args:
+        evaluation_text: The AI evaluation text containing Yes/No assessment
+        
+    Returns:
+        bool: True if "Yes", False if "No" or cannot be parsed
+    """
+    import re
+    
+    # Look for the goal achievement pattern: "goal: Yes" or "goal: No"
+    # Case-insensitive search for various phrasings
+    goal_patterns = [
+        r'(?:email\s+)?successfully\s+negotiates?\s+(?:the\s+)?goal\s*[:]\s*(yes|no)',
+        r'(?:achieve|negotiat).*?goal\s*[:]\s*(yes|no)',
+        r'goal\s+(?:achievement|success)\s*[:]\s*(yes|no)',
+        r'goal\s*[:]\s*(yes|no)',
+    ]
+    
+    # Search through the evaluation text
+    evaluation_lower = evaluation_text.lower()
+    
+    for pattern in goal_patterns:
+        match = re.search(pattern, evaluation_lower)
+        if match:
+            result = match.group(1).strip()
+            return result == "yes"
+    
+    # If we can't find the goal achievement assessment, be conservative and return False
+    return False
+
 def show_mode_selection_page():
     """Show the mode selection page"""
     st.markdown("""
@@ -458,67 +503,547 @@ def show_game_page():
     if st.session_state.app_mode == "developer":
         show_developer_interface(available_scenarios, api_keys_available)
     else:  # user mode
-        show_user_interface(available_scenarios, api_keys_available)
+        show_user_interface_with_history(available_scenarios, api_keys_available)
 
-def show_user_interface(available_scenarios, api_keys_available):
-    """Show the simplified user interface"""
+def show_user_interface_with_history(available_scenarios, api_keys_available):
+    """Show the user interface with history-based navigation"""
     # Set default model for user version (no sidebar configuration)
     model = "gpt-4o"
     
-    # Scenario section
-    st.subheader("📋 Scenario")
+    # Initialize current level if not set (user-facing levels start from 1)
+    if 'current_level' not in st.session_state:
+        st.session_state.current_level = 1  # Start with user level 1
     
-    # Filter for only scenario 3 in user mode
-    scenario_3_data = None
+    # Initialize level completion tracking
+    if 'completed_levels' not in st.session_state:
+        st.session_state.completed_levels = set()  # Track which levels are completed
+    
+    # Initialize email storage by level
+    if 'level_emails' not in st.session_state:
+        st.session_state.level_emails = {}  # Store emails for each level
+    
+    # Initialize page history system
+    if 'page_history' not in st.session_state:
+        st.session_state.page_history = [{"type": "scenario", "level": 1}]  # Start with scenario 1
+    if 'current_history_index' not in st.session_state:
+        st.session_state.current_history_index = 0
+    if 'level_evaluations' not in st.session_state:
+        st.session_state.level_evaluations = {}  # Store evaluation results by level
+    
+    # Use the global level mapping
+    level_to_scenario_mapping = LEVEL_TO_SCENARIO_MAPPING
+    max_level = MAX_AVAILABLE_LEVEL
+    
+    # Determine current page from history
+    current_page = st.session_state.page_history[st.session_state.current_history_index]
+    current_level_from_history = current_page["level"]
+    
+    # Navigation header with history controls
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col1:
+        # Back button (browser-like)
+        can_go_back = st.session_state.current_history_index > 0
+        if st.button("← Back", disabled=not can_go_back, help="Go back in history"):
+            st.session_state.current_history_index -= 1
+            st.rerun()
+    
+    with col2:
+        # Current page indicator
+        page_type = current_page["type"]
+        page_title = f"Level {current_level_from_history} - {'Scenario' if page_type == 'scenario' else 'Results'}"
+        st.markdown(f"**🎮 {page_title}**")
+    
+    with col3:
+        # Forward button (browser-like)
+        can_go_forward = st.session_state.current_history_index < len(st.session_state.page_history) - 1
+        if st.button("Forward →", disabled=not can_go_forward, help="Go forward in history"):
+            st.session_state.current_history_index += 1
+            st.rerun()
+    
+    # Level progression info
+    st.info("🎯 **Level Progression**: Navigate through your completed levels using Back/Forward buttons!")
+    
+    # Show overall progress
+    completed_count = len(st.session_state.completed_levels)
+    progress_percentage = (completed_count / max_level) * 100
+    st.progress(progress_percentage / 100)
+    st.caption(f"Progress: {completed_count}/{max_level} levels completed ({progress_percentage:.0f}%)")
+    
+    # Show different content based on current page type
+    if current_page["type"] == "scenario":
+        show_scenario_page(current_level_from_history, available_scenarios, level_to_scenario_mapping, api_keys_available, model)
+    else:  # evaluation page
+        show_evaluation_page_from_history(current_level_from_history)
+
+def show_scenario_page(level, available_scenarios, level_to_scenario_mapping, api_keys_available, model):
+    """Show the scenario page for a specific level"""
+    
+    # Get backend scenario ID from user level
+    backend_scenario_id = level_to_scenario_mapping.get(level, 3)  # Default to scenario 3
+    
+    # Get scenario data based on backend scenario ID
+    scenario_data = None
     scenario_content = ""
     
     if available_scenarios:
-        # Look for scenario 3 specifically
-        for scenario_name, scenario_data in available_scenarios.items():
-            if "scenario_3" in scenario_data['filename'].lower() or "3" in scenario_name:
-                scenario_3_data = scenario_data
-                scenario_content = scenario_data['content']
+        # Look for the backend scenario ID
+        target_scenario = f"scenario_{backend_scenario_id}"
+        for scenario_name, scenario_info in available_scenarios.items():
+            if target_scenario in scenario_info['filename'].lower() or str(backend_scenario_id) in scenario_name:
+                scenario_data = scenario_info
+                scenario_content = scenario_info['content']
                 st.session_state.selected_scenario = scenario_content
-                st.session_state.selected_scenario_file = scenario_data['filename']
+                st.session_state.selected_scenario_file = scenario_info['filename']
                 break
         
-        if scenario_3_data:
-            # st.info("🎯 **User Mode**: You're practicing with Scenario 3")
-            pass
-        else:
-            st.warning("Scenario 3 not found. Using default scenario.")
+        if not scenario_data:
+            st.warning(f"Level {level} scenario not found. Using default scenario.")
             scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
     else:
         # Fallback to default scenario if no scenarios found
         scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
         st.warning("No scenarios found in manual folder. Using default scenario.")
     
-        # Display scenario as read-only in user mode (styled to look like text area but not grayed out)
+    # Scenario section
+    st.subheader("📋 Scenario")
     
-    
+    # Display scenario content with proper line breaks
+    # Convert line breaks to HTML breaks for proper display
+    formatted_content = scenario_content.replace('\n', '<br>')
     st.markdown(
         f"""
-        <div>
-        {scenario_content}
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
+        {formatted_content}
         </div>
         """,
         unsafe_allow_html=True
     )
     
-    # Set scenario for processing (since we're not using the text_area widget)
+    # Set scenario for processing
+    scenario = scenario_content
+    
+    # Email input section
+    st.subheader("✍️ Your Email")
+    
+    # Pre-populate email if returning to a completed level
+    initial_email_value = ""
+    if level in st.session_state.level_emails:
+        initial_email_value = st.session_state.level_emails[level]
+    
+    # Email text area - uses key to maintain state automatically
+    email_content = st.text_area(
+        "Write your email here",
+        value=initial_email_value,
+        height=400,
+        max_chars=3000,  # Prevent excessively long emails
+        placeholder="Type your email response to the scenario above...",
+        help="Write the best email you can for the given scenario",
+        key=f"email_input_level_{level}"  # Unique key per level
+    )
+
+    # Submit button
+    st.markdown("---")
+    if st.button(
+        "📝 Send",
+        type="primary",
+        disabled=not api_keys_available or not email_content.strip(),
+        help="Submit your email for AI evaluation"
+    ):
+        if not email_content.strip():
+            st.error("Please write an email before submitting!")
+        elif not api_keys_available:
+            st.error("API keys not available")
+        else:
+            # Process email evaluation and update history
+            process_email_evaluation_with_history(scenario, email_content, model, level)
+
+def show_evaluation_page_from_history(level):
+    """Show the stored evaluation results for a specific level"""
+    
+    if level in st.session_state.level_evaluations:
+        result = st.session_state.level_evaluations[level]
+        
+        # Show the scenario
+        st.subheader("📋 Scenario")
+        st.text_area("", value=result["scenario"], height=200, disabled=True)
+        
+        # Show the email
+        st.subheader("✍️ Your Email")
+        st.text_area("", value=result["email"], height=300, disabled=True)
+        
+        # Show the recipient reply
+        if "recipient_reply" in result:
+            st.subheader("📨 Recipient's Reply")
+            st.markdown(result["recipient_reply"])
+        
+        # Show goal achievement status
+        if "goal_achieved" in result:
+            if result["goal_achieved"]:
+                st.success("🎉 **Success!** You persuaded the recipient and completed this level!")
+            else:
+                st.error("❌ **Goal Not Achieved** - You can try this level again to improve your result.")
+        
+        # Show the generated rubric (collapsible)
+        if "rubric" in result:
+            with st.expander("📏 Evaluation Rubric", expanded=False):
+                st.markdown(result["rubric"])
+        
+        # Show the evaluation with improved formatting (collapsible)
+        with st.expander("🤖 AI Evaluation", expanded=True):
+            st.markdown("""
+            <style>
+            .quote-box {
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 5px;
+                padding: 12px;
+                margin: 4px 0 24px 0;
+                font-style: italic;
+                white-space: pre-line;
+            }
+            .evaluation-content {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+            }
+            .evaluation-content p {
+                font-size: 0.9rem !important;
+                line-height: 1.5 !important;
+                margin-bottom: 1rem !important;
+            }
+            .evaluation-content ul {
+                list-style: none !important;
+                padding-left: 0 !important;
+            }
+            .evaluation-content li {
+                margin-bottom: 1rem !important;
+                font-size: 0.9rem !important;
+            }
+            .evaluation-item {
+                margin-bottom: 4px;
+            }
+            .evaluation-item:first-child {
+                margin-top: 0;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Process evaluation to add yellow boxes for quotes/rationales  
+            evaluation_text = result["evaluation"]
+            
+            # Remove bullet points first
+            processed_evaluation = re.sub(r'^\s*[-•*]\s*', '', evaluation_text, flags=re.MULTILINE)
+            
+            # Process evaluation to add yellow boxes for quotes and rationales
+            def process_quotes_and_rationales(text):
+                lines = text.split('\n')
+                # Remove empty lines
+                lines = [line for line in lines if line.strip()]
+                processed_lines = []
+
+                i = 0
+                while i < len(lines):
+                    line = lines[i].strip() 
+
+                    if line.startswith('Quote:') or line.startswith('Rationale:'):
+                        # Check if there's a next line and if it's a Rationale
+                        if i + 1 < len(lines):
+                            next_line = lines[i + 1].strip()
+                            if next_line.startswith('Rationale:'):
+                                line = f'{line}\n\n{next_line.strip()}'
+                                i += 1  # Skip the next line since we've processed it
+                        
+                        processed_lines.append(f'<div class="quote-box">{line.strip()}</div>')
+                    elif line:  # Only add non-empty lines
+                        processed_lines.append(f'<div class="evaluation-item">{line}</div>')
+                    
+                    i += 1  # Move to next line
+                
+                return '\n'.join(processed_lines)
+            
+            processed_evaluation = process_quotes_and_rationales(processed_evaluation)
+            
+            st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
+        
+        # Show additional navigation options
+        st.markdown("---")
+        
+        # Show "Continue to Next Level" button if this was successful and there are more levels
+        if result.get("goal_achieved") and level < MAX_AVAILABLE_LEVEL:
+            next_level = level + 1
+            if st.button(f"Continue to Level {next_level} →", type="primary"):
+                # Add next level to history if not already there
+                next_page = {"type": "scenario", "level": next_level}
+                if next_page not in st.session_state.page_history:
+                    st.session_state.page_history.append(next_page)
+                # Navigate to next level
+                st.session_state.current_history_index = len(st.session_state.page_history) - 1
+                st.rerun()
+        
+        # Show "Try Again" button if this was unsuccessful
+        elif not result.get("goal_achieved"):
+            if st.button(f"Try Level {level} Again →", type="primary"):
+                # Navigate back to the scenario page for this level
+                scenario_page = {"type": "scenario", "level": level}
+                # Find the scenario page in history or add it
+                try:
+                    scenario_index = st.session_state.page_history.index(scenario_page)
+                    st.session_state.current_history_index = scenario_index
+                except ValueError:
+                    # Add scenario page to history if not found
+                    st.session_state.page_history.append(scenario_page)
+                    st.session_state.current_history_index = len(st.session_state.page_history) - 1
+                st.rerun()
+    else:
+        st.error(f"No evaluation results found for Level {level}")
+
+def process_email_evaluation_with_history(scenario, email_content, model, level):
+    """Process email evaluation and update history navigation"""
+    # Show loading screen with multiple steps
+    progress_text = st.empty()
+    progress_bar = st.progress(0)
+    
+    try:
+        # Store the email for this level
+        if 'level_emails' not in st.session_state:
+            st.session_state.level_emails = {}
+        st.session_state.level_emails[level] = email_content
+        
+        # Step 1: Load or generate rubric
+        progress_text.text("🔄 Loading evaluation rubric...")
+        progress_bar.progress(0.25)
+        
+        rubric_generator = RubricGenerator()
+        scenario_filename = st.session_state.get("selected_scenario_file", "")
+        
+        if scenario_filename:
+            rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+        else:
+            # Fallback to direct generation if no filename available
+            rubric = rubric_generator.generate_rubric(scenario, model)
+        
+        if not rubric:
+            st.error("Failed to generate rubric")
+            return
+        
+        # Step 2: Generate recipient reply
+        progress_text.text("📨 Awaiting response from recipient...")
+        progress_bar.progress(0.5)
+        
+        # Load default recipient prompt based on selected scenario
+        if st.session_state.get("selected_scenario_file"):
+            default_recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+        else:
+            default_recipient_prompt = "You are the recipient of an email. Please respond naturally and appropriately to the email you receive."
+        
+        recipient = EmailRecipient()
+        recipient_reply = recipient.generate_reply(
+            default_recipient_prompt, email_content, model
+        )
+        
+        if not recipient_reply:
+            st.error("Failed to generate recipient reply")
+            return
+        
+        # Step 3: Evaluate the email using the generated rubric
+        progress_text.text("📊 Evaluating your email...")
+        progress_bar.progress(0.75)
+        
+        evaluator = EmailEvaluator()
+        evaluation_result = evaluator.evaluate_email(
+            scenario, email_content, rubric, recipient_reply, model
+        )
+        
+        if not evaluation_result:
+            st.error("Failed to evaluate email")
+            return
+        
+        # Step 4: Complete
+        progress_text.text("✅ Evaluation complete!")
+        progress_bar.progress(1.0)
+        
+        # Check if user successfully achieved the goal
+        goal_success = extract_goal_achievement_score(evaluation_result)
+        
+        # Store evaluation results for this level
+        evaluation_data = {
+            "scenario": scenario,
+            "email": email_content,
+            "rubric": rubric,
+            "recipient_reply": recipient_reply,
+            "evaluation": evaluation_result,
+            "goal_achieved": goal_success,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        if 'level_evaluations' not in st.session_state:
+            st.session_state.level_evaluations = {}
+        st.session_state.level_evaluations[level] = evaluation_data
+        
+        # Update completion status
+        if 'completed_levels' not in st.session_state:
+            st.session_state.completed_levels = set()
+            
+        if goal_success:
+            st.session_state.completed_levels.add(level)
+        
+        # HISTORY MANAGEMENT: Truncate history when retrying a level
+        # Find the current scenario page index in history
+        current_scenario_page = {"type": "scenario", "level": level}
+        current_scenario_index = None
+        
+        for i, page in enumerate(st.session_state.page_history):
+            if page["type"] == "scenario" and page["level"] == level:
+                current_scenario_index = i
+                break
+        
+        if current_scenario_index is not None:
+            # Truncate history to include only up to the current scenario page
+            # This erases all future history when retrying a level
+            st.session_state.page_history = st.session_state.page_history[:current_scenario_index + 1]
+        
+        # Add evaluation page to history (right after the scenario)
+        evaluation_page = {"type": "evaluation", "level": level}
+        st.session_state.page_history.append(evaluation_page)
+        st.session_state.current_history_index = len(st.session_state.page_history) - 1
+        
+        # If successful and there are more levels, prepare next level scenario in history
+        if goal_success and level < MAX_AVAILABLE_LEVEL:
+            next_level = level + 1
+            next_scenario_page = {"type": "scenario", "level": next_level}
+            st.session_state.page_history.append(next_scenario_page)
+        
+        st.rerun()
+        
+    except Exception as e:
+        st.error(f"Error during processing: {str(e)}")
+
+def show_user_interface(available_scenarios, api_keys_available):
+    """Show the simplified user interface"""
+    # Set default model for user version (no sidebar configuration)
+    model = "gpt-4o"
+    
+    # Initialize current level if not set (user-facing levels start from 1)
+    if 'current_level' not in st.session_state:
+        st.session_state.current_level = 1  # Start with user level 1
+    
+    # Initialize level completion tracking
+    if 'completed_levels' not in st.session_state:
+        st.session_state.completed_levels = set()  # Track which levels are completed
+    
+    # Initialize email storage by level
+    if 'level_emails' not in st.session_state:
+        st.session_state.level_emails = {}  # Store emails for each level
+    
+    # Initialize page history system
+    if 'page_history' not in st.session_state:
+        st.session_state.page_history = [{"type": "scenario", "level": 1}]  # Start with scenario 1
+    if 'current_history_index' not in st.session_state:
+        st.session_state.current_history_index = 0
+    if 'level_evaluations' not in st.session_state:
+        st.session_state.level_evaluations = {}  # Store evaluation results by level
+    
+    # Use the global level mapping
+    level_to_scenario_mapping = LEVEL_TO_SCENARIO_MAPPING
+    max_level = MAX_AVAILABLE_LEVEL
+    
+    # Determine current page from history
+    current_page = st.session_state.page_history[st.session_state.current_history_index]
+    current_level_from_history = current_page["level"]
+    
+    # Navigation header with history controls
+    col1, col2, col3 = st.columns([1, 2, 1])
+    
+    with col1:
+        # Back button (browser-like)
+        can_go_back = st.session_state.current_history_index > 0
+        if st.button("← Back", disabled=not can_go_back, help="Go back in history"):
+            st.session_state.current_history_index -= 1
+            st.rerun()
+    
+    with col2:
+        # Current page indicator
+        page_type = current_page["type"]
+        page_title = f"Level {current_level_from_history} - {'Scenario' if page_type == 'scenario' else 'Results'}"
+        st.markdown(f"**🎮 {page_title}**")
+    
+    with col3:
+        # Forward button (browser-like)
+        can_go_forward = st.session_state.current_history_index < len(st.session_state.page_history) - 1
+        if st.button("Forward →", disabled=not can_go_forward, help="Go forward in history"):
+            st.session_state.current_history_index += 1
+            st.rerun()
+    
+    # Level progression info
+    st.info("🎯 **Level Progression**: Navigate through your completed levels using Back/Forward buttons!")
+    
+    # Show overall progress
+    completed_count = len(st.session_state.completed_levels)
+    progress_percentage = (completed_count / max_level) * 100
+    st.progress(progress_percentage / 100)
+    st.caption(f"Progress: {completed_count}/{max_level} levels completed ({progress_percentage:.0f}%)")
+    
+    # Scenario section
+    st.subheader("📋 Scenario")
+    
+    # Get backend scenario ID from user level
+    backend_scenario_id = level_to_scenario_mapping.get(st.session_state.current_level, 3)  # Default to scenario 3
+    
+    # Get scenario data based on backend scenario ID
+    scenario_data = None
+    scenario_content = ""
+    
+    if available_scenarios:
+        # Look for the backend scenario ID
+        target_scenario = f"scenario_{backend_scenario_id}"
+        for scenario_name, scenario_info in available_scenarios.items():
+            if target_scenario in scenario_info['filename'].lower() or str(backend_scenario_id) in scenario_name:
+                scenario_data = scenario_info
+                scenario_content = scenario_info['content']
+                st.session_state.selected_scenario = scenario_content
+                st.session_state.selected_scenario_file = scenario_info['filename']
+                break
+        
+        if not scenario_data:
+            st.warning(f"Level {st.session_state.current_level} scenario not found. Using default scenario.")
+            scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
+    else:
+        # Fallback to default scenario if no scenarios found
+        scenario_content = """You are coordinating a weekend trip to a national park with 5 friends. You need to organize transportation, accommodation, and activities. Some friends prefer camping while others want a hotel. The trip is in 3 weeks and you need everyone to confirm their participation and preferences by Friday."""
+        st.warning("No scenarios found in manual folder. Using default scenario.")
+    
+    # Display scenario content with proper line breaks
+    # Convert line breaks to HTML breaks for proper display
+    formatted_content = scenario_content.replace('\n', '<br>')
+    st.markdown(
+        f"""
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
+        {formatted_content}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
+    # Set scenario for processing
     scenario = scenario_content
     
     # Email input section (no AI generation in user mode)
     st.subheader("✍️ Your Email")
     
+    # Pre-populate email if returning to a completed level
+    initial_email_value = ""
+    if st.session_state.current_level in st.session_state.level_emails:
+        initial_email_value = st.session_state.level_emails[st.session_state.current_level]
+    
     # Email text area - uses key to maintain state automatically
     email_content = st.text_area(
         "Write your email here",
+        value=initial_email_value,
         height=400,
         max_chars=3000,  # Prevent excessively long emails
         placeholder="Type your email response to the scenario above...",
         help="Write the best email you can for the given scenario",
-        key="email_input"
+        key=f"email_input_level_{st.session_state.current_level}"  # Unique key per level
     )
 
     # Submit button for user mode
@@ -764,6 +1289,37 @@ def process_email_evaluation_user_mode(scenario, email_content, model):
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         
+        # Store the email for this level
+        if 'current_level' in st.session_state:
+            if 'level_emails' not in st.session_state:
+                st.session_state.level_emails = {}
+            st.session_state.level_emails[st.session_state.current_level] = email_content
+        
+        # Check if user successfully achieved the goal before marking level complete
+        goal_success = extract_goal_achievement_score(evaluation_result)
+        
+        # Handle level progression based on success (only for user mode)
+        if 'current_level' in st.session_state:
+            if 'completed_levels' not in st.session_state:
+                st.session_state.completed_levels = set()
+                
+            if goal_success:
+                # Mark current level as completed
+                st.session_state.completed_levels.add(st.session_state.current_level)
+                
+                # Store the level they just completed for navigation
+                st.session_state.evaluation_result["completed_level"] = st.session_state.current_level
+                
+                # Auto-advance to next level if available
+                if st.session_state.current_level < MAX_AVAILABLE_LEVEL:
+                    st.session_state.current_level += 1
+            else:
+                # Store the current level for "try again" scenario
+                st.session_state.evaluation_result["failed_level"] = st.session_state.current_level
+            
+        # Store goal achievement result for display
+        st.session_state.evaluation_result["goal_achieved"] = goal_success
+        
         # Switch to results page
         st.session_state.current_page = "results"
         st.rerun()
@@ -863,10 +1419,63 @@ def show_results_page():
     if st.session_state.evaluation_result:
         result = st.session_state.evaluation_result
         
-        # Back button
-        if st.button("← Back to Game", type="secondary"):
-            st.session_state.current_page = "game"
-            st.rerun()
+        # Navigation buttons for user mode
+        if st.session_state.get("app_mode") == "user":
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # Show "Return to Previous Level" if there is a previous level
+                current_level = st.session_state.get("current_level", 1)
+                can_go_back = current_level > 1 or len(st.session_state.get("completed_levels", set())) > 0
+                
+                if can_go_back:
+                    previous_level = current_level - 1 if current_level > 1 else max(st.session_state.get("completed_levels", {1}))
+                    if st.button(f"← Return to Level {previous_level}", type="secondary"):
+                        st.session_state.current_level = previous_level
+                        st.session_state.current_page = "game"
+                        st.rerun()
+                else:
+                    st.button("← No Previous Level", disabled=True, type="secondary")
+            
+            with col2:
+                # Show "Advance to Next Level" or "Try Again" based on success
+                if "goal_achieved" in result and result["goal_achieved"]:
+                    completed_level = result.get("completed_level", current_level)
+                    next_level = completed_level + 1
+                    
+                    if next_level <= MAX_AVAILABLE_LEVEL:
+                        if st.button(f"Advance to Level {next_level} →", type="primary"):
+                            st.session_state.current_level = next_level
+                            st.session_state.current_page = "game"
+                            st.rerun()
+                    else:
+                        st.button("🏆 All Levels Complete!", disabled=True, type="primary")
+                else:
+                    if st.button(f"Try Level {current_level} Again →", type="primary"):
+                        # Go back to current level (which they failed)
+                        failed_level = result.get("failed_level", current_level)
+                        st.session_state.current_level = failed_level
+                        st.session_state.current_page = "game"
+                        st.rerun()
+        else:
+            # Developer mode - keep simple back button
+            if st.button("← Back to Game", type="secondary"):
+                st.session_state.current_page = "game"
+                st.rerun()
+        
+        # Show goal achievement status and next steps (only for user mode)
+        if st.session_state.get("app_mode") == "user" and "goal_achieved" in result:
+            if result["goal_achieved"]:
+                # Check if user completed all available levels
+                completed_count = len(st.session_state.get("completed_levels", set()))
+                
+                if completed_count >= MAX_AVAILABLE_LEVEL:
+                    st.success("🏆 **Congratulations!** You've completed all available levels! You're a master communicator!")
+                else:
+                    st.success("🎉 **Success!** You persuaded the recipient and advanced to the next level!")
+                    
+            else:
+                st.error("❌ **Goal Not Achieved** - You need to successfully persuade the recipient to advance. Try again with a different approach!")
         
         st.markdown("---")
         
@@ -950,7 +1559,6 @@ def show_results_page():
                             next_line = lines[i + 1].strip()
                             if next_line.startswith('Rationale:'):
                                 line = f'{line}\n\n{next_line.strip()}'
-                                print(line)
                                 i += 1  # Skip the next line since we've processed it
                         
                         processed_lines.append(f'<div class="quote-box">{line.strip()}</div>')
@@ -966,12 +1574,48 @@ def show_results_page():
             st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
         
         st.markdown("---")
-        st.caption(f"Evaluated on {result['timestamp']}")
+        # st.caption(f"Evaluated on {result['timestamp']}")
         
-        # Back button at bottom too
-        if st.button("← Back to Game", type="secondary", key="back_bottom"):
-            st.session_state.current_page = "game"
-            st.rerun()
+        # Bottom navigation buttons (same as top)
+        if st.session_state.get("app_mode") == "user":
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                current_level = st.session_state.get("current_level", 1)
+                can_go_back = current_level > 1 or len(st.session_state.get("completed_levels", set())) > 0
+                
+                if can_go_back:
+                    previous_level = current_level - 1 if current_level > 1 else max(st.session_state.get("completed_levels", {1}))
+                    if st.button(f"← Return to Level {previous_level}", type="secondary", key="back_bottom_prev"):
+                        st.session_state.current_level = previous_level
+                        st.session_state.current_page = "game"
+                        st.rerun()
+                else:
+                    st.button("← No Previous Level", disabled=True, type="secondary", key="back_bottom_prev_disabled")
+            
+            with col2:
+                if "goal_achieved" in result and result["goal_achieved"]:
+                    completed_level = result.get("completed_level", current_level)
+                    next_level = completed_level + 1
+                    
+                    if next_level <= MAX_AVAILABLE_LEVEL:
+                        if st.button(f"Advance to Level {next_level} →", type="primary", key="back_bottom_next"):
+                            st.session_state.current_level = next_level
+                            st.session_state.current_page = "game"
+                            st.rerun()
+                    else:
+                        st.button("🏆 All Levels Complete!", disabled=True, type="primary", key="back_bottom_complete")
+                else:
+                    if st.button(f"Try Level {current_level} Again →", type="primary", key="back_bottom_retry"):
+                        failed_level = result.get("failed_level", current_level)
+                        st.session_state.current_level = failed_level
+                        st.session_state.current_page = "game"
+                        st.rerun()
+        else:
+            # Developer mode - keep simple back button
+            if st.button("← Back to Game", type="secondary", key="back_bottom"):
+                st.session_state.current_page = "game"
+                st.rerun()
     
     else:
         st.error("No evaluation results found.")

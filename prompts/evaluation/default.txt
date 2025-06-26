@@ -2,6 +2,8 @@ I’m creating an AI-driven game where the player attempts to write emails to ne
 
 Check whether each criteria is satisfied before tallying up the total score. Give a quote and brief rationale to justify why a score is given on each criteria. Once that is done, make any score adjustments necessary based on how successful the goal was hit. You can either add or take away scores. Do not let the score go below 0 or above the maximum.
 
+At the end, say whether the email has persuaded the recipient based on their response. If it has, say "Yes." If it has not, say "No." Unlike the rubric, the email's content does not matter here.
+
 Here’s an example you can follow:
 
 ——————
@@ -24,9 +26,10 @@ Rubric:
 - The email refrains from mentioning John’s family’s financial status. /4
 - The email avoids calling John lazy or mentioning his lack of social activity. /4
 - The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. /3
-- The email successfully negotiates the goal. /10
 
-Total: /29
+Total: /19
+
+The email successfully negotiates the goal: Yes/No
 
 Email:
 
@@ -84,9 +87,8 @@ Rationale: while an attempt was made to address John’s concern about distance,
 - The email refrains from mentioning John’s family’s financial status. 4/4
 - The email avoids calling John lazy or mentioning his lack of social activity. 4/4
 - The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. 3/3
-- The email successfully negotiates the goal. 5/10
 
-Total score: 22/29
+Total score: 17/19
 
 Adjustments:
 
@@ -94,7 +96,9 @@ The tone sounds like a college student: “It’s not just about flexing.” +0.
 
 The sell sounds very natural: “I think you might actually enjoy getting out more if it was just part of the routine and didn’t involve a whole trip from Evanston.” +0.5
 
-Overal score: 23/29
+Overal score: 18/19
+
+The email successfully negotiates the goal: Yes
 
 ——————
 
