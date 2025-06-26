@@ -68,7 +68,7 @@ def show_mode_selection():
         st.markdown("""
         <div class="mode-card user-card">
         <h3>👤 User Mode</h3>
-        <p>Play as a user.</p>
+        <p>Play as a user. Craft emails for increasingly difficult scenarios!</p>
         </div>
         """, unsafe_allow_html=True)
         
