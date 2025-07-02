@@ -7,72 +7,77 @@ AI generation, evaluation, and result processing.
 
 import streamlit as st
 from datetime import datetime
-from config import MAX_AVAILABLE_LEVEL
+from config import MAX_AVAILABLE_LEVEL, DEFAULT_RECIPIENT_PROMPT
 from models import RubricGenerator, EmailRecipient, EmailEvaluator, EmailGenerator
 from utils import load_recipient_prompt, extract_goal_achievement_score, process_evaluation_text
 
 
-def process_email_evaluation(scenario, email_content, model):
-    """Process email evaluation for developer mode (simple evaluation)"""
+# def process_email_evaluation(scenario, email_content, model):
+#     """Process email evaluation for developer mode (simple evaluation)"""
     
-    # Initialize AI services
-    email_generator = EmailGenerator()
-    email_evaluator = EmailEvaluator()
-    email_recipient = EmailRecipient()
-    rubric_generator = RubricGenerator()
+#     # Initialize AI services
+#     email_generator = EmailGenerator()
+#     email_evaluator = EmailEvaluator()
+#     email_recipient = EmailRecipient()
+#     rubric_generator = RubricGenerator()
     
-    with st.spinner("🤖 Processing your email..."):
-        try:
-            # Step 1: Load or generate rubric
-            with st.status("Loading evaluation rubric...", expanded=False) as status:
-                scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
-                rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
-                status.update(label="✅ Rubric ready!", state="complete")
+#     with st.spinner("🤖 Processing your email..."):
+#         try:
+#             # Step 1: Load or generate rubric (conditional)
+#             use_rubric = st.session_state.get('use_rubric', True)
+#             if use_rubric:
+#                 with st.status("Loading evaluation rubric...", expanded=False) as status:
+#                     scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
+#                     rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+#                     status.update(label="✅ Rubric ready!", state="complete")
+#             else:
+#                 rubric = None
             
-            # Step 2: Generate recipient reply
-            with st.status("Generating recipient response...", expanded=False) as status:
-                # Load recipient prompt based on selected scenario
-                if st.session_state.get("selected_scenario_file"):
-                    recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
-                else:
-                    from config import DEFAULT_RECIPIENT_PROMPT
-                    recipient_prompt = DEFAULT_RECIPIENT_PROMPT
+#             # Step 2: Generate recipient reply
+#             with st.status("Generating recipient response...", expanded=False) as status:
+#                 # Load recipient prompt based on selected scenario
+#                 if st.session_state.get("selected_scenario_file"):
+#                     recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+#                 else:
+#                     from config import DEFAULT_RECIPIENT_PROMPT
+#                     recipient_prompt = DEFAULT_RECIPIENT_PROMPT
                 
-                recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
-                status.update(label="✅ Recipient reply generated!", state="complete")
+#                 recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
+#                 status.update(label="✅ Recipient reply generated!", state="complete")
             
-            # Step 3: Evaluate email
-            with st.status("Evaluating your email...", expanded=False) as status:
-                evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
-                status.update(label="✅ Evaluation complete!", state="complete")
+#             # Step 3: Evaluate email
+#             with st.status("Evaluating your email...", expanded=False) as status:
+#                 evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
+#                 status.update(label="✅ Evaluation complete!", state="complete")
             
-            # Display results
-            st.success("🎉 Evaluation Complete!")
+#             # Display results
+#             st.success("🎉 Evaluation Complete!")
             
-            # Show goal achievement status
-            goal_achieved = extract_goal_achievement_score(evaluation)
-            if goal_achieved:
-                st.success("🎯 **Goal Achieved!** You successfully persuaded the recipient.")
-            else:
-                st.error("❌ **Goal Not Achieved** - You can improve your approach.")
+#             # Show goal achievement status
+#             goal_achieved = extract_goal_achievement_score(evaluation)
+#             if goal_achieved:
+#                 st.success("🎯 **Goal Achieved!** You successfully persuaded the recipient.")
+#             else:
+#                 st.error("❌ **Goal Not Achieved** - You can improve your approach.")
 
-            # Show recipient's reply
-            st.subheader("📨 Recipient's Reply")
-            st.markdown(recipient_reply)
+#             # Show recipient's reply
+#             st.subheader("📨 Recipient's Reply")
+#             st.markdown(recipient_reply)
             
-            # Show rubric (collapsible)
-            with st.expander("📏 Evaluation Rubric", expanded=False):
-                st.markdown(rubric)
+#             # Show rubric (collapsible) - only if using rubrics
+#             if use_rubric and rubric:
+#                 with st.expander("📏 Evaluation Rubric", expanded=False):
+#                     st.markdown(rubric)
             
-            # Show detailed evaluation (collapsible)
-            with st.expander("🤖 Detailed AI Evaluation", expanded=True):
-                _show_evaluation_styles()
-                processed_evaluation = process_evaluation_text(evaluation)
-                st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
+#             # Show detailed evaluation (collapsible)
+#             with st.expander("🤖 Detailed AI Evaluation", expanded=True):
+#                 _show_evaluation_styles()
+#                 processed_evaluation = process_evaluation_text(evaluation)
+#                 st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
                 
-        except Exception as e:
-            st.error(f"❌ Error during evaluation: {str(e)}")
-            st.error("Please check your API keys and try again.")
+#         except Exception as e:
+#             st.error(f"❌ Error during evaluation: {str(e)}")
+#             st.error("Please check your API keys and try again.")
 
 
 def process_email_evaluation_with_history(scenario, email_content, model, level):
@@ -86,11 +91,15 @@ def process_email_evaluation_with_history(scenario, email_content, model, level)
     
     with st.spinner("🤖 Processing your email..."):
         try:
-            # Step 1: Load or generate rubric
-            with st.status("Loading evaluation rubric...", expanded=False) as status:
-                scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
-                rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
-                status.update(label="✅ Rubric ready!", state="complete")
+            # Step 1: Load or generate rubric (conditional)
+            use_rubric = st.session_state.get('use_rubric', True)
+            if use_rubric:
+                with st.status("Loading evaluation rubric...", expanded=False) as status:
+                    scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
+                    rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+                    status.update(label="✅ Rubric ready!", state="complete")
+            else:
+                rubric = None
             
             # Step 2: Generate recipient reply
             with st.status("Generating recipient response...", expanded=False) as status:
@@ -98,7 +107,6 @@ def process_email_evaluation_with_history(scenario, email_content, model, level)
                 if st.session_state.get("selected_scenario_file"):
                     recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
                 else:
-                    from config import DEFAULT_RECIPIENT_PROMPT
                     recipient_prompt = DEFAULT_RECIPIENT_PROMPT
                 
                 recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
@@ -154,6 +162,101 @@ def process_email_evaluation_with_history(scenario, email_content, model, level)
             st.error("Please check your API keys and try again.")
 
 
+def process_email_evaluation_user_mode_inline(scenario, email_content, model, level):
+    """Process email evaluation for user mode with inline results display"""
+    
+    # Initialize AI services
+    email_generator = EmailGenerator()
+    email_evaluator = EmailEvaluator()
+    email_recipient = EmailRecipient()
+    rubric_generator = RubricGenerator()
+    
+    with st.spinner("🤖 Processing your email..."):
+        try:
+            # Step 1: Load or generate rubric (conditional)
+            use_rubric = st.session_state.get('use_rubric', True)
+            if use_rubric:
+                with st.status("Loading evaluation rubric...", expanded=False) as status:
+                    scenario_filename = st.session_state.get("selected_scenario_file", "")
+                    
+                    if scenario_filename:
+                        rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+                    else:
+                        # Fallback to direct generation if no filename available
+                        rubric = rubric_generator.generate_rubric(scenario, model)
+                    
+                    if not rubric:
+                        st.error("Failed to generate rubric")
+                        return
+                    status.update(label="✅ Rubric ready!", state="complete")
+            else:
+                rubric = None
+            
+            # Step 2: Generate recipient reply
+            with st.status("Generating recipient response...", expanded=False) as status:
+                # Load recipient prompt based on selected scenario file
+                if st.session_state.get("selected_scenario_file"):
+                    recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+                else:
+                    recipient_prompt = DEFAULT_RECIPIENT_PROMPT
+                
+                recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
+                if not recipient_reply:
+                    st.error("Failed to generate recipient reply")
+                    return
+                status.update(label="✅ Recipient reply generated!", state="complete")
+            
+            # Step 3: Evaluate email
+            with st.status("Evaluating your email...", expanded=False) as status:
+                evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
+                if not evaluation:
+                    st.error("Failed to evaluate email")
+                    return
+                status.update(label="✅ Evaluation complete!", state="complete")
+            
+            # Extract goal achievement
+            goal_achieved = extract_goal_achievement_score(evaluation)
+            
+            # Initialize session state containers if needed
+            if 'level_emails' not in st.session_state:
+                st.session_state.level_emails = {}
+            if 'level_evaluations' not in st.session_state:
+                st.session_state.level_evaluations = {}
+            if 'completed_levels' not in st.session_state:
+                st.session_state.completed_levels = set()
+            
+            # Store email content by level
+            st.session_state.level_emails[level] = email_content
+            
+            # Store evaluation results
+            st.session_state.level_evaluations[level] = {
+                "scenario": scenario,
+                "email": email_content,
+                "recipient_reply": recipient_reply,
+                "rubric": rubric,
+                "evaluation": evaluation,
+                "goal_achieved": goal_achieved
+            }
+            
+            # Update completed levels based on success/failure
+            if goal_achieved:
+                # Add this level to completed levels if successful
+                st.session_state.completed_levels.add(level)
+            else:
+                # If failed, remove this level and all higher levels from completed levels
+                # This resets progress when someone reattempts and fails a previously completed level
+                levels_to_remove = {l for l in st.session_state.completed_levels if l >= level}
+                st.session_state.completed_levels -= levels_to_remove
+            
+            # Success message and rerun to show results
+            st.success("🎉 Evaluation Complete!")
+            st.rerun()
+            
+        except Exception as e:
+            st.error(f"❌ Error during evaluation: {str(e)}")
+            st.error("Please check your API keys and try again.")
+
+
 def _show_evaluation_styles():
     """Show CSS styles for evaluation display"""
     st.markdown("""
@@ -201,32 +304,35 @@ def process_email_evaluation_user_mode(scenario, email_content, model):
     progress_bar = st.progress(0)
     
     try:
-        # Step 1: Load or generate rubric
-        progress_text.text("🔄 Loading evaluation rubric...")
-        progress_bar.progress(0.25)
-        
-        rubric_generator = RubricGenerator()
-        scenario_filename = st.session_state.get("selected_scenario_file", "")
-        
-        if scenario_filename:
-            rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+        # Step 1: Load or generate rubric (conditional)
+        use_rubric = st.session_state.get('use_rubric', True)
+        if use_rubric:
+            progress_text.text("🔄 Loading evaluation rubric...")
+            progress_bar.progress(0.25)
+            
+            rubric_generator = RubricGenerator()
+            scenario_filename = st.session_state.get("selected_scenario_file", "")
+            
+            if scenario_filename:
+                rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+            else:
+                # Fallback to direct generation if no filename available
+                rubric = rubric_generator.generate_rubric(scenario, model)
+            
+            if not rubric:
+                st.error("Failed to generate rubric")
+                return
         else:
-            # Fallback to direct generation if no filename available
-            rubric = rubric_generator.generate_rubric(scenario, model)
-        
-        if not rubric:
-            st.error("Failed to generate rubric")
-            return
+            rubric = None
         
         # Step 2: Generate recipient reply (using default recipient prompt for user version)
         progress_text.text("📨 Awaiting response from recipient...")
-        progress_bar.progress(0.5)
+        progress_bar.progress(0.33 if use_rubric else 0.5)
         
         # Load default recipient prompt based on selected scenario
         if st.session_state.get("selected_scenario_file"):
             default_recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
         else:
-            from .config import DEFAULT_RECIPIENT_PROMPT
             default_recipient_prompt = DEFAULT_RECIPIENT_PROMPT
         
         recipient = EmailRecipient()
@@ -240,7 +346,7 @@ def process_email_evaluation_user_mode(scenario, email_content, model):
         
         # Step 3: Evaluate the email using the generated rubric (using default evaluator prompt)
         progress_text.text("📊 Evaluating your email...")
-        progress_bar.progress(0.75)
+        progress_bar.progress(0.66 if use_rubric else 0.75)
         
         evaluator = EmailEvaluator()
         evaluation_result = evaluator.evaluate_email(
@@ -306,72 +412,80 @@ def process_email_evaluation_user_mode(scenario, email_content, model):
 
 def process_email_evaluation_developer_mode(scenario, email_content, model):
     """Process email evaluation using custom settings from developer mode"""
-    # Show loading screen with multiple steps
-    progress_text = st.empty()
-    progress_bar = st.progress(0)
     
-    try:
-        # Step 1: Load or generate rubric
-        progress_text.text("🔄 Loading evaluation rubric...")
-        progress_bar.progress(0.25)
-        
-        rubric_generator = RubricGenerator()
-        scenario_filename = st.session_state.get("selected_scenario_file", "")
-        
-        if scenario_filename:
-            rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
-        else:
-            # Fallback to direct generation if no filename available
-            rubric = rubric_generator.generate_rubric(scenario, model)
-        
-        if not rubric:
-            st.error("Failed to generate rubric")
-            return
-        
-        # Step 2: Generate recipient reply
-        progress_text.text("📨 Awaiting response from recipient...")
-        progress_bar.progress(0.5)
-        
-        recipient_prompt_value = st.session_state.get("recipient_prompt", "")
-        recipient = EmailRecipient()
-        recipient_reply = recipient.generate_reply(
-            recipient_prompt_value, email_content, model
-        )
-        
-        if not recipient_reply:
-            st.error("Failed to generate recipient reply")
-            return
-        
-        # Step 3: Evaluate the email using the generated rubric
-        progress_text.text("📊 Evaluating your email...")
-        progress_bar.progress(0.75)
-        
-        evaluator = EmailEvaluator()
-        evaluation_result = evaluator.evaluate_email(
-            scenario, email_content, rubric, recipient_reply, model
-        )
-        
-        if not evaluation_result:
-            st.error("Failed to evaluate email")
-            return
-        
-        # Step 4: Complete
-        progress_text.text("✅ Evaluation complete!")
-        progress_bar.progress(1.0)
-        
-        # Store all data for results page
-        st.session_state.evaluation_result = {
-            "scenario": scenario,
-            "email": email_content,
-            "rubric": rubric,
-            "recipient_reply": recipient_reply,
-            "evaluation": evaluation_result,
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-        
-        # Switch to results page
-        st.session_state.current_page = "results"
-        st.rerun()
-        
-    except Exception as e:
-        st.error(f"Error during processing: {str(e)}") 
+    # Initialize AI services
+    email_generator = EmailGenerator()
+    email_evaluator = EmailEvaluator()
+    email_recipient = EmailRecipient()
+    rubric_generator = RubricGenerator()
+    
+    with st.spinner("🤖 Processing your email..."):
+        try:
+            # Step 1: Load or generate rubric (conditional)
+            use_rubric = st.session_state.get('use_rubric', True)
+            if use_rubric:
+                with st.status("Loading evaluation rubric...", expanded=False) as status:
+                    scenario_filename = st.session_state.get("selected_scenario_file", "")
+                    
+                    if scenario_filename:
+                        rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+                    else:
+                        # Fallback to direct generation if no filename available
+                        rubric = rubric_generator.generate_rubric(scenario, model)
+                    
+                    if not rubric:
+                        st.error("Failed to generate rubric")
+                        return
+                    status.update(label="✅ Rubric ready!", state="complete")
+            else:
+                rubric = None
+            
+            # Step 2: Generate recipient reply
+            with st.status("Generating recipient response...", expanded=False) as status:
+                # Use custom recipient prompt from developer interface
+                recipient_prompt_value = st.session_state.get("recipient_prompt", "")
+                if not recipient_prompt_value.strip():
+                    recipient_prompt_value = DEFAULT_RECIPIENT_PROMPT
+                
+                recipient_reply = email_recipient.generate_reply(recipient_prompt_value, email_content, model)
+                if not recipient_reply:
+                    st.error("Failed to generate recipient reply")
+                    return
+                status.update(label="✅ Recipient reply generated!", state="complete")
+            
+            # Step 3: Evaluate email
+            with st.status("Evaluating your email...", expanded=False) as status:
+                evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
+                if not evaluation:
+                    st.error("Failed to evaluate email")
+                    return
+                status.update(label="✅ Evaluation complete!", state="complete")
+            
+            # Display results inline (no page redirect)
+            st.success("🎉 Evaluation Complete!")
+            
+            # Show goal achievement status
+            goal_achieved = extract_goal_achievement_score(evaluation)
+            if goal_achieved:
+                st.success("🎯 **Goal Achieved!** You successfully persuaded the recipient.")
+            else:
+                st.error("❌ **Goal Not Achieved** - You can improve your approach.")
+
+            # Show recipient's reply
+            st.subheader("📨 Recipient's Reply")
+            st.markdown(recipient_reply)
+            
+            # Show rubric (collapsible) - only if using rubrics
+            if use_rubric and rubric:
+                with st.expander("📏 Evaluation Rubric", expanded=False):
+                    st.markdown(rubric)
+            
+            # Show detailed evaluation (collapsible)
+            with st.expander("🤖 Detailed AI Evaluation", expanded=True):
+                _show_evaluation_styles()
+                processed_evaluation = process_evaluation_text(evaluation)
+                st.markdown(f'<div class="evaluation-content">{processed_evaluation}</div>', unsafe_allow_html=True)
+                
+        except Exception as e:
+            st.error(f"❌ Error during evaluation: {str(e)}")
+            st.error("Please check your API keys and try again.") 

@@ -15,7 +15,9 @@ from config import (
     RECIPIENTS_FOLDER,
     RUBRICS_FOLDER,
     DEFAULT_SCENARIO,
-    DEFAULT_RECIPIENT_PROMPT
+    DEFAULT_RECIPIENT_PROMPT,
+    DEFAULT_USE_RUBRIC,
+    USER_MODE_USE_RUBRIC
 )
 
 
@@ -92,6 +94,10 @@ def load_scenarios_from_folder(folder_path: str = SCENARIOS_FOLDER) -> Dict[str,
 
 def load_recipient_prompt(scenario_filename: str) -> str:
     """Load recipient prompt for a given scenario filename"""
+    # Handle None scenario_filename (custom scenarios)
+    if scenario_filename is None:
+        return DEFAULT_RECIPIENT_PROMPT
+        
     script_dir = get_script_directory()
     recipient_path = os.path.join(script_dir, RECIPIENTS_FOLDER, scenario_filename)
     
@@ -108,6 +114,10 @@ def load_recipient_prompt(scenario_filename: str) -> str:
 
 def load_rubric_from_file(scenario_filename: str) -> str:
     """Load rubric from rubrics folder for a given scenario filename"""
+    # Handle None scenario_filename (custom scenarios)
+    if scenario_filename is None:
+        return None
+        
     script_dir = get_script_directory()
     rubric_path = os.path.join(script_dir, RUBRICS_FOLDER, scenario_filename)
     
@@ -124,6 +134,10 @@ def load_rubric_from_file(scenario_filename: str) -> str:
 
 def save_rubric_to_file(scenario_filename: str, rubric: str) -> bool:
     """Save generated rubric to rubrics folder"""
+    # Handle None scenario_filename (custom scenarios) - cannot save without filename
+    if scenario_filename is None:
+        return False
+        
     script_dir = get_script_directory()
     rubrics_dir = os.path.join(script_dir, RUBRICS_FOLDER)
     
@@ -148,38 +162,32 @@ def save_rubric_to_file(scenario_filename: str, rubric: str) -> bool:
 
 def extract_goal_achievement_score(evaluation_text: str) -> bool:
     """
-    Extract the goal achievement from the evaluation text and determine if user succeeded.
+    Extract the goal achievement from the evaluation text by checking the final word.
     
-    The final rubric item uses a Yes/No format:
-    "The email successfully negotiates the goal: Yes" or "No"
+    Expects the evaluation to end with "Yes" or "No" as the final word.
     
     Args:
-        evaluation_text: The AI evaluation text containing Yes/No assessment
+        evaluation_text: The AI evaluation text that should end with Yes/No
         
     Returns:
-        bool: True if "Yes", False if "No" or cannot be parsed
+        bool: True if final word is "Yes", False if "No"
+        
+    Raises:
+        ValueError: If the final word is not "Yes" or "No"
     """
     
-    # Look for the goal achievement pattern: "goal: Yes" or "goal: No"
-    # Case-insensitive search for various phrasings
-    goal_patterns = [
-        r'(?:email\s+)?successfully\s+negotiates?\s+(?:the\s+)?goal\s*[:]\s*(yes|no)',
-        r'(?:achieve|negotiat).*?goal\s*[:]\s*(yes|no)',
-        r'goal\s+(?:achievement|success)\s*[:]\s*(yes|no)',
-        r'goal\s*[:]\s*(yes|no)',
-    ]
+    # Get the final word from the evaluation text
+    words = evaluation_text.strip().split()
+    if not words:
+        raise ValueError("Evaluation text is empty")
     
-    # Search through the evaluation text
-    evaluation_lower = evaluation_text.lower()
+    final_word = words[-1].lower().strip('.,!?;:')
     
-    for pattern in goal_patterns:
-        match = re.search(pattern, evaluation_lower)
-        if match:
-            result = match.group(1).strip()
-            return result == "yes"
+    if final_word == "yes":
+        return True
+    else:
+        return False
     
-    # If we can't find the goal achievement assessment, be conservative and return False
-    return False
 
 
 def format_scenario_content(scenario_content: str) -> str:
@@ -252,12 +260,11 @@ def initialize_session_state():
         'selected_scenario_file': None,
         'cached_rubrics': {},
         'app_mode': None,
-        'current_level': 1,
+        'current_level': 0,  # Start from level 0 (tutorial)
         'completed_levels': set(),
         'level_emails': {},
-        'page_history': [{"type": "scenario", "level": 1}],
-        'current_history_index': 0,
         'level_evaluations': {},
+        'use_rubric': DEFAULT_USE_RUBRIC,  # Will be updated based on mode
     }
     
     for key, default_value in session_defaults.items():

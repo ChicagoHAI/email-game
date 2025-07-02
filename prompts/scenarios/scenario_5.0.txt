@@ -1,0 +1,5 @@
+Hi! I’m Brittany, an HR officer at NeuroGrid, an AI infrastructure company.
+
+We recently hired Alex Chen, our new Machine Learning Engineer, to join the R&D team. He’ll be starting in about 4 weeks. He’ll be working closely with the data science and product teams on new model pipelines.
+
+I’d like you to write a short welcome email to Alex. Feel free to mention our friendly team culture, how excited we are to have him on board, and maybe suggest whom he can reach out to with any questions before his first day.

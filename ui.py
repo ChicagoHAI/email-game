@@ -12,7 +12,10 @@ from config import (
     MAX_AVAILABLE_LEVEL,
     EMAIL_MAX_CHARS,
     DEFAULT_SCENARIO,
-    MODELS
+    MODELS,
+    USER_MODE_USE_RUBRIC,
+    DEFAULT_USE_RUBRIC,
+    EVALUATION_PROMPT_PATH
 )
 from utils import (
     load_scenarios,
@@ -24,8 +27,9 @@ from utils import (
     load_recipient_prompt,
     load_file_content
 )
-from ui_user import show_user_interface_with_history
-from evaluation import process_email_evaluation
+from ui_user import show_user_interface_with_levels
+from evaluation import process_email_evaluation_developer_mode
+from models import EmailGenerator
 
 
 def show_mode_selection():
@@ -74,6 +78,7 @@ def show_mode_selection():
         
         if st.button("🚀 Play Now", type="primary", use_container_width=True):
             st.session_state.app_mode = "user"
+            st.session_state.use_rubric = USER_MODE_USE_RUBRIC  # Set non-rubric mode for user
             st.session_state.current_page = "game"
             st.rerun()
     
@@ -87,6 +92,7 @@ def show_mode_selection():
         
         if st.button("⚙️ Run As Developer", type="secondary", use_container_width=True):
             st.session_state.app_mode = "developer"
+            st.session_state.use_rubric = DEFAULT_USE_RUBRIC  # Set rubric mode for developer
             st.session_state.current_page = "game"
             st.rerun()
     
@@ -118,6 +124,13 @@ def show_developer_interface(available_scenarios, api_keys_available):
             "Evaluator Model",
             ["gpt-4o"],
             help="Select the model to evaluate emails"
+        )
+        
+        # Rubric toggle
+        st.session_state.use_rubric = st.checkbox(
+            "📏 Use Evaluation Rubric",
+            value=st.session_state.get('use_rubric', True),
+            help="Toggle whether to generate and display evaluation rubrics"
         )
         
         st.markdown("---")
@@ -173,7 +186,6 @@ def show_developer_interface(available_scenarios, api_keys_available):
                 if api_keys_available and scenario.strip():
                     with st.spinner("🤖 AI is writing an email..."):
                         try:
-                            from models import EmailGenerator
                             generator = EmailGenerator()
                             generated_email = generator.generate_email(scenario, model)
                             if generated_email:
@@ -223,22 +235,23 @@ def show_developer_interface(available_scenarios, api_keys_available):
             )
         
         # Evaluator prompt section (collapsible)
-        with st.expander("📝 Grading Instructions", expanded=False):
-            st.markdown("*Tell the AI evaluator how to assess the email*")
+        with st.expander("📝 Custom Evaluation Template", expanded=False):
+            st.markdown("*Provide your own evaluation prompt template*")
+            st.markdown("**Available placeholders:** `{scenario}` `{email}` `{response}` `{rubric}` (if rubrics enabled)")
             
             try:
-                from config import EVALUATION_PROMPT_PATH
                 default_prompt = load_file_content(EVALUATION_PROMPT_PATH, "")
                 if not default_prompt:
-                    default_prompt = """Given the following scenario, how would you evaluate the email? Please come up with some criteria and then evaluate the email based on those criteria. Give a numerical scale for each criterion and tally up a total score for the email."""
+                    default_prompt = ""
             except Exception as e:
-                default_prompt = """Given the following scenario, how would you evaluate the email? Please come up with some criteria and then evaluate the email based on those criteria. Give a numerical scale for each criterion and tally up a total score for the email."""
+                default_prompt = ""
             
             evaluator_prompt = st.text_area(
-                "Grading Instructions",
+                "Custom Evaluation Template",
                 value=default_prompt,
                 height=300,
-                help="Instructions for the AI evaluator on how to assess emails",
+                placeholder="Enter your custom evaluation prompt template here. Use {email}, {response}, {scenario}, and optionally {rubric} placeholders. Leave blank to use default evaluation.",
+                help="Custom prompt template for email evaluation. Use placeholders like {email}, {response}, etc. If blank, will use default evaluation method.",
                 key="evaluator_prompt"
             )
     
@@ -257,7 +270,7 @@ def show_developer_interface(available_scenarios, api_keys_available):
         else:
             # Process email evaluation using custom settings from developer mode
             scenario = st.session_state.get('selected_scenario', DEFAULT_SCENARIO)
-            process_email_evaluation(scenario, email_content, model)
+            process_email_evaluation_developer_mode(scenario, email_content, model)
 
 
 
@@ -303,7 +316,7 @@ def show_game_page():
     if st.session_state.app_mode == "developer":
         show_developer_interface(available_scenarios, api_keys_available)
     else:  # user mode
-        show_user_interface_with_history(available_scenarios, api_keys_available)
+        show_user_interface_with_levels(available_scenarios, api_keys_available)
 
 
 def main_interface():

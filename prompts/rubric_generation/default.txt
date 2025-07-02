@@ -1,4 +1,4 @@
-I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. Can you look at the scenario and come up with a rubric to grade the email? The last item, on whether the email successfully achieves the goal, must always be included and worth 10 points.
+I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. Can you look at the scenario and come up with a rubric to grade the email?
 
 Here’s an example you can follow:
 
@@ -20,7 +20,10 @@ Rubric:
 - The email refrains from mentioning John’s family’s financial status. /4
 - The email avoids calling John lazy or mentioning his lack of social activity. /4
 - The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. /3
-- The email successfully negotiates the goal. /10
+
+Total: /19
+
+The email successfully negotiates the goal: Yes/No
 
 Ready? Here’s another scenario:
 

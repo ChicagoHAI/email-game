@@ -1,0 +1,17 @@
+I’m creating an AI-driven game where the player attempts to write emails to communicate a message in a scenario. After they write the email, the recipient will write back with a response. Most importantly, the response will include what the recipient really thinks about the email, which they might not be able to say due to social norms. Can you look at all of this—the scenario, the email, the response—and evaluate whether the user-generated email gets the message across?
+
+Judge whether the email has accomplished the communication goal based on the recipient's response. If it has, say "Yes" If it has not, say "No" in this format:
+
+<your brief evaluation of the email>
+
+Did the email achieve the communication goal: Yes/No
+
+Email:
+
+{email}
+
+Response:
+
+{response}
+
+Your evaluation:

@@ -1,8 +1,6 @@
-I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. After they write the email, the recipient will write back with a response. Can you look at all of this—the scenario, the email, the response, the given rubric—and evaluate whether the user-generated email satisfactorily negotiates the goal? 
+I’m creating an AI-driven game where the player attempts to write emails to negotiate an outcome in a scenario. After they write the email, the recipient will write back with a response. Can you look at all of this—the scenario, the email, the response—and evaluate whether the user-generated email satisfactorily negotiates the goal?
 
-Check whether each criteria is satisfied before tallying up the total score. Give a quote and brief rationale to justify why a score is given on each criteria. Once that is done, make any score adjustments necessary based on how successful the goal was hit. You can either add or take away scores. Do not let the score go below 0 or above the maximum.
-
-At the end, say whether the email has persuaded the recipient based on their response. If it has, say "Yes." If it has not, say "No." Unlike the rubric, the email's content does not matter here.
+Judge whether the email has accomplished the communication goal based on the recipient's response. If it has, say "Yes." If it has not, say "No."
 
 Here’s an example you can follow:
 
@@ -15,21 +13,6 @@ Good morning, I’m a college student at Northwestern university who is looking 
 But hear me out, I know we can both afford the River North apartment because we both come from fairly well-off families, and we both have cars so the commute is really not that bad. My issue with apartments in Evanston is they tend to be tiny and old. My family and girlfriend lives in the Chicago suburbs and they come to visit a lot so I don’t want them to see me in such a living condition. The River North apartment is much more spacious and located in a way nicer area. Northwestern students usually go there to party every weekend, anyway. In contrast, nothing goes on in Evanston except for some local restaurants.
 
 I think John is just lazy and doesn’t want to make the commute. He is also more of an indoor gamer type so he doesn’t yet see the appeal of River North over Evanston. This is also why he’s more willing to live in a more worn-down place too despite being rich. Please help me communicate my preferences to John and convince him to live in River North next year. Maybe I can try and convince him to go out more.
-
-Rubric:
-
-- The email re-acknowledges John’s preference for the Evanston apartment. /1
-- The email clearly communicates the sender’s reasons for wanting the River North apartment—a desire to show respect for their family and girlfriend—without downplaying John’s preferences. /2
-- The email shows excitement for the River North apartment. /1
-- The email tries to sell the River North apartment to John by mentioning ways he can benefit from it. /1
-- The email addresses’ John’s concerns about living far from campus in a more expensive apartment. /3
-- The email refrains from mentioning John’s family’s financial status. /4
-- The email avoids calling John lazy or mentioning his lack of social activity. /4
-- The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. /3
-
-Total: /19
-
-The email successfully negotiates the goal: Yes/No
 
 Email:
 
@@ -57,47 +40,6 @@ That said… I’m not totally closed off. If we toured River North again and ma
 Let’s go check it out together again and talk afterward.
 —John
 
-Evaluation:
-
-- The email re-acknowledges John’s preference for the Evanston apartment. 1/1
-
-Quote: I get that Evanston is cheaper and closer to campus.
-
-- The email clearly communicates the sender’s reasons for wanting the River North apartment—a desire to show respect for their family and girlfriend—without downplaying John’s preferences. 2/2
-
-Quote: a better place would be more comfortable for when my family or my girlfriend comes over. I’d rather not feel like I have to apologize for the space I live in.
-
-- The email shows excitement for the River North apartment. 1/1
-
-Quote: River North could give us the best of both worlds: a place where you can still chill in a solid space, and also branch out when you want to.
-
-- The email tries to sell the River North apartment to John by mentioning ways he can benefit from it. 1/1
-
-Rationale: same quote as above.
-
-- The email addresses’ John’s concerns about living far from campus in a more expensive apartment. 1/3
-
-Quotes: 
-
-Sender: plus, we both have cars and don’t need to be on campus every single day.
-Recipient: I know we have cars, but after a long day of classes or labs, I’d honestly rather walk home than fight traffic.
-
-Rationale: while an attempt was made to address John’s concern about distance, it did not completely convince him yet based on the response.
-
-- The email refrains from mentioning John’s family’s financial status. 4/4
-- The email avoids calling John lazy or mentioning his lack of social activity. 4/4
-- The email avoids mentioning the user’s opinion of Evanston as a low-quality rent area. 3/3
-
-Total score: 17/19
-
-Adjustments:
-
-The tone sounds like a college student: “It’s not just about flexing.” +0.5
-
-The sell sounds very natural: “I think you might actually enjoy getting out more if it was just part of the routine and didn’t involve a whole trip from Evanston.” +0.5
-
-Overal score: 18/19
-
 The email successfully negotiates the goal: Yes
 
 ——————
@@ -107,10 +49,6 @@ Ready?
 Scenario:
 
 {scenario}
-
-Rubric:
-
-{rubric}
 
 Email:
 

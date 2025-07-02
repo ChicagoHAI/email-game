@@ -15,7 +15,7 @@ from config import (
     EVALUATION_PROMPT_PATH,
     RUBRIC_GENERATION_PROMPT_PATH
 )
-from utils import load_file_content, save_rubric_to_file, get_api_client
+from utils import load_file_content, save_rubric_to_file, get_api_client, load_rubric_from_file
 
 
 class EmailGenerator:
@@ -61,16 +61,61 @@ class EmailEvaluator:
                       rubric: str, recipient_reply: str, model: str = DEFAULT_MODEL) -> str:
         """Evaluate an email using the specified model, rubric, and recipient response"""
         
-        # Load evaluation prompt template
-        evaluation_template = load_file_content(EVALUATION_PROMPT_PATH, DEFAULT_EVALUATION_TEMPLATE)
+        # Check if user provided a custom evaluation template in session state
+        custom_template = st.session_state.get("evaluator_prompt", "")
         
-        # Populate the template with actual values
-        evaluation_prompt = evaluation_template.format(
-            scenario=scenario,
-            rubric=rubric,
-            email=email,
-            response=recipient_reply
-        )
+        if custom_template.strip():
+            # Use user-provided template
+            evaluation_template = custom_template
+            
+            # Prepare template variables (user template may or may not use all of them)
+            template_vars = {
+                'scenario': scenario,
+                'email': email,
+                'response': recipient_reply
+            }
+            
+            # Only add rubric if it's provided and the template contains the placeholder
+            if rubric is not None and '{rubric}' in evaluation_template:
+                template_vars['rubric'] = rubric
+                
+            evaluation_prompt = evaluation_template.format(**template_vars)
+                
+        else:
+            evaluation_template = load_file_content(EVALUATION_PROMPT_PATH, DEFAULT_EVALUATION_TEMPLATE)
+
+            if rubric is None:
+                rubric = ""
+            
+            evaluation_prompt = evaluation_template.format(
+                scenario=scenario,
+                rubric=rubric,
+                email=email,
+                response=recipient_reply
+            )
+        # else:
+            # # No rubric and no custom template - use fallback general evaluation
+            # evaluation_prompt = f"""
+            # Please evaluate this email based on the given scenario and the recipient's response.
+            
+            # Scenario:
+            # {scenario}
+            
+            # Email:
+            # {email}
+            
+            # Recipient's Response:
+            # {recipient_reply}
+            
+            # Please provide a comprehensive evaluation of how well the email addresses the scenario. 
+            # Consider factors such as:
+            # - Clarity and communication effectiveness
+            # - Appropriateness of tone
+            # - Achievement of stated goals
+            # - Overall persuasiveness and professionalism
+            
+            # End your evaluation with either "Yes" or "No" to indicate whether the email successfully achieved its primary goal.
+            # """
         
         try:
             response = self.client.chat.completions.create(
@@ -138,7 +183,6 @@ class RubricGenerator:
             return st.session_state.cached_rubrics[scenario_filename]
         
         # Second, try to load from file
-        from utils import load_rubric_from_file
         existing_rubric = load_rubric_from_file(scenario_filename)
         if existing_rubric:
             st.session_state.cached_rubrics[scenario_filename] = existing_rubric
