@@ -27,7 +27,7 @@ from utils import (
     load_recipient_prompt,
     load_file_content
 )
-from ui_user import show_user_interface_with_levels
+from ui_user_refactored import show_user_interface_with_levels
 from evaluation import process_email_evaluation_developer_mode
 from models import EmailGenerator
 
@@ -61,7 +61,7 @@ def show_mode_selection():
     
     <div class="mode-header">
     
-    # 📧 Email.io: Can You Write Better Emails than AI? 
+    # 📧 The Ghostwriter
     </div>
     """, unsafe_allow_html=True)
     
@@ -282,10 +282,10 @@ def show_game_page():
     # Add mode indicator and back button
     mode_col, back_col = st.columns([4, 1])
     with mode_col:
-        mode_display = "👤 User Mode" if st.session_state.app_mode == "user" else "🛠️ Developer Mode"
+        mode_display = "👤 User" if st.session_state.app_mode == "user" else "🛠️ Developer"
         st.markdown(f"**Current Mode:** {mode_display}")
     with back_col:
-        if st.button("↩️ Change Mode", help="Go back to mode selection"):
+        if st.button("Change Mode", help="Go back to mode selection"):
             st.session_state.current_page = "mode_selection"
             st.session_state.app_mode = None
             st.rerun()
@@ -300,11 +300,12 @@ def show_game_page():
     </style>
     <div class="compact-header">
     
-    ## 📧 Email.io: Can You Write Better Emails than AI?
+    ## 📧 The Ghostwriter
     
     </div>
     """, unsafe_allow_html=True)
-    st.markdown("**Write emails for various scenarios and AI-generated responses!**")
+    # st.markdown("**Write emails for various scenarios and AI-generated responses!**")
+    st.markdown("**Help a client achieve their communication goals**")
     
     # Load available scenarios
     available_scenarios = load_scenarios()

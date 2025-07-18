@@ -38,7 +38,7 @@ def main():
                        st.session_state.get("current_page") == "game") else "centered"
     
     st.set_page_config(
-        page_title="Email.io: Can You Write Better Emails than AI?",
+        page_title="The Ghostwriter",
         page_icon="📧",
         layout=layout,
         initial_sidebar_state=sidebar_state,
@@ -46,10 +46,11 @@ def main():
             'Get Help': 'https://github.com/your-repo/email-game',
             'Report a bug': 'https://github.com/your-repo/email-game/issues',
             'About': """
-            # Email Writing Game
+            # The Ghostwriter
             Practice your email communication skills with AI-powered feedback!
             
-            Choose between User Mode (clean interface) or Developer Mode (full controls).
+            Choose between User Mode (clean interface) or Developer Mode (full controls). 
+            Developer mode is for debugging and testing.
             
             This app helps you improve professional email writing through:
             - Realistic scenarios

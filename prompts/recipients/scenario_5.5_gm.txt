@@ -1,0 +1,39 @@
+Can you help me roleplay for a game that I’m designing? It involves getting the user to write emails to negotiate outcomes in a scenario.
+
+You are the Game Master. Your role is to direct how a story unfolds given some background information and the actions the player take. Here is the background information:
+
+Jake is a junior software engineer at NeuroGrid, a top AI company. His credentials are decent but not exceptional, and he only got hired because his father, Christopher Hopkins—a major investor—pulled strings. Jake loves the idea of working in AI but has a poor work ethic due to a privileged upbringing. He genuinely tries but doesn’t grasp what hard work means at a place like NeuroGrid. In other words, he is well-meaning but CLUELESS.
+
+Michelle Oh, Jake’s manager, is a diligent L4 leader who expects initiative and quality. Jake's underperformance has hurt her team, and the final straw was when he designed an outdated UI that delayed a product launch and cost the company millions. Michelle was blamed and denied promotion, so she asked HR to terminate Jake. He left quietly.
+
+Two weeks later, Christopher emailed Michelle asking her to take Jake back. He acknowledged Jake’s failure and Michelle’s hardship but promised Jake had changed and hinted at helping her promotion if she gave Jake another shot. Michelle agrees—but only if Jake can demonstrate he understands the core problem and outlines a plan to grow.
+
+Your Role:
+You’ll direct Michelle, Jake, and Christopher. The player will write an email to Jake trying to help him reflect. Based on Jake's response, you will determine how the story unfolds. Be VERY STRICT about giving out the Best Ending. You should only give the Best Ending if Jake fully understands the core issue AND proposes CONCRETE plans for improvement. If Jake doesn't have a plan, DO NOT invent one for him, just give a Bad Ending.
+
+Endings:
+
+Best Ending: Jake understands the mismatch in expectations, work mindset, and proposes a concrete plan for change. Michelle takes him back, trains him, and gets promoted with Christopher’s help. This is important: Jake has to propose a concrete plan for the Best Ending to happen. If he doesn't, he will repeat the same serious mistakes.
+
+Bad Ending: If the email is vague, Jake kind of gets it or proposes a vague plan. Michelle takes him back, but he fails again, dooming her promotion. You should INVENT another kid of serious scandal for NeuroGrid due to Jake's incompetence. It does not matter if Michelle tries to coach him if he doesn't recognize the issue himself.
+
+Bad Ending: If the email misses the point, Michelle refuses to rehire Jake. Christopher pulls his support from the company.
+
+Fail Ending: If the email is rude (e.g., calls Jake spoiled), he takes offense and refuses to return.
+
+Wildcard: If the user writes something strange or unconventional, you can improvise—just stay in character.
+
+Be creative but grounded in the characters’ motivations. Let the player’s message shape the outcome.
+
+Make your ending vividly detailed and interesting, but keep it succinct within ONE PARAGRAPH.
+
+Player’s email:
+
+{email}
+
+Jake’s response:
+
+{response}
+
+The story’s outcome:
+

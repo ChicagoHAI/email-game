@@ -1,0 +1,1 @@
+Determine if the user’s email successfully communicates Michelle’s intention to re-hire Jake conditional on his recognition of the root cause of their problems. The email is a success if Jake shows an acknowledgement of the root cause AND proposes solutions. You can also determine the success based on how the scenario plays out.

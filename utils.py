@@ -297,3 +297,285 @@ def get_api_client():
 def load_scenarios():
     """Load scenarios using the new function name"""
     return load_scenarios_from_folder() 
+
+
+def get_scenario_recipients(scenario_filename: str) -> Dict[str, str]:
+    """
+    Detect and load all recipients for a scenario.
+    
+    For multi-recipient scenarios like Level 3, this will find files like:
+    - scenario_5.3_emily.txt (in both scenarios/ and recipients/ folders)
+    - scenario_5.3_mark.txt (in both scenarios/ and recipients/ folders)
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.3.txt")
+        
+    Returns:
+        Dict mapping recipient names to their recipient prompts
+        If no additional recipients found, returns single recipient with base scenario
+    """
+    if scenario_filename is None:
+        return {"": DEFAULT_RECIPIENT_PROMPT}
+    
+    # Extract base name without extension
+    base_name = scenario_filename.replace('.txt', '')  # e.g., "scenario_5.3"
+    
+    script_dir = get_script_directory()
+    recipients_dir = os.path.join(script_dir, RECIPIENTS_FOLDER)
+    
+    recipients = {}
+    
+    # Look for recipient-specific files
+    if os.path.exists(recipients_dir):
+        recipient_files = glob.glob(os.path.join(recipients_dir, f"{base_name}_*.txt"))
+        
+        for recipient_file in sorted(recipient_files):
+            filename = os.path.basename(recipient_file)
+            # Skip GM files
+            if filename.endswith('_gm.txt'):
+                continue
+            
+            # Extract recipient name from filename like "scenario_5.3_emily.txt"
+            recipient_name = filename.replace(f"{base_name}_", "").replace('.txt', '')
+            
+            try:
+                with open(recipient_file, 'r', encoding='utf-8') as f:
+                    recipients[recipient_name] = f.read().strip()
+            except Exception as e:
+                st.error(f"Error loading recipient {recipient_name}: {str(e)}")
+    
+    # If no specific recipients found, use the default single recipient
+    if not recipients:
+        recipients[""] = load_recipient_prompt(scenario_filename)
+    
+    return recipients
+
+
+def get_scenario_prompts(scenario_filename: str) -> Dict[str, str]:
+    """
+    Get scenario prompts for all recipients.
+    
+    For multi-recipient scenarios, this loads files like:
+    - scenario_5.3_emily.txt (from scenarios/ folder - contains Emily's complaint email)
+    - scenario_5.3_mark.txt (from scenarios/ folder - contains Mark's complaint email)
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.3.txt")
+        
+    Returns:
+        Dict mapping recipient names to their scenario prompts (the emails they sent)
+        Returns empty dict if no additional prompts found
+    """
+    if scenario_filename is None:
+        return {}
+    
+    # Extract base name without extension
+    base_name = scenario_filename.replace('.txt', '')  # e.g., "scenario_5.3"
+    
+    script_dir = get_script_directory()
+    scenarios_dir = os.path.join(script_dir, SCENARIOS_FOLDER)
+    
+    prompts = {}
+    
+    # Look for recipient-specific scenario files
+    if os.path.exists(scenarios_dir):
+        prompt_files = glob.glob(os.path.join(scenarios_dir, f"{base_name}_*.txt"))
+        
+        for prompt_file in sorted(prompt_files):
+            filename = os.path.basename(prompt_file)
+            # Extract recipient name from filename like "scenario_5.3_emily.txt"
+            recipient_name = filename.replace(f"{base_name}_", "").replace('.txt', '')
+            
+            try:
+                with open(prompt_file, 'r', encoding='utf-8') as f:
+                    prompts[recipient_name] = f.read().strip()
+            except Exception as e:
+                st.error(f"Error loading scenario prompt for {recipient_name}: {str(e)}")
+    
+    return prompts
+
+
+def is_multi_recipient_scenario(scenario_filename: str) -> bool:
+    """
+    Check if a scenario has multiple recipients.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.3.txt")
+        
+    Returns:
+        bool: True if multiple recipients found
+    """
+    recipients = get_scenario_recipients(scenario_filename)
+    return len(recipients) > 1 or (len(recipients) == 1 and "" not in recipients)
+
+
+def load_communication_goal(scenario_filename: str) -> str:
+    """
+    Load communication goal for a given scenario filename.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.3.txt")
+        
+    Returns:
+        str: Communication goal text, or default message if not found
+    """
+    if scenario_filename is None:
+        return "Achieve effective communication with the recipient."
+    
+    script_dir = get_script_directory()
+    goal_path = os.path.join(script_dir, "prompts", "comm_goals", scenario_filename)
+    
+    if os.path.exists(goal_path):
+        try:
+            with open(goal_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        except Exception as e:
+            st.error(f"Error loading communication goal: {str(e)}")
+            return "Achieve effective communication with the recipient."
+    else:
+        # Fallback goal if no specific goal file exists
+        return "Achieve effective communication with the recipient."
+
+
+def get_forwarded_emails(scenario_filename: str) -> Dict[str, str]:
+    """
+    Load forwarded emails for a given scenario filename.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.5.txt")
+        
+    Returns:
+        Dict[str, str]: Dictionary mapping email identifiers to email content
+    """
+    if scenario_filename is None:
+        return {}
+    
+    # Extract scenario base name (e.g., "scenario_5.5" from "scenario_5.5.txt")
+    base_name = scenario_filename.replace('.txt', '')
+    
+    script_dir = get_script_directory()
+    scenarios_dir = os.path.join(script_dir, SCENARIOS_FOLDER)
+    
+    forwarded_emails = {}
+    
+    # Look for files with pattern: scenario_X.Y_emailN.txt
+    if os.path.exists(scenarios_dir):
+        for filename in os.listdir(scenarios_dir):
+            if filename.startswith(f"{base_name}_email") and filename.endswith('.txt'):
+                # Extract email identifier (e.g., "email1", "email2", etc.)
+                email_id = filename.replace(f"{base_name}_", "").replace('.txt', '')
+                
+                email_path = os.path.join(scenarios_dir, filename)
+                try:
+                    with open(email_path, 'r', encoding='utf-8') as f:
+                        forwarded_emails[email_id] = f.read().strip()
+                except Exception as e:
+                    st.error(f"Error loading forwarded email {filename}: {str(e)}")
+                    continue
+    
+    return forwarded_emails
+
+
+def has_forwarded_emails(scenario_filename: str) -> bool:
+    """
+    Check if a scenario has forwarded emails.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.5.txt")
+        
+    Returns:
+        bool: True if the scenario has forwarded emails, False otherwise
+    """
+    forwarded_emails = get_forwarded_emails(scenario_filename)
+    return len(forwarded_emails) > 0
+
+
+def get_all_additional_emails(scenario_filename: str) -> Dict[str, any]:
+    """
+    Get all additional emails for a scenario (forwarded emails for context).
+    This is separate from multi-recipient functionality.
+    
+    Args:
+        scenario_filename: The scenario filename to check for additional emails
+        
+    Returns:
+        Dictionary containing:
+        {
+            'has_emails': bool,
+            'title': str,
+            'description': str,
+            'emails': [(title, content), ...]  # List of tuples for ordered display
+        }
+    """
+    result = {
+        'has_emails': False,
+        'title': '',
+        'description': '',
+        'emails': []
+    }
+    
+    # Check for forwarded emails (context emails)
+    if has_forwarded_emails(scenario_filename):
+        forwarded_emails = get_forwarded_emails(scenario_filename)
+        
+        if forwarded_emails:
+            # Sort emails by their identifier (email1, email2, etc.)
+            sorted_emails = sorted(forwarded_emails.items(), key=lambda x: x[0])
+            
+            email_list = []
+            for email_id, email_content in sorted_emails:
+                email_title = f"Forwarded Email {email_id.replace('email', '')}"
+                email_list.append((email_title, email_content))
+            
+            result.update({
+                'has_emails': True,
+                'title': '📧 Forwarded Emails',
+                'description': '💼 The following email correspondence has been forwarded to provide context for your response.',
+                'emails': email_list
+            })
+    
+    return result 
+
+
+def load_game_master_prompt(scenario_filename: str) -> str:
+    """
+    Load Game Master prompt for a given scenario filename.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.5.txt")
+        
+    Returns:
+        str: Game Master prompt content, or empty string if not found
+    """
+    if scenario_filename is None:
+        return ""
+    
+    # Extract scenario base name (e.g., "scenario_5.5" from "scenario_5.5.txt")
+    base_name = scenario_filename.replace('.txt', '')
+    
+    script_dir = get_script_directory()
+    gm_prompt_path = os.path.join(script_dir, RECIPIENTS_FOLDER, f"{base_name}_gm.txt")
+    
+    if os.path.exists(gm_prompt_path):
+        try:
+            with open(gm_prompt_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        except Exception as e:
+            st.error(f"Error loading Game Master prompt: {str(e)}")
+            return ""
+    else:
+        return ""
+
+
+def has_game_master(scenario_filename: str) -> bool:
+    """
+    Check if a scenario has a Game Master prompt.
+    
+    Args:
+        scenario_filename: Base scenario filename (e.g., "scenario_5.5.txt")
+        
+    Returns:
+        bool: True if the scenario has a Game Master prompt, False otherwise
+    """
+    gm_prompt = load_game_master_prompt(scenario_filename)
+    return bool(gm_prompt.strip())

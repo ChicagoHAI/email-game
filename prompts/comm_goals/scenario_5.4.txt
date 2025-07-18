@@ -1,0 +1,3 @@
+The series of emails must uncover Adam’s true reason for work dissatisfaction, which is the work style mismatch with the young ML engineers, and help him resolve the issue. Just having Adam mention the issue, like talking about the ML engineers, is not enough--the player has to be the one who points out the issue and proposes a solution.
+
+If the current email does not *address* Adam's underlying issue, the communication goal was not achieved.

@@ -58,8 +58,13 @@ class EmailEvaluator:
         self.client = get_api_client()
     
     def evaluate_email(self, scenario: str, email: str, 
-                      rubric: str, recipient_reply: str, model: str = DEFAULT_MODEL) -> str:
+                      rubric: str, recipient_reply: str, model: str = DEFAULT_MODEL, 
+                      scenario_filename: str = None) -> str:
         """Evaluate an email using the specified model, rubric, and recipient response"""
+        
+        # Load communication goal for this scenario
+        from utils import load_communication_goal
+        goal = load_communication_goal(scenario_filename) if scenario_filename else "Achieve effective communication with the recipient."
         
         # Check if user provided a custom evaluation template in session state
         custom_template = st.session_state.get("evaluator_prompt", "")
@@ -72,7 +77,8 @@ class EmailEvaluator:
             template_vars = {
                 'scenario': scenario,
                 'email': email,
-                'response': recipient_reply
+                'response': recipient_reply,
+                'goal': goal
             }
             
             # Only add rubric if it's provided and the template contains the placeholder
@@ -87,35 +93,14 @@ class EmailEvaluator:
             if rubric is None:
                 rubric = ""
             
+            # Updated to include goal parameter
             evaluation_prompt = evaluation_template.format(
                 scenario=scenario,
                 rubric=rubric,
                 email=email,
-                response=recipient_reply
+                response=recipient_reply,
+                goal=goal
             )
-        # else:
-            # # No rubric and no custom template - use fallback general evaluation
-            # evaluation_prompt = f"""
-            # Please evaluate this email based on the given scenario and the recipient's response.
-            
-            # Scenario:
-            # {scenario}
-            
-            # Email:
-            # {email}
-            
-            # Recipient's Response:
-            # {recipient_reply}
-            
-            # Please provide a comprehensive evaluation of how well the email addresses the scenario. 
-            # Consider factors such as:
-            # - Clarity and communication effectiveness
-            # - Appropriateness of tone
-            # - Achievement of stated goals
-            # - Overall persuasiveness and professionalism
-            
-            # End your evaluation with either "Yes" or "No" to indicate whether the email successfully achieved its primary goal.
-            # """
         
         try:
             response = self.client.chat.completions.create(
@@ -175,23 +160,39 @@ class RubricGenerator:
     def get_or_generate_rubric(self, scenario: str, scenario_filename: str, model: str = DEFAULT_MODEL) -> str:
         """Load existing rubric or generate and save a new one"""
         
-        # First, check session state cache
-        if 'cached_rubrics' not in st.session_state:
-            st.session_state.cached_rubrics = {}
-            
-        if scenario_filename in st.session_state.cached_rubrics:
-            return st.session_state.cached_rubrics[scenario_filename]
+        # First, check session state cache with better error handling
+        try:
+            if not hasattr(st, 'session_state'):
+                # Fallback if session_state is not available
+                pass
+            else:
+                if 'cached_rubrics' not in st.session_state:
+                    st.session_state.cached_rubrics = {}
+                    
+                if scenario_filename in st.session_state.cached_rubrics:
+                    return st.session_state.cached_rubrics[scenario_filename]
+        except Exception as e:
+            # If session state fails, continue without caching
+            print(f"Warning: Session state cache unavailable: {e}")
         
         # Second, try to load from file
         existing_rubric = load_rubric_from_file(scenario_filename)
         if existing_rubric:
-            st.session_state.cached_rubrics[scenario_filename] = existing_rubric
+            try:
+                if hasattr(st, 'session_state') and 'cached_rubrics' in st.session_state:
+                    st.session_state.cached_rubrics[scenario_filename] = existing_rubric
+            except Exception as e:
+                print(f"Warning: Could not cache rubric: {e}")
             return existing_rubric
         
         # If no existing rubric, generate a new one
         new_rubric = self.generate_rubric(scenario, model)
         if new_rubric:
-            st.session_state.cached_rubrics[scenario_filename] = new_rubric
+            try:
+                if hasattr(st, 'session_state') and 'cached_rubrics' in st.session_state:
+                    st.session_state.cached_rubrics[scenario_filename] = new_rubric
+            except Exception as e:
+                print(f"Warning: Could not cache generated rubric: {e}")
             save_rubric_to_file(scenario_filename, new_rubric)
         
         return new_rubric
@@ -216,3 +217,51 @@ class RubricGenerator:
         except Exception as e:
             st.error(f"Error generating rubric: {str(e)}")
             return None 
+
+
+class GameMaster:
+    """
+    Game Master for determining story outcomes based on user email and recipient response.
+    
+    The Game Master analyzes both the user's email and the recipient's response to
+    determine how the story unfolds, creating different narrative branches based on
+    the quality and content of the communication.
+    """
+    
+    def __init__(self):
+        self.client = get_api_client()
+    
+    def generate_story_outcome(self, gm_prompt: str, user_email: str, 
+                             recipient_response: str, model: str = "gpt-4.5") -> str:
+        """
+        Generate story outcome based on user email and recipient response.
+        
+        Args:
+            gm_prompt: The Game Master prompt template
+            user_email: The user's email content
+            recipient_response: The recipient's response email
+            model: The AI model to use for generation
+            
+        Returns:
+            str: The story outcome narrative
+        """
+        
+        # Format the GM prompt with the user's email and recipient's response
+        formatted_prompt = gm_prompt.format(
+            email=user_email,
+            response=recipient_response
+        )
+        
+        try:
+            response = self.client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": "You are a skilled Game Master directing a story based on player actions. Analyze the communication and determine the appropriate narrative outcome."},
+                    {"role": "user", "content": formatted_prompt}
+                ],
+                temperature=0.7
+            )
+            return response.choices[0].message.content.strip()
+        except Exception as e:
+            st.error(f"Error generating story outcome: {str(e)}")
+            return None

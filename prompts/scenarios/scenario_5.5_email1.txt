@@ -1,0 +1,15 @@
+Michelle to HR: email 1
+Subject: Concerns about Jake’s preparedness
+
+Hi Brittany,
+
+I wanted to flag an issue I’m having with Jake, our new full-stack engineer. He came to our sprint planning meeting today completely unprepared–he didn’t even glance at the backlog or the design doc ahead of time.
+
+Every time I ask him to take the lead on something, he just sits there waiting for me to break things down for him step by step. It’s like he expects to be spoon-fed tasks and instructions.
+
+I understand that junior engineers need guidance, but every manager has limited bandwidth. I can’t spend all day hand-holding one developer when the rest of the team is working independently and contributing ideas proactively.
+
+I’ve honestly never encountered an employee like this. He’s polite and well-meaning, but I’m at a loss. What should I do to get him up to speed? Any advice would be appreciated.
+
+Thanks,
+Michelle
