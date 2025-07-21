@@ -32,6 +32,9 @@ def show_level_results(level: float):
     # Show goal achievement status prominently
     _show_goal_achievement_status(result, level)
     
+    # DEBUG: Show persistent majority reply analysis (TODO: Remove after debugging)
+    _show_debug_reply_analysis(level)
+    
     # Show the recipient reply(ies)
     _show_recipient_replies(result)
     
@@ -66,8 +69,8 @@ def _show_goal_achievement_status(result: dict, level: float):
             success_message = create_success_message(level)
             st.success(success_message)
             
-            # Show strategy analysis for Level 2
-            if level == 2 and "strategy_analysis" in result:
+            # Show strategy analysis for Level 3
+            if level == 3 and "strategy_analysis" in result:
                 _show_strategy_analysis(result["strategy_analysis"])
                 
         else:
@@ -75,7 +78,7 @@ def _show_goal_achievement_status(result: dict, level: float):
 
 
 def _show_strategy_analysis(strategy_analysis: dict):
-    """Show strategy analysis for Level 2"""
+    """Show strategy analysis for Level 3"""
     if strategy_analysis.get("used_forbidden_strategies"):
         create_strategy_warning()
         
@@ -174,8 +177,8 @@ def _show_regular_progression_options(level: float):
         # Determine button text based on level
         if next_level == 0:
             next_level_display = "Tutorial"
-        elif next_level == 2.5:
-            next_level_display = "Challenge Level 2.5"
+        elif next_level == 3.5:
+            next_level_display = "Challenge Level 3.5"
         else:
             next_level_display = f"Level {next_level}"
         
@@ -185,6 +188,12 @@ def _show_regular_progression_options(level: float):
             st.session_state.current_level = next_level
             # Clean up stale level data
             clean_stale_level_data(next_level, st.session_state)
+            
+            # Update URL parameters to match navigation
+            session_id = st.session_state.get('game_session_id')
+            if session_id:
+                _clear_url_navigation_state_for_evaluation(next_level, session_id)
+            
             st.rerun()
     else:
         # All levels completed!
@@ -244,4 +253,131 @@ def show_turn_evaluation_result(level: float, turn_number: int, goal_achieved: b
         st.markdown("**Adam's Response:**")
         from .html_helpers import create_recipient_reply_display
         reply_html = create_recipient_reply_display(recipient_reply)
-        st.markdown(reply_html, unsafe_allow_html=True) 
+        st.markdown(reply_html, unsafe_allow_html=True)
+
+
+def _clear_url_navigation_state_for_evaluation(level: float, session_id: str):
+    """Clear URL navigation state when navigating via evaluation completion"""
+    try:
+        import streamlit as st
+        
+        # Clear URL navigation processing flags
+        if 'url_navigation_processed' in st.session_state:
+            del st.session_state.url_navigation_processed
+            
+        # Update URL to show only session (no gang_level)
+        st.query_params.update({"session": session_id})
+        
+    except Exception as e:
+        # URL updates are not critical
+        pass 
+
+
+def _show_debug_reply_analysis(level: float):
+    """Show persistent debug information from majority reply analysis"""
+    # Check if debug data exists for this level
+    debug_data = st.session_state.get('debug_reply_data', {}).get(level)
+    
+    if not debug_data:
+        return
+    
+    # Check if this is multi-recipient data (Level 2) or single recipient
+    if isinstance(debug_data, dict) and any(isinstance(v, dict) and 'all_replies' in v for v in debug_data.values()):
+        # Multi-recipient scenario (Level 2)
+        with st.expander(f"🔍 Debug: Multi-Recipient Majority Reply Analysis", expanded=False):
+            for recipient_name, reply_data in debug_data.items():
+                st.markdown(f"### {recipient_name.title()}'s Analysis")
+                
+                all_replies = reply_data.get('all_replies', [])
+                outcomes = reply_data.get('outcome_analysis', {}).get('outcomes', [])
+                evaluations = reply_data.get('outcome_analysis', {}).get('evaluations', [])
+                majority_outcome = reply_data.get('majority_outcome', 'Unknown')
+                outcome_counts = reply_data.get('outcome_counts', {})
+                selected_reply = reply_data.get('reply', '')
+                
+                st.markdown(f"**Majority Outcome:** `{majority_outcome}`")
+                st.markdown(f"**Distribution:** {dict(outcome_counts)}")
+                
+                # Show all replies with their outcomes
+                st.markdown(f"**{recipient_name.title()}'s Generated Replies:**")
+                for i, (reply, outcome) in enumerate(zip(all_replies, outcomes)):
+                    is_selected = reply == selected_reply
+                    status_icon = "👑" if is_selected else "📧"
+                    outcome_color = {
+                        'PASS': '✅',
+                        'FAIL': '❌'
+                    }.get(outcome, '⚪')
+                    
+                    selection_text = " (SELECTED)" if is_selected else ""
+                    st.markdown(f"{status_icon} **Reply {i+1}** - {outcome_color} {outcome}{selection_text}")
+                    
+                    # Show reply content
+                    st.markdown("**Reply Content:**")
+                    st.code(reply, language=None)
+                    
+                    # Show evaluation for this reply
+                    if i < len(evaluations):
+                        st.markdown("**Evaluation:**")
+                        evaluation_text = evaluations[i]
+                        # Keep full evaluation text so decision isn't cut off
+                        st.text_area(
+                            f"{recipient_name.title()} Reply {i+1} Evaluation",
+                            value=evaluation_text,
+                            height=200,
+                            key=f"eval_persist_{recipient_name}_{i}_{hash(reply[:20])}",
+                            disabled=True
+                        )
+                    
+                    if i < len(all_replies) - 1:  # Not the last reply
+                        st.markdown("---")
+                
+                if recipient_name != list(debug_data.keys())[-1]:  # Not the last recipient
+                    st.markdown("---")
+    else:
+        # Single recipient scenario
+        all_replies = debug_data.get('all_replies', [])
+        outcomes = debug_data.get('outcome_analysis', {}).get('outcomes', [])
+        evaluations = debug_data.get('outcome_analysis', {}).get('evaluations', [])
+        majority_outcome = debug_data.get('majority_outcome', 'Unknown')
+        outcome_counts = debug_data.get('outcome_counts', {})
+        selected_reply = debug_data.get('reply', '')
+        
+        if not all_replies:
+            return
+        
+        with st.expander(f"🔍 Debug: Majority Reply Analysis ({len(all_replies)} samples)", expanded=False):
+            st.markdown(f"**Majority Outcome:** `{majority_outcome}`")
+            st.markdown(f"**Distribution:** {dict(outcome_counts)}")
+            
+            # Show all replies with their outcomes (without nested expanders)
+            st.markdown("**All Generated Replies:**")
+            for i, (reply, outcome) in enumerate(zip(all_replies, outcomes)):
+                is_selected = reply == selected_reply
+                status_icon = "👑" if is_selected else "📧"
+                outcome_color = {
+                    'PASS': '✅',
+                    'FAIL': '❌'
+                }.get(outcome, '⚪')
+                
+                selection_text = " (SELECTED)" if is_selected else ""
+                st.markdown(f"{status_icon} **Reply {i+1}** - {outcome_color} {outcome}{selection_text}")
+                
+                # Show reply content
+                st.markdown("**Reply Content:**")
+                st.code(reply, language=None)
+                
+                # Show evaluation for this reply
+                if i < len(evaluations):
+                    st.markdown("**Evaluation:**")
+                    evaluation_text = evaluations[i]
+                    # Keep full evaluation text so decision isn't cut off
+                    st.text_area(
+                        f"Reply {i+1} Evaluation",
+                        value=evaluation_text,
+                        height=200,
+                        key=f"eval_persist_single_{i}_{hash(reply[:20])}",
+                        disabled=True
+                    )
+                
+                if i < len(all_replies) - 1:  # Not the last reply
+                    st.markdown("---")

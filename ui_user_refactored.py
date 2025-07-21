@@ -38,6 +38,7 @@ from ui_components.session_interface import (
 from ui_components.level_interface import (
     show_level_navigation,
     show_scenario_section,
+    show_gmail_inbox_section,
     show_additional_emails,
     create_email_input_section,
     create_submit_button,
@@ -112,8 +113,8 @@ def show_level_page(level, available_scenarios, api_keys_available, model, sessi
     # Get scenario data
     scenario_content = get_scenario_data(level, available_scenarios)
     
-    # Show scenario section
-    show_scenario_section(scenario_content)
+    # Show Gmail inbox section instead of traditional scenario
+    show_gmail_inbox_section(scenario_content, level)
     
     # Show additional emails if available
     scenario_filename = st.session_state.get('selected_scenario_file', '')
@@ -122,11 +123,12 @@ def show_level_page(level, available_scenarios, api_keys_available, model, sessi
     # Show level-specific progression logic
     show_level_progression_logic(level)
     
-    # Handle multi-turn vs single-turn levels
-    if level in MULTI_TURN_LEVELS:
-        handle_multi_turn_level(session_id, level, scenario_content, model, api_keys_available)
-    else:
-        handle_single_turn_level(session_id, level, scenario_content, model, api_keys_available)
+    # Handle multi-turn vs single-turn levels - only show email input if scenario email is selected
+    if st.session_state.get('show_scenario_email', False):
+        if level in MULTI_TURN_LEVELS:
+            handle_multi_turn_level(session_id, level, scenario_content, model, api_keys_available)
+        else:
+            handle_single_turn_level(session_id, level, scenario_content, model, api_keys_available)
     
     # Show results if available
     if level in st.session_state.get('level_evaluations', {}):
@@ -293,13 +295,32 @@ def re_evaluate_existing_turn(session_id: str, level: float, turn_number: int,
             f"\n\nNow respond to this new email from HR:\n{email_content}"
         )
         
-        # Generate Adam's new response
-        with st.status("Generating Adam's new response...", expanded=False) as status:
-            recipient_reply = email_recipient.generate_reply(contextualized_prompt, email_content, model)
-            if not recipient_reply:
+        # Load rubric for evaluation-based majority voting
+        use_rubric = st.session_state.get('use_rubric', True)
+        rubric = None
+        if use_rubric:
+            rubric = rubric_generator.get_or_generate_rubric(scenario_content, scenario_file, model)
+        
+        # Generate Adam's new response with majority voting
+        with st.status("Generating Adam's response (using 5 concurrent samples for consistency)...", expanded=False) as status:
+            reply_result = email_recipient.generate_reply_with_majority(
+                contextualized_prompt, email_content, model, num_samples=5,
+                scenario=scenario_content, rubric=rubric, scenario_filename=scenario_file
+            )
+            if not reply_result:
                 st.error("Failed to generate Adam's reply")
                 return
-            status.update(label="✅ Adam's new response generated!", state="complete")
+            
+            recipient_reply = reply_result['reply']
+            majority_outcome = reply_result['majority_outcome']
+            outcome_counts = reply_result['outcome_counts']
+            
+            status.update(label=f"✅ Adam's response generated! (Majority: {majority_outcome}, Distribution: {outcome_counts})", state="complete")
+        
+        # Store debug info in session state so it persists in results
+        if 'debug_reply_data' not in st.session_state:
+            st.session_state.debug_reply_data = {}
+        st.session_state.debug_reply_data[level] = reply_result
         
         # Generate evaluation
         with st.status("Evaluating updated email...", expanded=False) as status:
@@ -366,6 +387,46 @@ def _build_conversation_context(conversation_history, turn_number):
                     conversation_context += f"Adam: {turn_data['recipient_reply']}\n"
     
     return conversation_context
+
+
+def _display_majority_reply_debug(reply_result: dict, expanded: bool = False, unique_id: str = ""):
+    """
+    Display debugging information for majority reply generation.
+    
+    Args:
+        reply_result: Result from generate_reply_with_majority
+        expanded: Whether to show the expander expanded by default
+    """
+    if not reply_result:
+        return
+    
+    # Get data from result
+    all_replies = reply_result.get('all_replies', [])
+    outcomes = reply_result.get('outcome_analysis', {}).get('outcomes', [])
+    majority_outcome = reply_result.get('majority_outcome', 'Unknown')
+    outcome_counts = reply_result.get('outcome_counts', {})
+    selected_reply = reply_result.get('reply', '')
+    
+    with st.expander(f"🔍 Debug: Majority Reply Analysis ({len(all_replies)} samples)", expanded=expanded):
+        st.markdown(f"**Majority Outcome:** `{majority_outcome}`")
+        st.markdown(f"**Distribution:** {dict(outcome_counts)}")
+        
+        # Show all replies with their outcomes (without nested expanders)
+        st.markdown("**All Generated Replies:**")
+        for i, (reply, outcome) in enumerate(zip(all_replies, outcomes)):
+            is_selected = reply == selected_reply
+            status_icon = "👑" if is_selected else "📧"
+            outcome_color = {
+                'POSITIVE': '🟢',
+                'NEGATIVE': '🔴', 
+                'NEUTRAL': '🟡'
+            }.get(outcome, '⚪')
+            
+            selection_text = " (SELECTED)" if is_selected else ""
+            st.markdown(f"{status_icon} **Reply {i+1}** - {outcome_color} {outcome}{selection_text}")
+            
+            # Show reply content in a code block instead of nested expander
+            st.code(reply, language=None)
 
 
 def _generate_evaluation(email_evaluator, rubric_generator, scenario_content, 
@@ -481,23 +542,23 @@ def _store_max_turns_reached_flag(session_id: str, level: float, turn_number: in
 def determine_next_level(current_level, session_state):
     """Determine the next level based on current level and conditional progression rules."""
     
-    # Level 2 conditional progression
-    if current_level == 2:
-        strategy_analysis = session_state.get('strategy_analysis', {}).get(2)
+    # Level 3 conditional progression (formerly Level 2)
+    if current_level == 3:
+        strategy_analysis = session_state.get('strategy_analysis', {}).get(3)
         completed_levels = session_state.get('completed_levels', set())
         
         used_forbidden_strategies = (
             strategy_analysis and strategy_analysis.get('used_forbidden_strategies')
-        ) or (2.5 in completed_levels)
+        ) or (3.5 in completed_levels)
         
         if used_forbidden_strategies:
-            return 2.5
+            return 3.5
         else:
-            return 3
+            return 4
     
-    # Level 2.5 always goes to Level 3
-    if current_level == 2.5:
-        return 3
+    # Level 3.5 always goes to Level 4 (formerly Level 2.5 going to Level 3)
+    if current_level == 3.5:
+        return 4
     
     # Standard progression for all other levels
     return current_level + 1
@@ -506,23 +567,23 @@ def determine_next_level(current_level, session_state):
 def determine_previous_level(current_level, session_state):
     """Determine the previous level based on current level and conditional progression rules."""
     
-    # Level 3 can come from either Level 2 or Level 2.5
-    if current_level == 3:
-        strategy_analysis = session_state.get('strategy_analysis', {}).get(2)
+    # Level 4 can come from either Level 3 or Level 3.5 (formerly Level 3 could come from Level 2 or Level 2.5)
+    if current_level == 4:
+        strategy_analysis = session_state.get('strategy_analysis', {}).get(3)
         completed_levels = session_state.get('completed_levels', set())
         
         used_forbidden_strategies = (
             strategy_analysis and strategy_analysis.get('used_forbidden_strategies')
-        ) or (2.5 in completed_levels)
+        ) or (3.5 in completed_levels)
         
         if used_forbidden_strategies:
-            return 2.5
+            return 3.5
         else:
-            return 2
+            return 3
     
-    # Level 2.5 always comes from Level 2
-    if current_level == 2.5:
-        return 2
+    # Level 3.5 always comes from Level 3 (formerly Level 2.5 always came from Level 2)
+    if current_level == 3.5:
+        return 3
     
     # Standard progression for all other levels
     if current_level > 0:

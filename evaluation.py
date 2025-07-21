@@ -28,6 +28,64 @@ from utils import (
 from session_manager import is_game_complete
 
 
+def _display_majority_reply_debug(reply_result: dict, expanded: bool = False, unique_id: str = ""):
+    """
+    Display debugging information for majority reply generation.
+    
+    Args:
+        reply_result: Result from generate_reply_with_majority
+        expanded: Whether to show the expander expanded by default
+        unique_id: Unique identifier to prevent key collisions (e.g., recipient name)
+    """
+    if not reply_result:
+        return
+    
+    # Get data from result
+    all_replies = reply_result.get('all_replies', [])
+    outcomes = reply_result.get('outcome_analysis', {}).get('outcomes', [])
+    evaluations = reply_result.get('outcome_analysis', {}).get('evaluations', [])
+    majority_outcome = reply_result.get('majority_outcome', 'Unknown')
+    outcome_counts = reply_result.get('outcome_counts', {})
+    selected_reply = reply_result.get('reply', '')
+    
+    with st.expander(f"🔍 Debug: Majority Reply Analysis ({len(all_replies)} samples)", expanded=expanded):
+        st.markdown(f"**Majority Outcome:** `{majority_outcome}`")
+        st.markdown(f"**Distribution:** {dict(outcome_counts)}")
+        
+        # Show all replies with their outcomes (without nested expanders)
+        st.markdown("**All Generated Replies:**")
+        for i, (reply, outcome) in enumerate(zip(all_replies, outcomes)):
+            is_selected = reply == selected_reply
+            status_icon = "👑" if is_selected else "📧"
+            outcome_color = {
+                'PASS': '✅',
+                'FAIL': '❌'
+            }.get(outcome, '⚪')
+            
+            selection_text = " (SELECTED)" if is_selected else ""
+            st.markdown(f"{status_icon} **Reply {i+1}** - {outcome_color} {outcome}{selection_text}")
+            
+            # Show reply content
+            st.markdown("**Reply Content:**")
+            st.code(reply, language=None)
+            
+            # Show evaluation for this reply
+            if i < len(evaluations):
+                st.markdown("**Evaluation:**")
+                evaluation_text = evaluations[i]
+                # Keep full evaluation text so decision isn't cut off
+                st.text_area(
+                    f"Evaluation for Reply {i+1}",
+                    value=evaluation_text,
+                    height=200,
+                    key=f"eval_debug_{unique_id}_{i}_{hash(reply[:20])}",
+                    disabled=True
+                )
+            
+            if i < len(all_replies) - 1:  # Not the last reply
+                st.markdown("---")
+
+
 def detect_forbidden_strategies(email_content: str, model: str = "gpt-4o") -> dict:
     """
     Detect if an email uses forbidden strategies (layoffs or salary increases) using LLM analysis.
@@ -121,86 +179,86 @@ JSON FORMAT:
             'explanation': f"Analysis error: {str(e)}"
         }
 
-def process_email_evaluation_with_history(scenario, email_content, model, level):
-    """Process email evaluation with history management for user mode"""
+# def process_email_evaluation_with_history(scenario, email_content, model, level):
+#     """Process email evaluation with history management for user mode"""
     
-    # Initialize AI services
-    email_generator = EmailGenerator()
-    email_evaluator = EmailEvaluator()
-    email_recipient = EmailRecipient()
-    rubric_generator = RubricGenerator()
+#     # Initialize AI services
+#     email_generator = EmailGenerator()
+#     email_evaluator = EmailEvaluator()
+#     email_recipient = EmailRecipient()
+#     rubric_generator = RubricGenerator()
     
-    with st.spinner("🤖 Processing your email..."):
-        try:
-            # Step 1: Load or generate rubric (conditional)
-            use_rubric = st.session_state.get('use_rubric', True)
-            if use_rubric:
-                with st.status("Loading evaluation rubric...", expanded=False) as status:
-                    scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
-                    rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
-                    status.update(label="✅ Rubric ready!", state="complete")
-            else:
-                rubric = None
+#     with st.spinner("🤖 Processing your email..."):
+#         try:
+#             # Step 1: Load or generate rubric (conditional)
+#             use_rubric = st.session_state.get('use_rubric', True)
+#             if use_rubric:
+#                 with st.status("Loading evaluation rubric...", expanded=False) as status:
+#                     scenario_filename = st.session_state.get("selected_scenario_file", "default_scenario.txt")
+#                     rubric = rubric_generator.get_or_generate_rubric(scenario, scenario_filename, model)
+#                     status.update(label="✅ Rubric ready!", state="complete")
+#             else:
+#                 rubric = None
             
-            # Step 2: Generate recipient reply
-            with st.status("Generating recipient response...", expanded=False) as status:
-                # Load recipient prompt based on selected scenario file
-                if st.session_state.get("selected_scenario_file"):
-                    recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
-                else:
-                    recipient_prompt = DEFAULT_RECIPIENT_PROMPT
+#             # Step 2: Generate recipient reply
+#             with st.status("Generating recipient response...", expanded=False) as status:
+#                 # Load recipient prompt based on selected scenario file
+#                 if st.session_state.get("selected_scenario_file"):
+#                     recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+#                 else:
+#                     recipient_prompt = DEFAULT_RECIPIENT_PROMPT
                 
-                recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
-                status.update(label="✅ Recipient reply generated!", state="complete")
+#                 recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
+#                 status.update(label="✅ Recipient reply generated!", state="complete")
             
-            # Step 3: Evaluate email
-            with st.status("Evaluating your email...", expanded=False) as status:
-                evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
-                status.update(label="✅ Evaluation complete!", state="complete")
+#             # Step 3: Evaluate email
+#             with st.status("Evaluating your email...", expanded=False) as status:
+#                 evaluation = email_evaluator.evaluate_email(scenario, email_content, rubric, recipient_reply, model)
+#                 status.update(label="✅ Evaluation complete!", state="complete")
             
-            # Extract goal achievement
-            goal_achieved = extract_goal_achievement_score(evaluation)
+#             # Extract goal achievement
+#             goal_achieved = extract_goal_achievement_score(evaluation)
             
-            # Store email content by level
-            st.session_state.level_emails[level] = email_content
+#             # Store email content by level
+#             st.session_state.level_emails[level] = email_content
             
-            # Store evaluation results
-            st.session_state.level_evaluations[level] = {
-                "scenario": scenario,
-                "email": email_content,
-                "recipient_reply": recipient_reply,
-                "rubric": rubric,
-                "evaluation": evaluation,
-                "goal_achieved": goal_achieved
-            }
+#             # Store evaluation results
+#             st.session_state.level_evaluations[level] = {
+#                 "scenario": scenario,
+#                 "email": email_content,
+#                 "recipient_reply": recipient_reply,
+#                 "rubric": rubric,
+#                 "evaluation": evaluation,
+#                 "goal_achieved": goal_achieved
+#             }
             
-            # Update completed levels if successful
-            if goal_achieved and level not in st.session_state.completed_levels:
-                st.session_state.completed_levels.add(level)
+#             # Update completed levels if successful
+#             if goal_achieved and level not in st.session_state.completed_levels:
+#                 st.session_state.completed_levels.add(level)
             
-            # Add evaluation page to history
-            evaluation_page = {"type": "evaluation", "level": level}
+#             # Add evaluation page to history
+#             evaluation_page = {"type": "evaluation", "level": level}
             
-            # Check if we're retrying a level (if the last page in history is evaluation for the same level)
-            if (st.session_state.page_history and 
-                st.session_state.page_history[-1].get("type") == "evaluation" and 
-                st.session_state.page_history[-1].get("level") == level):
-                # We're retrying - replace the last evaluation page
-                st.session_state.page_history[-1] = evaluation_page
-            else:
-                # Normal flow - add new evaluation page
-                st.session_state.page_history.append(evaluation_page)
+#             # Check if we're retrying a level (if the last page in history is evaluation for the same level)
+#             if (st.session_state.page_history and 
+#                 st.session_state.page_history[-1].get("type") == "evaluation" and 
+#                 st.session_state.page_history[-1].get("level") == level):
+#                 # We're retrying - replace the last evaluation page
+#                 st.session_state.page_history[-1] = evaluation_page
+#             else:
+#                 # Normal flow - add new evaluation page
+#                 st.session_state.page_history.append(evaluation_page)
             
-            # Navigate to evaluation page
-            st.session_state.current_history_index = len(st.session_state.page_history) - 1
+#             # Navigate to evaluation page
+#             st.session_state.current_history_index = len(st.session_state.page_history) - 1
             
-            # Success message
-            st.success("🎉 Evaluation Complete! Showing results...")
-            st.rerun()
+#             # Success message
+#             st.success("🎉 Evaluation Complete! Showing results...")
+#             st.rerun()
             
-        except Exception as e:
-            st.error(f"❌ Error during evaluation: {str(e)}")
-            st.error("Please check your API keys and try again.")
+#         except Exception as e:
+#             st.error(f"❌ Error during evaluation: {str(e)}")
+#             st.error("Please check your API keys and try again.")
 
 
 def process_email_evaluation_user_mode_inline(scenario, email_content, model, level, session_id=None):
@@ -249,17 +307,22 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
             is_multi_recipient = is_multi_recipient_scenario(scenario_filename)
             
             if is_multi_recipient:
-                # Multi-recipient scenario (Level 3 with Emily/Mark)
-                with st.status("Generating recipient responses...", expanded=False) as status:
+                # Multi-recipient scenario (Level 2 with Emily/Mark)
+                with st.status("Generating recipient responses (using majority voting)...", expanded=False) as status:
                     recipients = get_scenario_recipients(scenario_filename)
                     recipient_replies = {}
+                    recipient_debug_data = {}
                     
                     for recipient_name, recipient_prompt in recipients.items():
-                        recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
-                        if not recipient_reply:
+                        reply_result = email_recipient.generate_reply_with_majority(
+                            recipient_prompt, email_content, model, num_samples=5,
+                            scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                        )
+                        if not reply_result:
                             st.error(f"Failed to generate {recipient_name}'s reply")
                             return
-                        recipient_replies[recipient_name] = recipient_reply
+                        recipient_replies[recipient_name] = reply_result['reply']
+                        recipient_debug_data[recipient_name] = reply_result
                     
                     # Combine replies for display
                     combined_replies = []
@@ -268,20 +331,46 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
                     recipient_reply = "\n\n---\n\n".join(combined_replies)
                     
                     status.update(label="✅ Recipient replies generated!", state="complete")
+                
+                # DEBUG: Show majority reply analysis for multi-recipient (TODO: Remove after debugging)
+                for recipient_name, reply_data in recipient_debug_data.items():
+                    st.markdown(f"**{recipient_name.title()} Debug Analysis:**")
+                    _display_majority_reply_debug(reply_data, expanded=False, unique_id=recipient_name)
+                
+                # Store debug info in session state so it persists in results
+                if 'debug_reply_data' not in st.session_state:
+                    st.session_state.debug_reply_data = {}
+                st.session_state.debug_reply_data[level] = recipient_debug_data
             else:
-                # Single recipient scenario (Levels 0, 1, 2, 2.5, 4, 5)
-                with st.status("Generating recipient response...", expanded=False) as status:
+                # Single recipient scenario (Levels 0, 1, 3, 3.5, 4, 5)
+                with st.status("Generating recipient response (using 5 concurrent samples for consistency)...", expanded=False) as status:
                     # Load recipient prompt based on selected scenario file
                     if st.session_state.get("selected_scenario_file"):
                         recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
                     else:
                         recipient_prompt = DEFAULT_RECIPIENT_PROMPT
                     
-                    recipient_reply = email_recipient.generate_reply(recipient_prompt, email_content, model)
-                    if not recipient_reply:
+                    reply_result = email_recipient.generate_reply_with_majority(
+                        recipient_prompt, email_content, model, num_samples=5,
+                        scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                    )
+                    if not reply_result:
                         st.error("Failed to generate recipient reply")
                         return
-                    status.update(label="✅ Recipient reply generated!", state="complete")
+                    
+                    recipient_reply = reply_result['reply']
+                    majority_outcome = reply_result['majority_outcome']
+                    outcome_counts = reply_result['outcome_counts']
+                    
+                    status.update(label=f"✅ Recipient reply generated! (Majority: {majority_outcome}, Distribution: {outcome_counts})", state="complete")
+                
+                # DEBUG: Show majority reply analysis (TODO: Remove after debugging)
+                _display_majority_reply_debug(reply_result, expanded=False, unique_id="single")
+                
+                # Store debug info in session state so it persists in results
+                if 'debug_reply_data' not in st.session_state:
+                    st.session_state.debug_reply_data = {}
+                st.session_state.debug_reply_data[level] = reply_result
                 
                 # Game Master workflow for scenarios with GM (moved outside of recipient status)
                 if has_game_master(scenario_filename):
@@ -317,9 +406,9 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
             # Extract goal achievement
             goal_achieved = extract_goal_achievement_score(evaluation)
             
-            # Strategy detection for Level 2 conditional progression
+            # Strategy detection for Level 3 conditional progression
             strategy_analysis = None
-            if level == 2 and goal_achieved:
+            if level == 3 and goal_achieved:
                 with st.status("Analyzing persuasion strategies...", expanded=False) as status:
                     strategy_analysis = detect_forbidden_strategies(email_content, model)
                     status.update(label="✅ Strategy analysis complete!", state="complete")
@@ -634,18 +723,35 @@ def process_email_evaluation_developer_mode(scenario, email_content, model):
             else:
                 rubric = None
             
-            # Step 2: Generate recipient reply
-            with st.status("Generating recipient response...", expanded=False) as status:
+            # Step 2: Generate recipient reply with majority voting
+            with st.status("Generating recipient response (using 5 concurrent samples for consistency)...", expanded=False) as status:
                 # Use custom recipient prompt from developer interface
                 recipient_prompt_value = st.session_state.get("recipient_prompt", "")
                 if not recipient_prompt_value.strip():
                     recipient_prompt_value = DEFAULT_RECIPIENT_PROMPT
                 
-                recipient_reply = email_recipient.generate_reply(recipient_prompt_value, email_content, model)
-                if not recipient_reply:
+                reply_result = email_recipient.generate_reply_with_majority(
+                    recipient_prompt_value, email_content, model, num_samples=5,
+                    scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                )
+                if not reply_result:
                     st.error("Failed to generate recipient reply")
                     return
-                status.update(label="✅ Recipient reply generated!", state="complete")
+                
+                recipient_reply = reply_result['reply']
+                majority_outcome = reply_result['majority_outcome']
+                outcome_counts = reply_result['outcome_counts']
+                
+                status.update(label=f"✅ Recipient reply generated! (Majority: {majority_outcome}, Distribution: {outcome_counts})", state="complete")
+            
+            # DEBUG: Show majority reply analysis (TODO: Remove after debugging)
+            _display_majority_reply_debug(reply_result, expanded=False, unique_id="dev_mode")
+            
+            # Store debug info in session state for developer mode too
+            if 'debug_reply_data' not in st.session_state:
+                st.session_state.debug_reply_data = {}
+            current_level = st.session_state.get('current_level', 0)
+            st.session_state.debug_reply_data[current_level] = reply_result
             
             # Game Master workflow for scenarios with GM (moved outside of recipient status)
             scenario_filename = st.session_state.get("selected_scenario_file", "")
@@ -753,19 +859,39 @@ def process_email_evaluation_user_mode_multi_turn(scenario, email_content, model
             # Add conversation context to recipient prompt
             contextualized_prompt = recipient_prompt + conversation_context + f"\n\nNow respond to this new email from HR:\n{email_content}"
             
-            # Step 2: Generate Adam's reply
-            with st.status("Generating Adam's response...", expanded=False) as status:
+            # Step 2: Generate Adam's reply with majority voting
+            with st.status("Generating Adam's response (using 5 concurrent samples for consistency)...", expanded=False) as status:
                 # Check if we've reached the turn limit
                 if turn_number > MAX_TURNS:
                     # Adam's final resignation email (but still evaluate the user's email!)
                     recipient_reply = generate_adam_final_response()
+                    reply_result = None  # No debug data for final response
                     # Note: Don't set goal_achieved here - let the evaluation determine it
                 else:
-                    recipient_reply = email_recipient.generate_reply(contextualized_prompt, email_content, model)
-                    if not recipient_reply:
+                    reply_result = email_recipient.generate_reply_with_majority(
+                        contextualized_prompt, email_content, model, num_samples=5,
+                        scenario=scenario, rubric=rubric, scenario_filename=st.session_state.get("selected_scenario_file")
+                    )
+                    if not reply_result:
                         st.error("Failed to generate Adam's reply")
                         return
-                status.update(label="✅ Adam's response generated!", state="complete")
+                    
+                    recipient_reply = reply_result['reply']
+                    majority_outcome = reply_result['majority_outcome']
+                    outcome_counts = reply_result['outcome_counts']
+                    
+                    status.update(label=f"✅ Adam's response generated! (Majority: {majority_outcome}, Distribution: {outcome_counts})", state="complete")
+                    
+                    # Store debug info in session state so it persists in results
+                    # (Don't show debug expander here to avoid nested expander issues in multi-turn)
+                    if 'debug_reply_data' not in st.session_state:
+                        st.session_state.debug_reply_data = {}
+                    st.session_state.debug_reply_data[level] = reply_result
+                
+                if turn_number <= MAX_TURNS:
+                    pass  # Status already updated above
+                else:
+                    status.update(label="✅ Adam's final response generated!", state="complete")
             
             # Step 3: Save email submission to database
             submission_id = save_email_submission(session_id, level, email_content, turn_number)

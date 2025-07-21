@@ -9,9 +9,9 @@ for the Email Writing Game application.
 LEVEL_TO_SCENARIO_MAPPING = {
     0: "5.0",  # User Level 0 (tutorial) maps to Scenario 5.0
     1: "5.1",  # User Level 1 maps to Scenario 5.1
-    2: "5.2",  # User Level 2 maps to Scenario 5.2
-    2.5: "5.2.5",  # User Level 2.5 maps to Scenario 5.2.5 (challenge level)
-    3: "5.3",  # User Level 3 maps to Scenario 5.3 (multi-recipient level)
+    2: "5.3",  # User Level 2 maps to Scenario 5.3 (multi-recipient level)
+    3: "5.2",  # User Level 3 maps to Scenario 5.2 
+    3.5: "5.2.5",  # User Level 3.5 maps to Scenario 5.2.5 (challenge level)
     4: "5.4",  # User Level 4 maps to Scenario 5.4 (multi-turn level)
     5: "5.5",  # User Level 5 maps to Scenario 5.5 (forwarded emails level)
     # Add more levels here: 6: "5.6", 7: "5.7", etc.

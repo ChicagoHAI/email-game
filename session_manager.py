@@ -313,11 +313,11 @@ def save_evaluation_result(submission_id: int, evaluation_data: Dict[str, Any]) 
 
 def handle_level_success(session_id: str, level: float) -> bool:
     """
-    Handle successful completion of a level by adding it to completions and removing future levels.
+    Handle successful level completion by adding it to the completion table.
     
     Args:
         session_id: Session ID
-        level: Level that was completed (int or float for levels like 2.5)
+        level: Level that was completed
         
     Returns:
         bool: True if successful, False otherwise
@@ -325,52 +325,114 @@ def handle_level_success(session_id: str, level: float) -> bool:
     db_session = get_database_session()
     
     try:
-        # Remove completions for all levels higher than the current level
-        # This ensures that redoing a level invalidates future progress
-        db_session.query(SessionLevelCompletion).filter(
+        # Check if level is already completed
+        existing_completion = db_session.query(SessionLevelCompletion).filter(
             SessionLevelCompletion.session_id == session_id,
-            SessionLevelCompletion.level > level
-        ).delete()
-        
-        # Also remove email submissions and evaluation results for future levels
-        # to prevent showing stale conversation history
-        future_submissions = db_session.query(SessionEmailSubmission).filter(
-            SessionEmailSubmission.session_id == session_id,
-            SessionEmailSubmission.level > level
-        ).all()
-        
-        # Delete evaluation results for future level submissions
-        for submission in future_submissions:
-            db_session.query(EvaluationResult).filter_by(
-                submission_id=submission.id
-            ).delete()
-        
-        # Delete the submissions themselves
-        db_session.query(SessionEmailSubmission).filter(
-            SessionEmailSubmission.session_id == session_id,
-            SessionEmailSubmission.level > level
-        ).delete()
-        
-        # Add level completion (ignore if already exists)
-        existing = db_session.query(SessionLevelCompletion).filter_by(
-            session_id=session_id, level=level
+            SessionLevelCompletion.level == level
         ).first()
         
-        if not existing:
-            completion = SessionLevelCompletion(
+        if not existing_completion:
+            # Add new completion record
+            new_completion = SessionLevelCompletion(
                 session_id=session_id,
                 level=level
             )
-            db_session.add(completion)
-            
-        db_session.commit()
-        logger.info(f"Added level {level} completion for session {session_id} and cleaned up all future level data")
+            db_session.add(new_completion)
+            db_session.commit()
+            logger.info(f"Marked level {level} as completed for session {session_id}")
         
         return True
         
     except Exception as e:
         db_session.rollback()
         logger.error(f"Failed to handle level success: {str(e)}")
+        return False
+    finally:
+        db_session.close()
+
+
+def handle_level_failure(session_id: str, level: float) -> bool:
+    """
+    Handle level failure by removing current level and all higher levels from completions.
+    This implements the "reset progress on failure" logic.
+    
+    Args:
+        session_id: Session ID  
+        level: Level that was failed (int or float for levels like 2.5)
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    db_session = get_database_session()
+    
+    try:
+        # Remove current level and all higher levels from completions
+        db_session.query(SessionLevelCompletion).filter(
+            SessionLevelCompletion.session_id == session_id,
+            SessionLevelCompletion.level >= level
+        ).delete()
+        
+        db_session.commit()
+        logger.info(f"Removed level {level}+ completions for session {session_id} due to failure")
+        return True
+        
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Failed to handle level failure: {str(e)}")
+        return False
+    finally:
+        db_session.close()
+
+
+def unlock_levels_up_to(session_id: str, target_level: float) -> bool:
+    """
+    Unlock all levels up to but NOT including the target level for URL navigation.
+    This is used by developers to jump to specific levels without playing through all previous levels.
+    
+    Args:
+        session_id: Session ID
+        target_level: The level to unlock prerequisites for (e.g., 5 will unlock levels 0, 1, 2, 3, 4 but NOT 5)
+        
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    from config import LEVEL_TO_SCENARIO_MAPPING
+    
+    db_session = get_database_session()
+    
+    try:
+        # Get all levels that should be unlocked (before target_level)
+        levels_to_unlock = []
+        for level in LEVEL_TO_SCENARIO_MAPPING.keys():
+            if level < target_level:  # Changed from <= to < 
+                levels_to_unlock.append(level)
+        
+        # Sort levels to unlock them in order
+        levels_to_unlock.sort()
+        
+        # Get currently completed levels
+        existing_completions = db_session.query(SessionLevelCompletion).filter(
+            SessionLevelCompletion.session_id == session_id
+        ).all()
+        
+        existing_levels = {comp.level for comp in existing_completions}
+        
+        # Add completion records for missing levels
+        for level in levels_to_unlock:
+            if level not in existing_levels:
+                new_completion = SessionLevelCompletion(
+                    session_id=session_id,
+                    level=level
+                )
+                db_session.add(new_completion)
+        
+        db_session.commit()
+        logger.info(f"Unlocked prerequisite levels (before {target_level}) for session {session_id}")
+        return True
+        
+    except Exception as e:
+        db_session.rollback()
+        logger.error(f"Failed to unlock prerequisite levels for {target_level}: {str(e)}")
         return False
     finally:
         db_session.close()
@@ -483,39 +545,6 @@ def is_level_complete_multi_turn(session_id: str, level: float) -> bool:
         db_session.close()
 
 
-def handle_level_failure(session_id: str, level: float) -> bool:
-    """
-    Handle level failure by removing current level and all higher levels from completions.
-    This implements the "reset progress on failure" logic.
-    
-    Args:
-        session_id: Session ID  
-        level: Level that was failed (int or float for levels like 2.5)
-        
-    Returns:
-        bool: True if successful, False otherwise
-    """
-    db_session = get_database_session()
-    
-    try:
-        # Remove current level and all higher levels from completions
-        db_session.query(SessionLevelCompletion).filter(
-            SessionLevelCompletion.session_id == session_id,
-            SessionLevelCompletion.level >= level
-        ).delete()
-        
-        db_session.commit()
-        logger.info(f"Removed level {level}+ completions for session {session_id} due to failure")
-        return True
-        
-    except Exception as e:
-        db_session.rollback()
-        logger.error(f"Failed to handle level failure: {str(e)}")
-        return False
-    finally:
-        db_session.close() 
-
-
 def get_leaderboard_data() -> List[Dict[str, Any]]:
     """
     Get leaderboard data for players who completed all levels.
@@ -586,7 +615,7 @@ def is_game_complete(session_id: str) -> bool:
     """
     Check if a player has completed the entire game (all levels).
     
-    Level 2.5 is conditional - only required if the player actually accessed it.
+    Level 3.5 is conditional - only required if the player actually accessed it.
     Core required levels are: 0, 1, 2, 3, 4, 5
     
     Args:
@@ -607,23 +636,23 @@ def is_game_complete(session_id: str) -> bool:
         
         completed_levels = {comp.level for comp in completions}
         
-        # Core required levels (excluding conditional level 2.5)
+        # Core required levels (excluding conditional level 3.5)
         core_required_levels = {0, 1, 2, 3, 4, 5}
         
         # Check if all core levels are completed
         core_completed = core_required_levels.issubset(completed_levels)
         
-        # If player accessed level 2.5, it must also be completed
-        level_2_5_requirement_met = True
-        if 2.5 in completed_levels:
-            # Player accessed level 2.5, so it's considered required
-            level_2_5_requirement_met = True
+        # If player accessed level 3.5, it must also be completed
+        level_3_5_requirement_met = True
+        if 3.5 in completed_levels:
+            # Player accessed level 3.5, so it's considered required
+            level_3_5_requirement_met = True
         else:
-            # Player didn't access level 2.5, check if they should have
-            # If player has level 2 and 3 completed, they took direct path
-            level_2_5_requirement_met = (2 in completed_levels and 3 in completed_levels)
+            # Player didn't access level 3.5, check if they should have
+            # If player has level 3 and 4 completed, they took direct path
+            level_3_5_requirement_met = (3 in completed_levels and 4 in completed_levels)
         
-        return core_completed and level_2_5_requirement_met
+        return core_completed and level_3_5_requirement_met
         
     except Exception as e:
         logger.error(f"Error checking game completion: {e}")
