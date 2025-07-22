@@ -1,19 +1,14 @@
 """
 Level Interface Components
 
-Handles level navigation, display, and scenario presentation.
+Handles level navigation, scenario display, and level progression logic.
+Email-related functionality has been moved to gmail_inbox.py.
 """
 
 import streamlit as st
 from config import EMAIL_MAX_CHARS, LEVEL_TO_SCENARIO_MAPPING, MULTI_TURN_LEVELS, MAX_TURNS
-from utils import is_multi_recipient_scenario
-from .html_helpers import (
-    create_scenario_display, 
-    create_level_display,
-    create_forwarded_email_display,
-    create_emily_email_display,
-    create_mark_email_display
-)
+from .html_helpers import create_scenario_display
+from .shared_components import create_level_display
 
 
 def show_level_navigation(session_id: str, current_level: float):
@@ -146,44 +141,6 @@ def show_scenario_section(scenario_content: str):
     st.markdown(scenario_html, unsafe_allow_html=True)
 
 
-def show_gmail_inbox_section(scenario_content: str, level: float):
-    """Show the Gmail-like inbox interface instead of the traditional scenario section"""
-    from .gmail_inbox import create_gmail_inbox
-    
-    # st.subheader("📧 Your Inbox")
-    create_gmail_inbox(scenario_content, level)
-
-
-def show_additional_emails(scenario_filename: str):
-    """Show additional emails for a scenario"""
-    from utils import get_all_additional_emails
-    
-    # Skip forwarded emails since they're now shown within Brittany's email in the Gmail inbox
-    # Only check for multi-recipient context emails (Emily/Mark)
-    if is_multi_recipient_scenario(scenario_filename):
-        _show_multi_recipient_emails(scenario_filename)
-
-
-def _show_multi_recipient_emails(scenario_filename: str):
-    """Show multi-recipient context emails"""
-    from utils import get_scenario_prompts
-    recipient_prompts = get_scenario_prompts(scenario_filename)
-    
-    if 'emily' in recipient_prompts and 'mark' in recipient_prompts:
-        st.markdown("**📨 Email Context**")
-        st.info("💼 Below are the emails from Emily and Mark that prompted this request.")
-        
-        # Emily's email
-        with st.expander("Emily's Email", expanded=False):
-            emily_html = create_emily_email_display(recipient_prompts['emily'])
-            st.markdown(emily_html, unsafe_allow_html=True)
-        
-        # Mark's email
-        with st.expander("Mark's Email", expanded=False):
-            mark_html = create_mark_email_display(recipient_prompts['mark'])
-            st.markdown(mark_html, unsafe_allow_html=True)
-
-
 # def create_email_input_section(level: float, api_keys_available: bool):
 #     """Create email input section for single-turn levels"""
 #     # Import the shared component
@@ -191,17 +148,17 @@ def _show_multi_recipient_emails(scenario_filename: str):
 #     return create_level_email_input(level, api_keys_available)
 
 
-def create_submit_button(api_keys_available: bool, email_content: str):
-    """Create submit button for email submission"""
-    # Import the shared component
-    from .shared_components import create_submit_button as shared_submit_button
-    return shared_submit_button(api_keys_available, email_content)
+# def create_submit_button(api_keys_available: bool, email_content: str):
+#     """Create submit button for email submission"""
+#     # Import the shared component
+#     from .shared_components import create_submit_button as shared_submit_button
+#     return shared_submit_button(api_keys_available, email_content)
 
 
-def show_level_progression_logic(level: float):
-    """Show level-specific progression logic"""
-    from .shared_components import create_level_info_message
-    create_level_info_message(level)
+# def show_level_progression_logic(level: float):
+#     """Show level-specific progression logic"""
+#     from .shared_components import create_level_info_message
+#     create_level_info_message(level)
 
 
 def get_scenario_data(level: float, available_scenarios: dict):

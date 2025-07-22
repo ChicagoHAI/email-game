@@ -97,7 +97,7 @@ def _show_turn_display_only(turn_data: dict):
 def show_turn_status(session_id: str, level: float, max_turns: int):
     """Show turn status and controls for multi-turn levels"""
     from session_manager import get_next_turn_number, is_level_complete_multi_turn
-    from .html_helpers import create_turn_counter_display, create_level_complete_display, create_turn_limit_display
+    from .shared_components import create_turn_counter_display, create_level_complete_display, create_turn_limit_display
     
     current_turn = get_next_turn_number(session_id, level)
     level_complete = is_level_complete_multi_turn(session_id, level)

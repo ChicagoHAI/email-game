@@ -7,8 +7,8 @@ Handles evaluation results and feedback display.
 import streamlit as st
 from config import MAX_AVAILABLE_LEVEL, MULTI_TURN_LEVELS, MAX_TURNS
 from utils import is_multi_recipient_scenario, process_evaluation_text
-from .html_helpers import (
-    show_evaluation_styles,
+from .shared_components import show_evaluation_styles
+from .shared_components import (
     create_success_message,
     create_strategy_warning,
     create_strategy_success
@@ -188,6 +188,16 @@ def _show_regular_progression_options(level: float):
             st.session_state.current_level = next_level
             # Clean up stale level data
             clean_stale_level_data(next_level, st.session_state)
+            
+            # Reset Gmail inbox state to show inbox view first (not opened email)
+            st.session_state.gmail_view = 'inbox'  # Show inbox, not email view
+            if 'selected_email_id' in st.session_state:
+                del st.session_state.selected_email_id
+            st.session_state.show_scenario_email = False  # Hide email input until user clicks email
+            
+            # Clear previous level's email content
+            if 'level_emails' in st.session_state:
+                del st.session_state.level_emails
             
             # Update URL parameters to match navigation
             session_id = st.session_state.get('game_session_id')

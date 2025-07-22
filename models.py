@@ -178,7 +178,7 @@ class EmailRecipient:
             return None
     
     def generate_reply_with_majority(self, recipient_prompt: str, user_email: str, 
-                                   model: str = DEFAULT_MODEL, num_samples: int = 5,
+                                   model: str = DEFAULT_MODEL, num_samples: int = 1,
                                    scenario: str = "", rubric: str = None, 
                                    scenario_filename: str = None) -> dict:
         """

@@ -13,12 +13,12 @@ from .shared_components import (
     show_scenario_loading_status,
     show_session_info,
     show_goal_achieved,
-    show_evaluation_error,
     show_submission_error,
     
     # Styling and layout functions
     add_padding,
     add_separator,
+    show_evaluation_styles,
     create_level_info_message,
     show_level_progression_hint,
     show_turn_update_success,

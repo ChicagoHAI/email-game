@@ -6,7 +6,7 @@ Handles session selection, creation, and management UI components.
 
 import streamlit as st
 from session_manager import create_new_session, session_exists, load_session_data
-from .html_helpers import create_session_info_display
+from .shared_components import create_session_info_display
 
 
 def show_session_selection_screen():

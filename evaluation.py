@@ -369,8 +369,7 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
                     
                     for recipient_name, recipient_prompt in recipients.items():
                         reply_result = ai_services['email_recipient'].generate_reply_with_majority(
-                            recipient_prompt, email_content, model, num_samples=5,
-                            scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                            recipient_prompt, email_content, model, scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
                         )
                         if not reply_result:
                             st.error(f"Failed to generate {recipient_name}'s reply")
@@ -405,8 +404,7 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
                         recipient_prompt = DEFAULT_RECIPIENT_PROMPT
                     
                     reply_result = ai_services['email_recipient'].generate_reply_with_majority(
-                        recipient_prompt, email_content, model, num_samples=5,
-                        scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                        recipient_prompt, email_content, model, scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
                     )
                     if not reply_result:
                         st.error("Failed to generate recipient reply")
@@ -545,8 +543,7 @@ def process_email_evaluation_user_mode_multi_turn(scenario, email_content, model
                     reply_result = None  # No debug data for final response
                 else:
                     reply_result = ai_services['email_recipient'].generate_reply_with_majority(
-                        contextualized_prompt, email_content, model, num_samples=5,
-                        scenario=scenario, rubric=None, scenario_filename=st.session_state.get("selected_scenario_file")
+                        contextualized_prompt, email_content, model, scenario=scenario, rubric=None, scenario_filename=st.session_state.get("selected_scenario_file")
                     )
                     if not reply_result:
                         st.error("Failed to generate Adam's reply")
@@ -831,8 +828,7 @@ def process_email_evaluation_developer_mode(scenario, email_content, model):
                 
                 scenario_filename = st.session_state.get("selected_scenario_file", "")
                 reply_result = ai_services['email_recipient'].generate_reply_with_majority(
-                    recipient_prompt_value, email_content, model, num_samples=5,
-                    scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
+                    recipient_prompt_value, email_content, model, scenario=scenario, rubric=rubric, scenario_filename=scenario_filename
                 )
                 if not reply_result:
                     st.error("Failed to generate recipient reply")

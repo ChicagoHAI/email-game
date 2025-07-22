@@ -32,17 +32,16 @@ from ui_components.session_interface import (
 )
 from ui_components.level_interface import (
     show_level_navigation,
-    show_gmail_inbox_section,
-    show_additional_emails,
-    # create_submit_button,
-    # show_level_progression_logic,
     get_scenario_data
+)
+from ui_components.gmail_inbox import (
+    show_gmail_inbox_section,
+    show_additional_emails
 )
 from ui_components.turn_management import (
     show_conversation_history,
     show_turn_status,
     get_current_turn_info,
-    # create_turn_email_input
 )
 from ui_components.evaluation_display import (
     show_level_results,
@@ -147,6 +146,9 @@ def show_level_page(level, available_scenarios, api_keys_available, model, sessi
         else:
             # For single-turn levels, always show results
             show_level_results(level)
+            
+            # Ensure email input stays visible for retry attempts (like in success case)
+            st.session_state.show_scenario_email = True
 
 
 def handle_multi_turn_level(session_id, level, scenario_content, model, api_keys_available):

@@ -1,7 +1,10 @@
 """
-Gmail-like Inbox Component
+Email Interface Components
 
-A Gmail-inspired inbox interface for the Email Game with separate inbox and email views.
+Contains all email-related functionality including:
+- Gmail-inspired inbox interface with separate inbox and email views
+- Additional email display (Emily/Mark context emails)
+- Email data management and rendering
 """
 
 import streamlit as st
@@ -502,3 +505,41 @@ def _show_forwarded_emails_expanders(level: float):
         with st.expander(expander_title, expanded=False):
             email_html = create_forwarded_email_display(email_content)
             st.markdown(email_html, unsafe_allow_html=True)
+
+
+def show_gmail_inbox_section(scenario_content: str, level: float):
+    """Show the Gmail-like inbox interface instead of the traditional scenario section"""
+    create_gmail_inbox(scenario_content, level)
+
+
+def show_additional_emails(scenario_filename: str):
+    """Show additional emails for a scenario"""
+    from utils import is_multi_recipient_scenario
+    
+    # Skip forwarded emails since they're now shown within Brittany's email in the Gmail inbox
+    # Only check for multi-recipient context emails (Emily/Mark)
+    if is_multi_recipient_scenario(scenario_filename):
+        _show_multi_recipient_emails(scenario_filename)
+
+
+def _show_multi_recipient_emails(scenario_filename: str):
+    """Show multi-recipient context emails"""
+    import streamlit as st
+    from utils import get_scenario_prompts
+    from .html_helpers import create_emily_email_display, create_mark_email_display
+    
+    recipient_prompts = get_scenario_prompts(scenario_filename)
+    
+    if 'emily' in recipient_prompts and 'mark' in recipient_prompts:
+        st.markdown("**📨 Email Context**")
+        st.info("💼 Below are the emails from Emily and Mark that prompted this request.")
+        
+        # Emily's email
+        with st.expander("Emily's Email", expanded=False):
+            emily_html = create_emily_email_display(recipient_prompts['emily'])
+            st.markdown(emily_html, unsafe_allow_html=True)
+        
+        # Mark's email
+        with st.expander("Mark's Email", expanded=False):
+            mark_html = create_mark_email_display(recipient_prompts['mark'])
+            st.markdown(mark_html, unsafe_allow_html=True)

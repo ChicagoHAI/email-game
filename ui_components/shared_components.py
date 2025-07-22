@@ -11,6 +11,10 @@ from config import EMAIL_MAX_CHARS, EMAIL_TEXT_AREA_HEIGHT
 from utils import is_multi_recipient_scenario
 
 
+# =============================================================================
+# INPUT COMPONENTS - Text areas, buttons, form elements
+# =============================================================================
+
 def create_email_textarea(
     label: str = "Write your email here",
     key: str = "email_input",
@@ -51,7 +55,18 @@ def create_email_textarea(
         if isinstance(session_data, str):
             initial_value = session_data
         elif isinstance(session_data, dict) and session_data:
-            initial_value = list(session_data.values())[0]
+            # Get the specific level's email if it exists, otherwise use empty
+            level_from_key = None
+            if 'email_input_level_' in key:
+                try:
+                    level_from_key = float(key.split('email_input_level_')[1].split('_turn_')[0])
+                except (ValueError, IndexError):
+                    pass
+            
+            if level_from_key is not None and level_from_key in session_data:
+                initial_value = session_data[level_from_key]
+            else:
+                initial_value = value  # Use empty value if no data for this specific level
     
     return st.text_area(
         label=label,
@@ -72,30 +87,6 @@ def create_level_email_input(
     Create email input specifically for level-based gameplay.
     Replaces create_email_input_section from level_interface.py
     """
-    # # Level-specific customization
-    # if level == 2:
-    #     # Multi-recipient level
-    #     scenario_filename = st.session_state.get('selected_scenario_file', '')
-    #     is_multi_recipient = 'multi_recipient' in scenario_filename.lower()
-        
-    #     if is_multi_recipient:
-    #         # st.info("📝 **Level 2**: Write a single email that will be sent to both Emily and Mark.")
-    #         placeholder = "Type your email response that addresses both Emily's and Mark's concerns..."
-    #         help_text = "Write an email that will resolve the conflict between Emily and Mark"
-    #     else:
-    #         # st.info("📝 **Level 2**: Write an email that addresses the situation described in the scenario.")
-    #         placeholder = "Type your email response that addresses the situation..."
-    #         help_text = "Write an email that addresses the situation described in the scenario"
-        
-    #     label = "Write your email response:"
-    #     height = 350
-    # else:
-    #     # Standard single-turn level
-    #     placeholder = "Type your email response to the scenario above..."
-    #     help_text = "Write the best email you can for the given scenario"
-    #     label = "Write your email here"
-    #     height = EMAIL_TEXT_AREA_HEIGHT
-
     # Standard single-turn level
     placeholder = "Type your email response to the scenario above..."
     help_text = "Write the best email you can for the given scenario"
@@ -228,7 +219,37 @@ def create_scenario_textarea(
         return scenario_content 
 
 
-# Notification Functions
+def create_mode_change_button() -> bool:
+    """Create standardized mode change button"""
+    return st.button("Change Mode", help="Go back to mode selection")
+
+
+def create_primary_action_button(text: str, disabled: bool = False, help_text: str = "") -> bool:
+    """Create standardized primary action button"""
+    return st.button(
+        text, 
+        type="primary", 
+        disabled=disabled, 
+        help=help_text,
+        use_container_width=False
+    )
+
+
+def create_secondary_action_button(text: str, disabled: bool = False, help_text: str = "") -> bool:
+    """Create standardized secondary action button"""
+    return st.button(
+        text, 
+        type="secondary", 
+        disabled=disabled, 
+        help=help_text,
+        use_container_width=False
+    )
+
+
+# =============================================================================
+# STATUS & NOTIFICATION FUNCTIONS - Messages, errors, success notifications
+# =============================================================================
+
 def show_api_key_status(api_keys_available: bool) -> None:
     """Standardized API key status display"""
     if api_keys_available:
@@ -265,11 +286,6 @@ def show_goal_achieved(turn_number: int) -> None:
     st.success(f"🎯 **Goal achieved in Turn {turn_number}!**")
 
 
-def show_evaluation_error(error_message: str = "Failed to evaluate email") -> None:
-    """Standardized evaluation error message"""
-    st.error(f"❌ {error_message}")
-
-
 def show_submission_error(error_type: str = "empty") -> None:
     """Standardized submission error messages"""
     if error_type == "empty":
@@ -278,32 +294,6 @@ def show_submission_error(error_type: str = "empty") -> None:
         st.error("API keys not available")
     else:
         st.error(f"❌ {error_type}")
-
-
-# Styling and Layout Functions
-def add_padding(pixels: int = 20) -> None:
-    """Add vertical padding using CSS"""
-    st.markdown(f"<div style='padding-top: {pixels}px;'></div>", unsafe_allow_html=True)
-
-
-def add_separator() -> None:
-    """Add a visual separator line"""
-    st.markdown("---")
-
-
-def create_level_info_message(level: float) -> None:
-    """Create standardized level info messages"""
-    if level == 2:
-        st.info("💼 **Level 2**: Send an email to multiple recipients.")
-    elif level == 3:
-        st.info("🎯 **Level 3**: Choose your strategy wisely - some approaches may lead to additional challenges!")
-    elif level == 3.5:
-        st.warning("⚠️ **Challenge Level 3.5**: Forbidden strategies (layoffs, salary increases) are not allowed here!")
-    elif level == 4:
-        from config import MAX_TURNS
-        st.info(f"📧 **Multi-turn Level**: Figure out Adam's true concerns within {MAX_TURNS} turns.")
-    # elif level == 5:
-    #     st.info("🏆 **Final Level**: Demonstrate mastery of all communication skills.")
 
 
 def show_level_progression_hint() -> None:
@@ -332,29 +322,124 @@ def show_level_restart_error() -> None:
     st.error("❌ Failed to restart level. Please try again.")
 
 
-# Common button patterns
-def create_mode_change_button() -> bool:
-    """Create standardized mode change button"""
-    return st.button("Change Mode", help="Go back to mode selection")
+# =============================================================================
+# DISPLAY FUNCTIONS - Content display, formatting, level-specific messages
+# =============================================================================
+
+def create_session_info_display(session_id: str) -> None:
+    """Create session info display"""
+    st.info(f"📋 **Session ID:** `{session_id}` (copy this to resume the game later)")
 
 
-def create_primary_action_button(text: str, disabled: bool = False, help_text: str = "") -> bool:
-    """Create standardized primary action button"""
-    return st.button(
-        text, 
-        type="primary", 
-        disabled=disabled, 
-        help=help_text,
-        use_container_width=False
-    )
+def create_level_display(level: float) -> str:
+    """Create level display string"""
+    if level == 0:
+        return "Tutorial"
+    elif level == 2.5:
+        return "Challenge Level 2.5"
+    else:
+        return f"Level {level}"
 
 
-def create_secondary_action_button(text: str, disabled: bool = False, help_text: str = "") -> bool:
-    """Create standardized secondary action button"""
-    return st.button(
-        text, 
-        type="secondary", 
-        disabled=disabled, 
-        help=help_text,
-        use_container_width=False
-    ) 
+def create_success_message(level: float) -> str:
+    """Create success message for level completion"""
+    if level == 2.5:
+        return "🎉 **Success!** You completed the challenge level!"
+    else:
+        return "🎉 **Success!** You persuaded the recipient and completed this level!"
+
+
+def create_strategy_warning() -> None:
+    """Create strategy analysis warning display"""
+    st.warning("⚠️ **Strategy Analysis**: You used forbidden strategies (layoffs or salary increases)!")
+    st.info("🎯 **Next Challenge**: You'll be directed to Level 2.5 where these strategies are prohibited.")
+
+
+def create_strategy_success() -> None:
+    """Create strategy analysis success display"""
+    st.info("✅ **Strategy Analysis**: Great! You didn't use any forbidden strategies. You can proceed directly to Level 3.")
+
+
+def create_turn_counter_display(current_turn: int, max_turns: int) -> None:
+    """Create turn counter display for multi-turn levels"""
+    st.info(f"📧 **Turn {current_turn} of {max_turns}** - Continue the conversation with Adam")
+
+
+def create_level_complete_display(level: float) -> None:
+    """Create level complete display"""
+    st.success(f"🎉 **Level {level} Complete!** You successfully helped Adam express his concerns.")
+
+
+def create_turn_limit_display(max_turns: int) -> None:
+    """Create turn limit reached display"""
+    st.warning(f"⏱️ **Turn limit reached** ({max_turns} turns)")
+    st.info("💼 Adam has decided to just bring noise canceling headphones and a blanket to work.")
+
+
+def create_level_info_message(level: float) -> None:
+    """Create standardized level info messages"""
+    if level == 2:
+        st.info("💼 **Level 2**: Send an email to multiple recipients.")
+    elif level == 3:
+        st.info("🎯 **Level 3**: Choose your strategy wisely - some approaches may lead to additional challenges!")
+    elif level == 3.5:
+        st.warning("⚠️ **Challenge Level 3.5**: Forbidden strategies (layoffs, salary increases) are not allowed here!")
+    elif level == 4:
+        from config import MAX_TURNS
+        st.info(f"📧 **Multi-turn Level**: Figure out Adam's true concerns within {MAX_TURNS} turns.")
+    # elif level == 5:
+    #     st.info("🏆 **Final Level**: Demonstrate mastery of all communication skills.")
+
+
+# =============================================================================
+# LAYOUT & STYLING FUNCTIONS - Spacing, separators, visual formatting
+# =============================================================================
+
+def add_padding(pixels: int = 20) -> None:
+    """Add vertical padding using CSS"""
+    st.markdown(f"<div style='padding-top: {pixels}px;'></div>", unsafe_allow_html=True)
+
+
+def add_separator() -> None:
+    """Add a visual separator line"""
+    st.markdown("---")
+
+
+def show_evaluation_styles():
+    """Inject CSS styles for evaluation display"""
+    st.markdown("""
+    <style>
+    .quote-box {
+        background-color: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 5px;
+        padding: 12px;
+        margin: 4px 0 24px 0;
+        font-style: italic;
+        white-space: pre-line;
+    }
+    .evaluation-content {
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+    }
+    .evaluation-content p {
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+        margin-bottom: 1rem !important;
+    }
+    .evaluation-content ul {
+        list-style: none !important;
+        padding-left: 0 !important;
+    }
+    .evaluation-content li {
+        margin-bottom: 1rem !important;
+        font-size: 0.9rem !important;
+    }
+    .evaluation-item {
+        margin-bottom: 4px;
+    }
+    .evaluation-item:first-child {
+        margin-top: 0;
+    }
+    </style>
+    """, unsafe_allow_html=True) 
