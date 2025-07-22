@@ -237,3 +237,51 @@ This project is part of the Complex Communication Research Project. See the proj
 ---
 
 **Built with ❤️ using Streamlit and OpenAI GPT-4o** 
+
+## Running the Application
+
+Run the application using:
+
+```bash
+streamlit run app.py
+```
+
+The application will be available at `http://localhost:8501`.
+
+## Developer Features
+
+### URL Navigation (User & Developer Modes)
+
+You can use URL parameters to quickly navigate to specific levels without having to complete all previous levels. This feature automatically unlocks all prerequisite levels in the database and works in both User and Developer modes.
+
+**Usage:**
+```
+http://localhost:8501/?level=5
+```
+
+This will:
+1. Automatically switch to User Mode (if no mode selected yet)
+2. Unlock all levels from 0 up to the specified level (0, 1, 2, 2.5, 3, 4, 5)
+3. Navigate directly to the specified level
+4. Update both the database and session state
+
+**Available Levels:**
+- `0` - Tutorial Level (Scenario 5.0)
+- `1` - Level 1 (Scenario 5.1)  
+- `2` - Level 2 (Scenario 5.2)
+- `2.5` - Challenge Level (Scenario 5.2.5)
+- `3` - Multi-recipient Level (Scenario 5.3)
+- `4` - Multi-turn Level (Scenario 5.4) 
+- `5` - Forwarded Emails Level (Scenario 5.5)
+
+**Requirements:**
+- Must have a valid game session (create or select one first)
+- Works in both User and Developer modes (will auto-switch to User Mode if needed)
+- Level must exist in the `LEVEL_TO_SCENARIO_MAPPING` configuration
+
+**Examples:**
+- Jump to Level 3: `http://localhost:8501/?level=3`
+- Jump to Challenge Level: `http://localhost:8501/?level=2.5`
+- Jump to final level: `http://localhost:8501/?level=5`
+
+**Note:** This feature is designed for development and testing purposes, allowing you to quickly jump to any level for testing. It works in both User and Developer modes and will unlock all prerequisite levels automatically. 

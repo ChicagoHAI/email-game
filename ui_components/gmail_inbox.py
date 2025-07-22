@@ -1,7 +1,7 @@
 """
 Gmail-like Inbox Component
 
-A Gmail-inspired inbox interface for the Email Game.
+A Gmail-inspired inbox interface for the Email Game with separate inbox and email views.
 """
 
 import streamlit as st
@@ -10,12 +10,27 @@ from datetime import datetime, timedelta
 
 def create_gmail_inbox(scenario_content: str, level: float):
     """
-    Create a Gmail-like inbox interface with email rows.
+    Create a Gmail-like inbox interface with separate inbox and email views.
     
     Args:
         scenario_content: The scenario content (Brittany's email)
         level: Current level number
     """
+    
+    # Check current view state
+    view_state = st.session_state.get('gmail_view', 'inbox')  # 'inbox' or 'email'
+    selected_email_id = st.session_state.get('selected_email_id', None)
+    
+    if view_state == 'email' and selected_email_id is not None:
+        # Show individual email view
+        show_email_view(scenario_content, level, selected_email_id)
+    else:
+        # Show inbox view
+        show_inbox_view(scenario_content, level)
+
+
+def show_inbox_view(scenario_content: str, level: float):
+    """Show the main inbox view with email list"""
     
     # Gmail-like styling
     gmail_css = """
@@ -31,7 +46,7 @@ def create_gmail_inbox(scenario_content: str, level: float):
     .email-row {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
+        padding: 2px 16px;
         border-bottom: 1px solid #e0e0e0;
         cursor: pointer;
         transition: background-color 0.2s ease;
@@ -51,56 +66,9 @@ def create_gmail_inbox(scenario_content: str, level: float):
         font-weight: normal;
     }
     
-    .email-checkbox {
-        margin-right: 12px;
-        width: 16px;
-        height: 16px;
-    }
-    
-    .email-star {
-        margin-right: 12px;
-        color: #fbbc04;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    
-    .email-star.empty {
-        color: #dadce0;
-    }
-    
-    .email-sender {
-        min-width: 180px;
-        font-size: 14px;
-        color: #202124;
-        margin-right: 12px;
-    }
-    
-    .email-subject {
-        flex: 1;
-        font-size: 14px;
-        color: #202124;
-        margin-right: 12px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    
-    .email-snippet {
-        color: #5f6368;
-        font-size: 13px;
-        margin-left: 4px;
-    }
-    
-    .email-time {
-        font-size: 12px;
-        color: #5f6368;
-        min-width: 60px;
-        text-align: right;
-    }
-    
     .inbox-header {
         background-color: #f8f9fa;
-        padding: 12px 16px;
+        padding: 8px 16px;
         border-bottom: 1px solid #e0e0e0;
         font-size: 14px;
         font-weight: 500;
@@ -119,8 +87,8 @@ def create_gmail_inbox(scenario_content: str, level: float):
     
     st.markdown(gmail_css, unsafe_allow_html=True)
     
-    # Create inbox container
-    st.markdown('<div class="gmail-inbox">', unsafe_allow_html=True)
+    # Create inbox container with wider layout
+    st.markdown('<div class="gmail-inbox" style="max-width: 1200px; width: 100%;">', unsafe_allow_html=True)
     
     # Email rows data
     emails = _get_email_data(scenario_content, level)
@@ -151,51 +119,43 @@ def create_gmail_inbox(scenario_content: str, level: float):
         div[data-testid="stButton"] > button[data-testid="baseButton-secondary"] {{
             width: 100%;
             text-align: left;
-            padding: 8px 16px;
+            padding: 1px 12px !important;
+            margin: 0 !important;
             border: none;
             border-bottom: 1px solid #e0e0e0;
             background-color: {'#ffffff' if email['unread'] else '#fafafa'};
             font-weight: {'600' if email['unread'] else 'normal'};
-            font-size: 14px;
+            font-size: 13px;
             color: #202124;
             border-radius: 0;
-            min-height: 40px;
+            min-height: 22px !important;
+            height: 22px !important;
+            line-height: 1.2 !important;
         }}
         
         div[data-testid="stButton"] > button[data-testid="baseButton-secondary"]:hover {{
             background-color: #f5f5f5;
             border-color: #e0e0e0;
         }}
+        
+        div[data-testid="stButton"] {{
+            margin-bottom: 0 !important;
+        }}
         </style>
         """
         st.markdown(button_style, unsafe_allow_html=True)
         
         if i == 0:  # First email (Brittany's) - clickable
-            # Add active state styling if email is selected
-            is_selected = st.session_state.get('show_scenario_email', False)
-            if is_selected:
-                active_style = """
-                <style>
-                div[data-testid="stButton"] > button[data-testid="baseButton-secondary"] {
-                    background-color: #e8f0fe !important;
-                    border-left: 4px solid #1a73e8 !important;
-                }
-                </style>
-                """
-                st.markdown(active_style, unsafe_allow_html=True)
-            
-            button_text = f"{'📖 ' if is_selected else ''}{button_label}"
-            
             if st.button(
-                button_text,
+                button_label,
                 key=email_key,
-                help=f"Click to {'close' if is_selected else 'open'} email from {email['sender']}",
+                help=f"Click to open email from {email['sender']}",
                 use_container_width=True
             ):
-                # Toggle the scenario email display
-                current_state = st.session_state.get('show_scenario_email', False)
-                st.session_state.show_scenario_email = not current_state
-                st.session_state.selected_email = i if not current_state else None
+                # Navigate to email view
+                st.session_state.gmail_view = 'email'
+                st.session_state.selected_email_id = i
+                st.session_state.show_scenario_email = True  # For compatibility with existing logic
                 st.rerun()
         else:  # Other emails - read-only (display as disabled button)
             disabled_style = f"""
@@ -205,6 +165,15 @@ def create_gmail_inbox(scenario_content: str, level: float):
                 color: #9aa0a6;
                 cursor: not-allowed;
                 opacity: 0.7;
+                padding: 1px 12px !important;
+                margin: 0 !important;
+                min-height: 22px !important;
+                height: 22px !important;
+                line-height: 1.2 !important;
+            }}
+            
+            div[data-testid="stButton"] {{
+                margin-bottom: 0 !important;
             }}
             </style>
             """
@@ -219,10 +188,98 @@ def create_gmail_inbox(scenario_content: str, level: float):
             )
     
     st.markdown('</div>', unsafe_allow_html=True)
+
+
+def show_email_view(scenario_content: str, level: float, email_id: int):
+    """Show individual email view (Gmail-like full email display)"""
     
-    # Show selected email content only if Brittany's email is toggled on
-    if st.session_state.get('show_scenario_email', False) and st.session_state.get('selected_email') == 0:
-        show_selected_email_content(emails[0], scenario_content)
+    # Gmail email view styling
+    email_view_css = """
+    <style>
+    .gmail-email-view {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        max-width: 1200px;
+        width: 100%;
+    }
+    
+    .email-view-header {
+        background-color: #f8f9fa;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .back-button-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .email-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #202124;
+        margin: 0;
+    }
+    
+    .email-content-container {
+        padding: 0 20px 20px 20px;
+    }
+    </style>
+    """
+    
+    st.markdown(email_view_css, unsafe_allow_html=True)
+    
+    # Get email data
+    emails = _get_email_data(scenario_content, level)
+    if email_id >= len(emails):
+        st.error("Email not found")
+        return
+    
+    email_data = emails[email_id]
+    
+    # Mark email as read when opened
+    if email_id == 0 and email_data.get('unread', True):
+        # Store the read state so it persists during the session
+        read_emails = st.session_state.get('read_emails', set())
+        read_emails.add(email_id)
+        st.session_state.read_emails = read_emails
+    
+    # Create email view container
+    # st.markdown('<div class="gmail-email-view">', unsafe_allow_html=True)
+    
+    # # Email view header with back button and title
+    # header_html = f'''
+    # <div class="email-view-header">
+    #     <div class="back-button-container">
+    #         <span style="font-size: 16px; color: #5f6368;">📧</span>
+    #         <h1 class="email-title">{email_data['subject']}</h1>
+    #     </div>
+    # </div>
+    # '''
+    # st.markdown(header_html, unsafe_allow_html=True)
+    
+    # Back button (outside the header for better UX)
+    if st.button("← Back to Inbox", key="back_to_inbox", help="Return to inbox", type="secondary"):
+        st.session_state.gmail_view = 'inbox'
+        st.session_state.selected_email_id = None
+        st.session_state.show_scenario_email = False  # For compatibility
+        st.rerun()
+    
+    # Email content container
+    st.markdown('<div class="email-content-container">', unsafe_allow_html=True)
+    
+    # Show the email content
+    show_selected_email_content(email_data, scenario_content, level)
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 def _get_email_data(scenario_content: str, level: float):
@@ -256,13 +313,16 @@ def _get_email_data(scenario_content: str, level: float):
     # Current time variations
     now = datetime.now()
     
+    # Check if emails have been read (from session state)
+    read_emails = st.session_state.get('read_emails', set())
+    
     emails = [
         {
             'sender': sender_name,
             'subject': subject,
             'snippet': snippet,
             'time': '10:30 AM',
-            'unread': True,
+            'unread': 0 not in read_emails,  # Email 0 (Brittany's) is unread unless opened
             'starred': True
         },
         {
@@ -280,17 +340,73 @@ def _get_email_data(scenario_content: str, level: float):
             'time': 'Yesterday',
             'unread': False,
             'starred': False
-        }
+        },
+        {
+            'sender': 'Finance Department',
+            'subject': 'Budget Approval Request',
+            'snippet': 'Please review and approve the budget allocation for the next quarter...',
+            'time': 'Yesterday',
+            'unread': True,
+            'starred': False
+        },
+        {
+            'sender': 'Project Manager',
+            'subject': 'Sprint Planning Meeting',
+            'snippet': 'Team, we need to schedule our next sprint planning session for...',
+            'time': '2 days ago',
+            'unread': False,
+            'starred': True
+        },
+        # {
+        #     'sender': 'Customer Success',
+        #     'subject': 'Client Feedback Summary',
+        #     'snippet': 'Here is the monthly summary of client feedback and satisfaction scores...',
+        #     'time': '2 days ago',
+        #     'unread': False,
+        #     'starred': False
+        # },
+        # {
+        #     'sender': 'Legal Team',
+        #     'subject': 'Contract Review Needed',
+        #     'snippet': 'We need your input on the new vendor contract. Please review the terms...',
+        #     'time': '3 days ago',
+        #     'unread': True,
+        #     'starred': False
+        # },
+        # {
+        #     'sender': 'Product Development',
+        #     'subject': 'Feature Release Update',
+        #     'snippet': 'The new feature rollout has been completed successfully. Here are the metrics...',
+        #     'time': '3 days ago',
+        #     'unread': False,
+        #     'starred': False
+        # },
+        # {
+        #     'sender': 'Sales Team',
+        #     'subject': 'Monthly Sales Report',
+        #     'snippet': 'Attached is the monthly sales report showing our performance against targets...',
+        #     'time': '4 days ago',
+        #     'unread': False,
+        #     'starred': True
+        # },
+        # {
+        #     'sender': 'Operations',
+        #     'subject': 'Facility Access Update',
+        #     'snippet': 'New security protocols have been implemented. Please update your access cards...',
+        #     'time': '1 week ago',
+        #     'unread': False,
+        #     'starred': False
+        # }
     ]
     
     return emails
 
 
-def show_selected_email_content(email_data: dict, scenario_content: str = None):
+def show_selected_email_content(email_data: dict, scenario_content: str = None, level: float = None):
     """Show the content of the selected email"""
     
-    st.markdown("---")
-    st.markdown("### 📖 Email Content")
+    # st.markdown("---")
+    # st.markdown("### 📖 Email Content")
     
     # Email header
     header_html = f"""
@@ -310,12 +426,19 @@ def show_selected_email_content(email_data: dict, scenario_content: str = None):
     
     # Email body
     if scenario_content:
-        # Show actual scenario content for the first email
+        # Show actual scenario content for the first email with reduced paragraph spacing
         body_html = f"""
-        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; line-height: 1.6;">
-            {scenario_content.replace(chr(10), '<br><br>')}
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; line-height: 1.5;">
+            <div style="margin-bottom: 0;">
+                {scenario_content.replace(chr(10), '</div><div style="margin-bottom: 8px;">')}
+            </div>
         </div>
         """
+        st.markdown(body_html, unsafe_allow_html=True)
+        
+        # Add forwarded emails as toggleable expanders
+        _show_forwarded_emails_expanders(level)
+        
     else:
         # Show placeholder content for other emails
         placeholder_content = f"""
@@ -331,5 +454,51 @@ def show_selected_email_content(email_data: dict, scenario_content: str = None):
             {placeholder_content.replace(chr(10), '<br><br>')}
         </div>
         """
+        st.markdown(body_html, unsafe_allow_html=True)
+
+
+def _show_forwarded_emails_expanders(level: float):
+    """Show forwarded emails as toggleable expanders if they exist for this level"""
+    if not level:
+        return
     
-    st.markdown(body_html, unsafe_allow_html=True) 
+    # Import here to avoid circular imports
+    from config import LEVEL_TO_SCENARIO_MAPPING
+    from utils import get_all_additional_emails
+    from .html_helpers import create_forwarded_email_display
+    
+    # Get backend scenario ID from user level
+    backend_scenario_id = LEVEL_TO_SCENARIO_MAPPING.get(level, "5.0")
+    scenario_filename = f"scenario_{backend_scenario_id}.txt"
+    
+    # Get forwarded emails
+    forwarded_emails = get_all_additional_emails(scenario_filename)
+    
+    if not forwarded_emails['has_emails']:
+        return
+    
+    # Add a visual separator
+    st.markdown("""
+    <div style="margin: 16px 0; padding: 8px 0; border-top: 1px solid #e0e0e0; color: #5f6368; font-size: 13px; text-align: center;">
+        ──────── Forwarded emails ────────
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Show each forwarded email as a collapsible expander
+    for i, (email_title, email_content) in enumerate(forwarded_emails['emails']):
+        # Parse email content to get subject for better title
+        lines = email_content.strip().split('\n')
+        subject_line = ""
+        
+        for line in lines:
+            if line.startswith("Subject: "):
+                subject_line = line[9:]  # Remove "Subject: "
+                break
+        
+        # Create title for expander
+        expander_title = f"📧 {subject_line}" if subject_line else f"📧 Forwarded Email {i+1}"
+        
+        # Create expander for each forwarded email
+        with st.expander(expander_title, expanded=False):
+            email_html = create_forwarded_email_display(email_content)
+            st.markdown(email_html, unsafe_allow_html=True)

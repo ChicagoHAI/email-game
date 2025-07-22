@@ -6,13 +6,8 @@ and developer interface components.
 """
 
 import streamlit as st
-import os
 from config import (
-    LEVEL_TO_SCENARIO_MAPPING,
-    MAX_AVAILABLE_LEVEL,
-    EMAIL_MAX_CHARS,
     DEFAULT_SCENARIO,
-    MODELS,
     USER_MODE_USE_RUBRIC,
     DEFAULT_USE_RUBRIC,
     EVALUATION_PROMPT_PATH
@@ -20,16 +15,12 @@ from config import (
 from utils import (
     load_scenarios,
     check_api_keys,
-    format_scenario_content,
-    process_evaluation_text,
-    extract_goal_achievement_score,
     initialize_session_state,
     load_recipient_prompt,
     load_file_content
 )
-from ui_user_refactored import show_user_interface_with_levels
+from ui_user import show_user_interface_with_levels
 from evaluation import process_email_evaluation_developer_mode
-from models import EmailGenerator
 
 
 def show_mode_selection():
@@ -113,11 +104,8 @@ def show_developer_interface(available_scenarios, api_keys_available):
         st.subheader("Configuration")
         
         # API Key status
-        if api_keys_available:
-            st.success("✅ API keys loaded from environment")
-        else:
-            st.error("❌ Missing API keys")
-            st.info("Set OPENAI_API_KEY_CLAB environment variable")
+        from ui_components.shared_components import show_api_key_status
+        show_api_key_status(api_keys_available)
         
         # Model selection
         model = st.selectbox(
@@ -135,10 +123,8 @@ def show_developer_interface(available_scenarios, api_keys_available):
         
         st.markdown("---")
         st.markdown("**Scenarios**")
-        if available_scenarios:
-            st.success(f"Loaded {len(available_scenarios)} scenario(s)")
-        else:
-            st.warning("No scenarios found in manual folder")
+        from ui_components.shared_components import show_scenario_loading_status
+        show_scenario_loading_status(len(available_scenarios) if available_scenarios else 0)
     
     # Main content area
     col1, col2 = st.columns([2, 1])
@@ -169,47 +155,24 @@ def show_developer_interface(available_scenarios, api_keys_available):
             scenario_content = DEFAULT_SCENARIO
             st.warning("No scenarios found in manual folder. Using default scenario.")
         
-        scenario = st.text_area(
-            "Current Scenario",
-            value=scenario_content,
-            height=350,
-            max_chars=5000,  # Prevent excessively long scenarios
-            help="The scenario for which participants will write emails"
+        # Use shared component for scenario input
+        from ui_components.shared_components import create_scenario_textarea, create_developer_email_input, add_separator
+        scenario = create_scenario_textarea(
+            scenario_content, 
+            key="scenario_input", 
+            editable=True
         )
         
-        # Email input section
-        col_email_header, col_ai_button = st.columns([3, 1])
-        with col_email_header:
-            st.subheader("✍️ Your Email")
-        with col_ai_button:
-            if st.button("🤖 Generate email with AI", help="Generate an email using AI for the current scenario"):
-                if api_keys_available and scenario.strip():
-                    with st.spinner("🤖 AI is writing an email..."):
-                        try:
-                            generator = EmailGenerator()
-                            generated_email = generator.generate_email(scenario, model)
-                            if generated_email:
-                                # Set the generated email directly in the widget state
-                                st.session_state["email_input"] = generated_email
-                                st.success("✅ Email generated!")
-                                st.rerun()
-                            else:
-                                st.error("Failed to generate email")
-                        except Exception as e:
-                            st.error(f"Error initializing generator: {str(e)}")
-                elif not api_keys_available:
-                    st.error("API keys not available")
-                else:
-                    st.error("Please select a scenario first")
+        # Add separator between scenario and email input
+        add_separator()
         
-        # Email text area - uses key to maintain state automatically
-        email_content = st.text_area(
-            "Write your email here",
-            height=400,
-            max_chars=3000,  # Prevent excessively long emails
-            placeholder="Type your email response to the scenario above, or use the AI generation button...",
-            help="Write the best email you can for the given scenario, or generate one with AI",
-            key="email_input"
+        # Use shared component for email input with AI generation
+        email_content = create_developer_email_input(
+            key="email_input",
+            with_ai_generation=True,
+            scenario=scenario,
+            model=model,
+            api_keys_available=api_keys_available
         )
     
     with col2:
@@ -256,7 +219,7 @@ def show_developer_interface(available_scenarios, api_keys_available):
             )
     
     # Submit button for developer mode
-    st.markdown("---")
+    # st.markdown("---")
     if st.button(
         "📝 Send",
         type="primary",
@@ -264,31 +227,19 @@ def show_developer_interface(available_scenarios, api_keys_available):
         help="Submit your email for AI evaluation"
     ):
         if not email_content.strip():
-            st.error("Please write an email before submitting!")
+            from ui_components.shared_components import show_submission_error
+            show_submission_error("empty")
         elif not api_keys_available:
-            st.error("API keys not available")
+            from ui_components.shared_components import show_submission_error
+            show_submission_error("api_keys")
         else:
             # Process email evaluation using custom settings from developer mode
             scenario = st.session_state.get('selected_scenario', DEFAULT_SCENARIO)
             process_email_evaluation_developer_mode(scenario, email_content, model)
 
 
-
-
-
 def show_game_page():
     """Show the main game interface"""
-    
-    # Add mode indicator and back button
-    mode_col, back_col = st.columns([4, 1])
-    with mode_col:
-        mode_display = "👤 User" if st.session_state.app_mode == "user" else "🛠️ Developer"
-        st.markdown(f"**Current Mode:** {mode_display}")
-    with back_col:
-        if st.button("Change Mode", help="Go back to mode selection"):
-            st.session_state.current_page = "mode_selection"
-            st.session_state.app_mode = None
-            st.rerun()
     
     st.markdown("""
     <style>
@@ -304,7 +255,6 @@ def show_game_page():
     
     </div>
     """, unsafe_allow_html=True)
-    # st.markdown("**Write emails for various scenarios and AI-generated responses!**")
     st.markdown("**Help a client achieve their communication goals**")
     
     # Load available scenarios
@@ -313,11 +263,8 @@ def show_game_page():
     # Check API key availability
     api_keys_available = check_api_keys()
     
-    # Render UI based on mode
-    if st.session_state.app_mode == "developer":
-        show_developer_interface(available_scenarios, api_keys_available)
-    else:  # user mode
-        show_user_interface_with_levels(available_scenarios, api_keys_available)
+    # Always show user interface
+    show_user_interface_with_levels(available_scenarios, api_keys_available)
 
 
 def main_interface():
@@ -326,21 +273,20 @@ def main_interface():
     # Initialize session state
     initialize_session_state()
     
+    # Automatically set to user mode and skip mode selection
+    if not st.session_state.get('app_mode'):
+        st.session_state.app_mode = "user"
+        st.session_state.use_rubric = USER_MODE_USE_RUBRIC  # Set non-rubric mode for user
+        st.session_state.current_page = "game"
+    
     # Automatically update URL with session info if session exists
     _ensure_session_in_url()
     
     # Handle URL parameters for developer level navigation
     _handle_url_parameters()
     
-    # Simple page navigation based on current_page
-    if st.session_state.get('current_page') == "game":
-        show_game_page()
-    elif st.session_state.get('current_page') == "mode_selection":
-        show_mode_selection()
-    else:
-        # Default to mode selection page
-        st.session_state.current_page = "mode_selection"
-        show_mode_selection()
+    # Always show the game page (user mode interface)
+    show_game_page()
 
 
 def _ensure_session_in_url():
@@ -350,7 +296,7 @@ def _ensure_session_in_url():
         session_id = st.session_state.get('game_session_id')
         
         if session_id:
-            from session_manager import session_exists, load_session_data
+            from session_manager import session_exists
             
             # Verify session still exists in database
             if session_exists(session_id):
@@ -471,7 +417,7 @@ def _handle_url_parameters():
                     from session_manager import session_exists
                     if session_exists(active_session_id):
                         # Automatically use the active session
-                        st.info(f"🔗 **Auto-using active session:** {active_session_id[:8]}... (you can override with `?session=OTHER_ID&gang_level=X`)")
+                        # st.info(f"🔗 **Auto-using active session:** {active_session_id[:8]}... (you can override with `?session=OTHER_ID&gang_level=X`)")
                         # Add session to query params for processing
                         query_params = dict(query_params)  # Convert to mutable dict
                         query_params['session'] = active_session_id
@@ -483,7 +429,7 @@ def _handle_url_parameters():
                 
                 if not active_session_id:
                     st.error("❌ **No Active Session:** Please create or select a session first!")
-                    st.info("💡 **Tip:** Once you have a session, you can use `?gang_level=X` for quick navigation!")
+                    # st.info("💡 **Tip:** Once you have a session, you can use `?gang_level=X` for quick navigation!")
                     return
             
             try:
@@ -504,7 +450,7 @@ def _handle_url_parameters():
                         if session_exists(url_session_id):
                             session_id = url_session_id
                             st.session_state.game_session_id = session_id
-                            st.info(f"🔗 **Using session from URL:** {session_id[:8]}...")
+                            # st.info(f"🔗 **Using session from URL:** {session_id[:8]}...")
                         else:
                             st.error(f"❌ **Session not found:** {url_session_id[:8]}... does not exist")
                             return
@@ -514,7 +460,7 @@ def _handle_url_parameters():
                         existing_session_id = st.session_state.get('game_session_id')
                         if session_exists(existing_session_id):
                             session_id = existing_session_id
-                            st.info(f"🔄 **Using existing session:** {session_id[:8]}...")
+                            # st.info(f"🔄 **Using existing session:** {session_id[:8]}...")
                         else:
                             # Session in state doesn't exist in DB, clear it
                             del st.session_state.game_session_id
@@ -523,7 +469,7 @@ def _handle_url_parameters():
                     if not session_id:
                         session_id = create_new_session()
                         st.session_state.game_session_id = session_id
-                        st.info(f"🆕 **Created new session:** {session_id[:8]}...")
+                        # st.info(f"🆕 **Created new session:** {session_id[:8]}...")
                     
                     # Allow URL navigation in both user and developer modes
                     current_mode = st.session_state.get('app_mode')
@@ -533,7 +479,7 @@ def _handle_url_parameters():
                         st.session_state.app_mode = "user"
                         st.session_state.use_rubric = False  # User mode default
                         current_mode = "user"
-                        st.info("👤 **Auto-switched to User Mode** for URL navigation")
+                        # st.info("👤 **Auto-switched to User Mode** for URL navigation")
                     
                     # **FIX 2: Always unlock levels and sync session data**
                     # This ensures data is loaded even when jumping to the same level multiple times
@@ -584,13 +530,6 @@ def _handle_url_parameters():
                         # Calculate what was preserved vs what was added
                         user_progress = session_state_completed | database_completed  # All user progress
                         new_prerequisites = prerequisite_levels - user_progress  # Only new unlocks
-                        
-                        if user_progress:
-                            st.success(f"🚀 **{mode_display} Navigation:** Jumped to Level {target_level}")
-                            st.info(f"✅ **Your progress preserved:** {sorted(user_progress)} | **Prerequisites added:** {sorted(new_prerequisites)}")
-                        else:
-                            st.success(f"🚀 **{mode_display} Navigation:** Unlocked prerequisites and jumped to Level {target_level}")
-                            st.info(f"📋 **All levels unlocked:** {sorted(all_completed_levels)}")
                         
                         # **FIX 1: Clear gang_level after processing to prevent refresh issues**
                         # Always clear gang_level parameter after successful processing

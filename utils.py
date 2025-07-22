@@ -14,10 +14,8 @@ from config import (
     SCENARIOS_FOLDER,
     RECIPIENTS_FOLDER,
     RUBRICS_FOLDER,
-    DEFAULT_SCENARIO,
     DEFAULT_RECIPIENT_PROMPT,
-    DEFAULT_USE_RUBRIC,
-    USER_MODE_USE_RUBRIC
+    DEFAULT_USE_RUBRIC
 )
 
 
@@ -187,7 +185,6 @@ def extract_goal_achievement_score(evaluation_text: str) -> bool:
         return True
     else:
         return False
-    
 
 
 def format_scenario_content(scenario_content: str) -> str:

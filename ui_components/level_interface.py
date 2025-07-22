@@ -18,20 +18,24 @@ from .html_helpers import (
 
 def show_level_navigation(session_id: str, current_level: float):
     """Show level navigation controls"""
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 1, 1])
     
     with col1:
         _show_previous_level_button(session_id, current_level)
     
     with col2:
         level_display = create_level_display(current_level)
-        st.markdown(f"**🎮 {level_display}**")
+        st.markdown(f"<div style='text-align: center;'><strong>{level_display}</strong></div>", unsafe_allow_html=True)
+        # st.markdown(f"<strong>{level_display}</strong>", unsafe_allow_html=True)
     
     with col3:
-        _show_next_level_button(session_id, current_level)
+        # Create sub-columns to push the button to the right
+        _, _, button_col = st.columns([1, 1, 2.5])
+        with button_col:
+            _show_next_level_button(session_id, current_level)
     
     # Level progression info
-    st.info("🎯 **Level Progression**: Complete this level to unlock the next!")
+    # st.info("🎯 **Level Progression**: Complete this level to unlock the next!")
 
 
 def _show_previous_level_button(session_id: str, current_level: float):
@@ -46,6 +50,8 @@ def _show_previous_level_button(session_id: str, current_level: float):
         st.session_state.current_level = previous_level
         # Clean up stale level data
         clean_stale_level_data(previous_level, st.session_state)
+        # Clear Gmail inbox state to hide Brittany's email by default
+        _clear_gmail_inbox_state()
         # Auto-save progress
         save_session_progress(session_id, st.session_state.current_level, st.session_state.get('completed_levels', set()))
         
@@ -84,6 +90,8 @@ def _show_next_level_button(session_id: str, current_level: float):
         st.session_state.current_level = next_level
         # Clean up stale level data
         clean_stale_level_data(next_level, st.session_state)
+        # Clear Gmail inbox state to hide Brittany's email by default
+        _clear_gmail_inbox_state()
         # Auto-save progress
         save_session_progress(session_id, st.session_state.current_level, st.session_state.get('completed_levels', set()))
         
@@ -108,6 +116,21 @@ def _clear_url_navigation_state(level: float, session_id: str):
         pass
 
 
+def _clear_gmail_inbox_state():
+    """Clear Gmail inbox state to ensure proper navigation state on level changes"""
+    # Clear the state that controls whether the scenario email is shown
+    if 'show_scenario_email' in st.session_state:
+        del st.session_state.show_scenario_email
+    if 'selected_email' in st.session_state:
+        del st.session_state.selected_email
+    
+    # Clear Gmail-specific navigation state
+    if 'gmail_view' in st.session_state:
+        del st.session_state.gmail_view
+    if 'selected_email_id' in st.session_state:
+        del st.session_state.selected_email_id
+
+
 def _update_url_for_navigation(level: float, session_id: str):
     """Update URL parameters when navigating via buttons"""
     # This function is kept for backward compatibility but now calls the clearer version
@@ -127,7 +150,7 @@ def show_gmail_inbox_section(scenario_content: str, level: float):
     """Show the Gmail-like inbox interface instead of the traditional scenario section"""
     from .gmail_inbox import create_gmail_inbox
     
-    st.subheader("📧 Your Inbox")
+    # st.subheader("📧 Your Inbox")
     create_gmail_inbox(scenario_content, level)
 
 
@@ -135,19 +158,8 @@ def show_additional_emails(scenario_filename: str):
     """Show additional emails for a scenario"""
     from utils import get_all_additional_emails
     
-    # First check for forwarded emails (context emails)
-    forwarded_emails = get_all_additional_emails(scenario_filename)
-    
-    if forwarded_emails['has_emails']:
-        st.markdown(f"**{forwarded_emails['title']}**")
-        st.info(forwarded_emails['description'])
-        
-        for email_title, email_content in forwarded_emails['emails']:
-            with st.expander(email_title, expanded=False):
-                email_html = create_forwarded_email_display(email_content)
-                st.markdown(email_html, unsafe_allow_html=True)
-    
-    # Then check for multi-recipient context emails (Emily/Mark)
+    # Skip forwarded emails since they're now shown within Brittany's email in the Gmail inbox
+    # Only check for multi-recipient context emails (Emily/Mark)
     if is_multi_recipient_scenario(scenario_filename):
         _show_multi_recipient_emails(scenario_filename)
 
@@ -172,88 +184,24 @@ def _show_multi_recipient_emails(scenario_filename: str):
             st.markdown(mark_html, unsafe_allow_html=True)
 
 
-def create_email_input_section(level: float, api_keys_available: bool):
-    """Create email input section for single-turn levels"""
-    st.subheader("✍️ Your Email")
-    
-    # Determine input type based on level
-    if level == 2:
-        return _create_level_2_email_input(level)
-    else:
-        return _create_standard_email_input(level)
-
-
-def _create_level_2_email_input(level: float):
-    """Create email input for Level 2 (multi-recipient)"""
-    scenario_filename = st.session_state.get('selected_scenario_file', '')
-    is_multi_recipient = is_multi_recipient_scenario(scenario_filename)
-    
-    if is_multi_recipient:
-        st.info("📝 **Level 2**: Write a single email that will be sent to both Emily and Mark.")
-        placeholder_text = "Type your email response that addresses both Emily's and Mark's concerns..."
-        help_text = "Write an email that will resolve the conflict between Emily and Mark"
-    else:
-        st.info("📝 **Level 2**: Write an email that addresses the situation described in the scenario.")
-        placeholder_text = "Type your email response that addresses the situation..."
-        help_text = "Write an email that addresses the situation described in the scenario"
-    
-    return _create_email_textarea(level, placeholder_text, help_text)
-
-
-def _create_standard_email_input(level: float):
-    """Create standard email input for single-turn levels"""
-    placeholder_text = "Type your email response to the scenario above..."
-    help_text = "Write the best email you can for the given scenario"
-    
-    return _create_email_textarea(level, placeholder_text, help_text)
-
-
-def _create_email_textarea(level: float, placeholder_text: str, help_text: str):
-    """Create email textarea with pre-populated content if available"""
-    # Pre-populate email if returning to a completed level
-    initial_email_value = ""
-    if level in st.session_state.get('level_emails', {}):
-        level_emails = st.session_state.level_emails[level]
-        if isinstance(level_emails, str):
-            initial_email_value = level_emails
-        elif isinstance(level_emails, dict) and level_emails:
-            # If somehow stored as dict, use the first value
-            initial_email_value = list(level_emails.values())[0]
-    
-    return st.text_area(
-        "Write your email here" if level != 2 else "Write your email response:",
-        value=initial_email_value,
-        height=400 if level != 2 else 350,
-        max_chars=EMAIL_MAX_CHARS,
-        placeholder=placeholder_text,
-        help=help_text,
-        key=f"email_input_level_{level}"
-    )
+# def create_email_input_section(level: float, api_keys_available: bool):
+#     """Create email input section for single-turn levels"""
+#     # Import the shared component
+#     from .shared_components import create_level_email_input
+#     return create_level_email_input(level, api_keys_available)
 
 
 def create_submit_button(api_keys_available: bool, email_content: str):
     """Create submit button for email submission"""
-    st.markdown("---")
-    return st.button(
-        "📝 Send",
-        type="primary",
-        disabled=not api_keys_available or not email_content.strip(),
-        help="Submit your email for AI evaluation"
-    )
+    # Import the shared component
+    from .shared_components import create_submit_button as shared_submit_button
+    return shared_submit_button(api_keys_available, email_content)
 
 
 def show_level_progression_logic(level: float):
     """Show level-specific progression logic"""
-    if level in MULTI_TURN_LEVELS:
-        st.info(f"📧 **Multi-turn Level**: This level supports up to {MAX_TURNS} conversation turns with Adam.")
-    elif level == 2:
-        st.info("💼 **Level 2**: Navigate complex multi-stakeholder communication.")
-    elif level == 3:
-        st.info("🎯 **Level 3**: Choose your strategy wisely - some approaches may lead to additional challenges!")
-    elif level == 3.5:
-        st.warning("⚠️ **Challenge Level 3.5**: Forbidden strategies (layoffs, salary increases) are not allowed here!")
-    elif level == 5:
-        st.info("🏆 **Final Level**: Demonstrate mastery of all communication skills.")
+    from .shared_components import create_level_info_message
+    create_level_info_message(level)
 
 
 def get_scenario_data(level: float, available_scenarios: dict):

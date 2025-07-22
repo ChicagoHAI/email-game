@@ -28,7 +28,8 @@ def _show_turn_display(turn_data: dict, session_id: str, level: float):
     
     # User email - make it editable for turn invalidation
     # Add some top padding for better visual separation
-    st.markdown("<div style='padding-top: 20px;'></div>", unsafe_allow_html=True)
+    from .shared_components import add_padding
+    add_padding(20)
     
     col1, col2 = st.columns([4, 1])
     
@@ -63,7 +64,7 @@ def _show_turn_edit_form(turn_data: dict, session_id: str, level: float, edit_ke
     with col1:
         if st.button("💾 Save", key=f"save_turn_{turn_num}", type="primary"):
             # Update turn and clear future turns
-            from ui_user_refactored import handle_turn_edit
+            from ui_user import handle_turn_edit
             # Exit edit mode before calling handle_turn_edit
             st.session_state[edit_key] = False
             handle_turn_edit(session_id, level, turn_num, edited_email)
@@ -89,7 +90,8 @@ def _show_turn_display_only(turn_data: dict):
     
     # Show if goal was achieved in this turn
     if turn_data['goal_achieved']:
-        st.success(f"🎯 **Goal achieved in Turn {turn_data['turn_number']}!**")
+        from .shared_components import show_goal_achieved
+        show_goal_achieved(turn_data['turn_number'])
 
 
 def show_turn_status(session_id: str, level: float, max_turns: int):
@@ -127,15 +129,9 @@ def get_current_turn_info(session_id: str, level: float):
 
 def create_turn_email_input(level: float, current_turn: int, max_turns: int):
     """Create email input for multi-turn levels"""
-    return st.text_area(
-        f"Write your email to Adam (Turn {current_turn}):",
-        value="",
-        height=400,
-        max_chars=EMAIL_MAX_CHARS,
-        placeholder="Continue the conversation with Adam. Try to understand what's really bothering him...",
-        help="Write an email that helps Adam open up about his true concerns",
-        key=f"email_input_level_{level}_turn_{current_turn}"
-    )
+    # Import the shared component
+    from .shared_components import create_turn_email_input as shared_turn_input
+    return shared_turn_input(level, current_turn, max_turns)
 
 
 def handle_turn_restart(session_id: str, level: float):
@@ -152,8 +148,10 @@ def handle_turn_restart(session_id: str, level: float):
     success = clear_level_data(session_id, level)
     
     if success:
-        st.success(f"🔄 Level {level} restarted! You can now try again.")
+        from .shared_components import show_level_restart_success
+        show_level_restart_success(level)
     else:
-        st.error("❌ Failed to restart level. Please try again.")
+        from .shared_components import show_level_restart_error
+        show_level_restart_error()
     
     return success 
