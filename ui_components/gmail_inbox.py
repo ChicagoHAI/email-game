@@ -10,6 +10,24 @@ Contains all email-related functionality including:
 import streamlit as st
 from datetime import datetime, timedelta
 
+# =============================================================================
+# ROW SPACING CUSTOMIZATION
+# =============================================================================
+# Control spacing between email rows by adjusting these values:
+ROW_PADDING = "8px 16px"        # Internal padding of each row
+ROW_HEIGHT = "48px"             # Height of each row  
+ROW_GAP = "0px"                 # Space between rows (keep at 0px for tight spacing)
+
+# Quick presets - uncomment to use:
+# Extra tight:
+# ROW_PADDING = "4px 12px"
+# ROW_HEIGHT = "32px"
+
+# Comfortable:
+# ROW_PADDING = "12px 16px"  
+# ROW_HEIGHT = "56px"
+# =============================================================================
+
 
 def create_gmail_inbox(scenario_content: str, level: float):
     """
@@ -100,97 +118,140 @@ def show_inbox_view(scenario_content: str, level: float):
     unread_count = sum(1 for email in emails if email['unread'])
     header_html = f'''
     <div class="inbox-header">
-        <span>📧 Inbox</span>
-        <span class="inbox-count">{unread_count} unread</span>
+        <span style="font-size: 18px; font-weight: 600;">📧 Inbox</span>
+        <span class="inbox-count" style="font-size: 14px; color: #5f6368;">{unread_count} unread</span>
     </div>
     '''
     st.markdown(header_html, unsafe_allow_html=True)
     
-    # Display email rows
-    for i, email in enumerate(emails):
-        email_key = f"email_{i}"
-        
-        # Create email row
-        star_icon = "⭐" if email['starred'] else "☆"
-        
-        # Create button label with email info
-        button_label = f"{star_icon} **{email['sender']}** | {email['subject']} - {email['snippet'][:50]}... | {email['time']}"
-        
-        # Style for tighter rows
-        button_style = f"""
-        <style>
-        div[data-testid="stButton"] > button[data-testid="baseButton-secondary"] {{
-            width: 100%;
-            text-align: left;
-            padding: 1px 12px !important;
-            margin: 0 !important;
-            border: none;
-            border-bottom: 1px solid #e0e0e0;
-            background-color: {'#ffffff' if email['unread'] else '#fafafa'};
-            font-weight: {'600' if email['unread'] else 'normal'};
-            font-size: 13px;
-            color: #202124;
-            border-radius: 0;
-            min-height: 22px !important;
-            height: 22px !important;
-            line-height: 1.2 !important;
-        }}
-        
-        div[data-testid="stButton"] > button[data-testid="baseButton-secondary"]:hover {{
-            background-color: #f5f5f5;
-            border-color: #e0e0e0;
-        }}
-        
-        div[data-testid="stButton"] {{
-            margin-bottom: 0 !important;
-        }}
-        </style>
-        """
-        st.markdown(button_style, unsafe_allow_html=True)
-        
-        if i == 0:  # First email (Brittany's) - clickable
-            if st.button(
-                button_label,
-                key=email_key,
-                help=f"Click to open email from {email['sender']}",
-                use_container_width=True
-            ):
-                # Navigate to email view
-                st.session_state.gmail_view = 'email'
-                st.session_state.selected_email_id = i
-                st.session_state.show_scenario_email = True  # For compatibility with existing logic
-                st.rerun()
-        else:  # Other emails - read-only (display as disabled button)
-            disabled_style = f"""
-            <style>
-            div[data-testid="stButton"] > button[data-testid="baseButton-secondary"]:disabled {{
-                background-color: #fafafa;
-                color: #9aa0a6;
-                cursor: not-allowed;
-                opacity: 0.7;
-                padding: 1px 12px !important;
-                margin: 0 !important;
-                min-height: 22px !important;
-                height: 22px !important;
-                line-height: 1.2 !important;
-            }}
-            
-            div[data-testid="stButton"] {{
-                margin-bottom: 0 !important;
-            }}
-            </style>
-            """
-            st.markdown(disabled_style, unsafe_allow_html=True)
-            
-            st.button(
-                button_label,
-                key=email_key,
-                help="This email is read-only in the demo",
-                use_container_width=True,
-                disabled=True
-            )
+    # Use clean HTML generation for tight email rows
     
+    # First add the CSS styling
+    st.markdown(f"""
+    <style>
+    .tight-email-container {{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: {ROW_GAP};
+        width: 100%;
+    }}
+    
+    .email-row {{
+        display: flex;
+        align-items: center;
+        padding: {ROW_PADDING};
+        height: {ROW_HEIGHT};
+        border-bottom: 1px solid #e0e0e0;
+        background-color: #ffffff;
+        font-weight: normal;
+        font-size: 15px;
+        color: #202124;
+        transition: background-color 0.2s ease;
+        user-select: none;
+        position: relative;
+    }}
+    
+    .email-row.readonly {{
+        background-color: #fafafa;
+        font-weight: normal;
+        color: #9aa0a6;
+        opacity: 0.7;
+    }}
+    
+    .email-row:hover {{
+        background-color: #f5f5f5;
+    }}
+    
+    .email-star {{
+        margin-right: 12px;
+        font-size: 16px;
+        min-width: 20px;
+        display: inline-block;
+        text-align: center;
+    }}
+    
+    .star-empty {{
+        font-size: 20px;
+        transform: scale(1.1);
+    }}
+    
+    .email-content {{
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: normal;
+    }}
+    
+    .email-content strong {{
+        font-weight: 600;
+        font-size: 15px;
+    }}
+    
+    .email-time {{
+        margin-left: auto;
+        padding-left: 16px;
+        font-size: 14px;
+        color: #5f6368;
+        min-width: 80px;
+        text-align: right;
+    }}
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Open the container
+    st.markdown('<div class="tight-email-container">', unsafe_allow_html=True)
+    
+    # Render each email row individually to ensure proper HTML rendering
+    for i, email in enumerate(emails):
+        star_icon = "⭐" if email['starred'] else '<span class="star-empty">☆</span>'
+        readonly_class = "readonly" if i > 0 else ""
+        
+        # Render each row separately
+        st.markdown(f"""
+        <div class="email-row {readonly_class}" data-email-id="{i}">
+            <span class="email-star">{star_icon}</span>
+            <span class="email-content">
+                <strong>{email['sender']}</strong> | {email['subject']} - {email['snippet'][:50]}...
+            </span>
+            <span class="email-time">{email['time']}</span>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Close the container
     st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Button styling
+    st.markdown("""
+    <style>
+    .stButton > button {
+        background-color: #52a1eb !important;
+        color: white !important;
+        border: none !important;
+        font-size: 13px !important;
+        padding: 8px 16px !important;
+        border-radius: 4px !important;
+        height: auto !important;
+    }
+    .stButton > button:hover {
+        background-color: #3367d6 !important;
+        color: white !important;
+    }
+    .stButton > button:focus {
+        background-color: #52a1eb !important;
+        color: white !important;
+        box-shadow: none !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Simple, reliable button to open Brittany's email
+    if st.button("Open Brittany's Email", use_container_width=False, type="primary"):
+        st.session_state.gmail_view = 'email'
+        st.session_state.selected_email_id = 0
+        st.session_state.show_scenario_email = True
+        st.rerun()
 
 
 def show_email_view(scenario_content: str, level: float, email_id: int):
@@ -349,7 +410,7 @@ def _get_email_data(scenario_content: str, level: float):
             'subject': 'Budget Approval Request',
             'snippet': 'Please review and approve the budget allocation for the next quarter...',
             'time': 'Yesterday',
-            'unread': True,
+            'unread': False,
             'starred': False
         },
         {
@@ -358,7 +419,7 @@ def _get_email_data(scenario_content: str, level: float):
             'snippet': 'Team, we need to schedule our next sprint planning session for...',
             'time': '2 days ago',
             'unread': False,
-            'starred': True
+            'starred': False
         },
         # {
         #     'sender': 'Customer Success',

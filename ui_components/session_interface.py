@@ -30,16 +30,16 @@ def show_session_selection_screen():
         _show_resume_session_option()
     
     # Helpful information section
-    st.markdown("---")
-    _show_session_info_section()
+    # st.markdown("---")
+    # _show_session_info_section()
 
 
 def _show_new_session_option():
     """Show the new session creation option"""
-    st.markdown("### Start New Session")
-    st.markdown("Begin a new game session.")
+    st.markdown("### New Game")
+    # st.markdown("Begin a new game session.")
     
-    if st.button("🚀 Start New Session", type="primary", use_container_width=True):
+    if st.button("Start A New Game", type="primary", use_container_width=True):
         try:
             # Create new session
             new_session_id = create_new_session()
@@ -66,17 +66,17 @@ def _show_new_session_option():
 
 def _show_resume_session_option():
     """Show the resume session option"""
-    st.markdown("### Resume Session")
-    st.markdown("Continue an existing game session using your Session ID.")
+    st.markdown("### Resume Game")
+    # st.markdown("Continue an existing game session using your Session ID.")
     
     # Session ID input
     resume_session_id = st.text_input(
-        "Enter your Session ID:",
+        "Enter your game session ID:",
         placeholder="e.g., da4fe9bc-042b-4533-8a60-68f63773eebd",
-        help="Enter the Session ID from a previous session"
+        help="Enter the session ID from a previous game"
     )
     
-    if st.button("▶️ Resume Session", disabled=not resume_session_id.strip(), use_container_width=True):
+    if st.button("Resume Game", disabled=not resume_session_id.strip(), use_container_width=True):
         resume_session_id = resume_session_id.strip()
         
         if session_exists(resume_session_id):
@@ -94,8 +94,8 @@ def _show_resume_session_option():
                     st.session_state.strategy_analysis = session_data.get('strategy_analysis', {})
                     st.session_state.use_rubric = session_data['use_rubric']
                     
-                    st.success(f"✅ Session resumed successfully!")
-                    st.info(f"📊 Progress: {len(session_data['completed_levels'])} levels completed")
+                    # st.success(f"✅ Session resumed successfully!")
+                    # st.info(f"📊 Progress: {len(session_data['completed_levels'])} levels completed")
                     
                     # Rerun to show the game interface
                     st.rerun()
@@ -143,7 +143,7 @@ def show_session_header(session_id: str):
                 st.rerun()
     
     with col3:
-        if st.button("🆕 New Session", help="Start a fresh session"):
+        if st.button("New Session", help="Start a fresh session"):
             # Clear current session and return to selection screen
             if 'game_session_id' in st.session_state:
                 del st.session_state.game_session_id

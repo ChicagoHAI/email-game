@@ -451,6 +451,100 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
             
             # Extract goal achievement
             goal_achieved = extract_goal_achievement_score(evaluation)
+            original_goal_achieved = goal_achieved  # Store original result before adversarial check
+            
+            # Consistency validation - only run if email passed (to keep game efficient)
+            consistency_result = None
+            if goal_achieved:
+                with st.status("Validating email consistency (anti-adversarial check)...", expanded=False) as status:
+                    if is_multi_recipient:
+                        # Multi-recipient: validate against all personas at evaluation level
+                        recipients = get_scenario_recipients(scenario_filename)
+                        recipient_results = {}
+                        
+                        for recipient_name, recipient_prompt in recipients.items():
+                            recipient_consistency = ai_services['email_recipient'].validate_email_consistency(
+                                email_content, recipient_prompt, scenario, rubric,
+                                scenario_filename=scenario_filename, model=model, num_paraphrases=3
+                            )
+                            if recipient_consistency:
+                                recipient_results[recipient_name] = recipient_consistency
+                        
+                        if recipient_results:
+                            # Calculate overall consistency (average across recipients)
+                            recipient_scores = [result['consistency_score'] for result in recipient_results.values()]
+                            overall_consistency = sum(recipient_scores) / len(recipient_scores) if recipient_scores else 0
+                            is_consistent = overall_consistency >= 0.7
+                            
+                            # Generate combined analysis
+                            analysis_parts = [
+                                f"Multi-recipient email consistency validation results:",
+                                f"- Overall consistency score: {overall_consistency:.2%}",
+                                f"- Assessment: {'CONSISTENT' if is_consistent else 'INCONSISTENT'}",
+                                ""
+                            ]
+                            
+                            # Add per-recipient breakdown
+                            for recipient_name, result in recipient_results.items():
+                                consistency = result['consistency_score']
+                                analysis_parts.append(
+                                    f"- {recipient_name.title()}: {consistency:.2%} consistent "
+                                    f"({'✅' if result['is_consistent'] else '❌'})"
+                                )
+                            
+                            analysis_parts.append("")
+                            
+                            if not is_consistent:
+                                analysis_parts.append(
+                                    f"- Warning: This email may be using adversarial techniques "
+                                    f"that don't work consistently across recipients when paraphrased."
+                                )
+                            else:
+                                analysis_parts.append(
+                                    f"- This email appears to achieve its goal through genuine "
+                                    f"effective communication with both recipients."
+                                )
+                            
+                            combined_analysis = "\n".join(analysis_parts)
+                            
+                            # Create combined result structure
+                            consistency_result = {
+                                'consistency_score': overall_consistency,
+                                'is_consistent': is_consistent,
+                                'analysis': combined_analysis,
+                                'recipient_results': recipient_results,
+                                'original_outcome': "PASS"
+                            }
+                    else:
+                        # Single recipient: get correct prompt
+                        if st.session_state.get("selected_scenario_file"):
+                            recipient_prompt = load_recipient_prompt(st.session_state.selected_scenario_file)
+                        else:
+                            recipient_prompt = DEFAULT_RECIPIENT_PROMPT
+                        
+                        consistency_result = ai_services['email_recipient'].validate_email_consistency(
+                            email_content, recipient_prompt, scenario, rubric,
+                            scenario_filename=scenario_filename, model=model, num_paraphrases=3
+                        )
+                    
+                    if consistency_result:
+                        consistency_score = consistency_result['consistency_score']
+                        is_consistent = consistency_result['is_consistent']
+                        
+                        # INCORPORATE CONSISTENCY CHECK INTO FINAL OUTCOME
+                        # If email passes initial evaluation but fails consistency check,
+                        # treat it as an overall failure due to adversarial techniques
+                        if not is_consistent:
+                            goal_achieved = False  # Override goal achievement if consistency check fails
+                            status_text = f"❌ Consistency check failed! Score: {consistency_score:.1%} - Email fails due to adversarial techniques"
+                        else:
+                            status_text = f"✅ Consistency check passed! Score: {consistency_score:.1%}"
+                        
+                        status.update(label=status_text, state="complete")
+                    else:
+                        status.update(label="⚠️ Consistency check failed", state="error")
+                        # If consistency check fails to run, treat as failure for security
+                        goal_achieved = False
             
             # Strategy detection for Level 3 conditional progression
             strategy_analysis = None
@@ -459,6 +553,12 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
                     strategy_analysis = detect_forbidden_strategies(email_content, model)
                     status.update(label="✅ Strategy analysis complete!", state="complete")
             
+            # Store consistency result in session state for display
+            if consistency_result:
+                if 'consistency_data' not in st.session_state:
+                    st.session_state.consistency_data = {}
+                st.session_state.consistency_data[level] = consistency_result
+            
             # Prepare evaluation data
             evaluation_data = {
                 "scenario": scenario,
@@ -466,7 +566,10 @@ def process_email_evaluation_user_mode_inline(scenario, email_content, model, le
                 "recipient_reply": recipient_reply,
                 "rubric": rubric,
                 "evaluation": evaluation,
-                "goal_achieved": goal_achieved
+                "goal_achieved": goal_achieved,
+                "original_goal_achieved": original_goal_achieved,
+                "consistency_result": consistency_result,
+                "failed_adversarial_check": original_goal_achieved and not goal_achieved
             }
             
             if strategy_analysis:
@@ -515,15 +618,9 @@ def process_email_evaluation_user_mode_multi_turn(scenario, email_content, model
             # Get conversation history to build context
             conversation_history = get_conversation_history(session_id, level)
             
-            # Build conversation context for Adam
-            conversation_context = ""
-            if conversation_history:
-                conversation_context = "\n\nPrevious conversation:\n"
-                for turn_data in conversation_history:
-                    conversation_context += f"\nTurn {turn_data['turn_number']}:\n"
-                    conversation_context += f"HR: {turn_data['email_content']}\n"
-                    if turn_data['recipient_reply']:
-                        conversation_context += f"Adam: {turn_data['recipient_reply']}\n"
+            # Build conversation context for Adam using utility function
+            from utils import build_conversation_context
+            conversation_context = build_conversation_context(conversation_history)
             
             # Step 1: Generate Adam's reply
             scenario_file = st.session_state.get('selected_scenario_file', 'scenario_5.4.txt')
@@ -593,12 +690,63 @@ def process_email_evaluation_user_mode_multi_turn(scenario, email_content, model
                 st.error(f"Error extracting goal achievement: {e}")
                 goal_achieved = False  # Default to False if extraction fails
             
+            original_goal_achieved = goal_achieved  # Store original result before adversarial check
+            
+            # Step 5.5: Consistency validation for multi-turn - only run if email passed
+            consistency_result = None
+            if goal_achieved:
+                with st.status("Validating email consistency (anti-adversarial check)...", expanded=False) as status:
+                    # Get conversation history for context (same as normal evaluation)
+                    conversation_history = get_conversation_history(session_id, level)
+                    
+                    # Get recipient prompt and build contextualized prompt
+                    scenario_file = st.session_state.get('selected_scenario_file', 'scenario_5.4.txt')
+                    recipient_prompt = load_recipient_prompt(scenario_file)
+                    if not recipient_prompt:
+                        status.update(label="⚠️ Failed to load recipient prompt for consistency check", state="error")
+                        # If consistency check fails to run, treat as failure for security
+                        goal_achieved = False
+                    else:
+                        consistency_result = ai_services['email_recipient'].validate_email_consistency_multi_turn(
+                            email_content, recipient_prompt, scenario, rubric,
+                            scenario_filename=scenario_file, model=model, num_paraphrases=3,
+                            conversation_history=conversation_history, session_id=session_id, level=level
+                        )
+                        
+                        if consistency_result:
+                            consistency_score = consistency_result['consistency_score']
+                            is_consistent = consistency_result['is_consistent']
+                            
+                            # INCORPORATE CONSISTENCY CHECK INTO FINAL OUTCOME
+                            # If email passes initial evaluation but fails consistency check,
+                            # treat it as an overall failure due to adversarial techniques
+                            if not is_consistent:
+                                goal_achieved = False  # Override goal achievement if consistency check fails
+                                status_text = f"❌ Consistency check failed! Score: {consistency_score:.1%} - Email fails due to adversarial techniques"
+                            else:
+                                status_text = f"✅ Consistency check passed! Score: {consistency_score:.1%}"
+                            
+                            status.update(label=status_text, state="complete")
+                        else:
+                            status.update(label="⚠️ Consistency check failed", state="error")
+                            # If consistency check fails to run, treat as failure for security
+                            goal_achieved = False
+            
+            # Store consistency result in session state for display
+            if consistency_result:
+                if 'consistency_data' not in st.session_state:
+                    st.session_state.consistency_data = {}
+                st.session_state.consistency_data[level] = consistency_result
+            
             # Step 6: Save evaluation result to database
             evaluation_data = {
                 "evaluation": evaluation,
                 "recipient_reply": recipient_reply,
                 "rubric": rubric,
-                "goal_achieved": goal_achieved
+                "goal_achieved": goal_achieved,
+                "original_goal_achieved": original_goal_achieved,
+                "consistency_result": consistency_result,
+                "failed_adversarial_check": original_goal_achieved and not goal_achieved
             }
             
             try:
@@ -720,11 +868,16 @@ def process_email_evaluation_user_mode_multi_turn(scenario, email_content, model
                 unsafe_allow_html=True
             )
             
-            # Show goal achievement status clearly
+            # Show goal achievement status clearly with adversarial check context
             if goal_achieved:
                 st.success("🎯 **Goal Achieved!** - Level will be marked as complete")
             else:
-                st.warning("⚠️ **Goal Not Achieved** - Conversation continues")
+                # Check if this was a failure due to adversarial check vs original evaluation
+                if original_goal_achieved and consistency_result and not consistency_result.get('is_consistent', True):
+                    st.error("❌ **Email Failed Adversarial Check** - Your email appeared to work initially but failed when tested with paraphrased versions, suggesting it may rely on adversarial techniques rather than genuine persuasion.")
+                    st.info("💡 Try writing an email that would be effective even if the wording were slightly changed.")
+                else:
+                    st.warning("⚠️ **Goal Not Achieved** - Conversation continues")
                 
                 # Show hint for continuing the conversation
                 if turn_number < MAX_TURNS:

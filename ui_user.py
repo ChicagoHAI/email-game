@@ -60,8 +60,121 @@ from ui_components.shared_components import (
 )
 
 
+def apply_background_image():
+    """Apply background image styling to the Streamlit app"""
+    base64_image = _get_base64_image()
+    
+    css_style = f"""
+    <style>
+    /* Set background image for the entire app with overlay */
+    .stApp {{
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+            url("data:image/jpeg;base64,{base64_image}");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    
+    /* Main app content area - make it fully opaque with strong shadows */
+    .main .block-container {{
+        background: rgb(255, 255, 255);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 1rem;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }}
+    
+    /* Sidebar styling with darker shadows */
+    .css-1d391kg {{
+        background: rgb(255, 255, 255);
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.2);
+    }}
+    
+    /* Header styling with darker shadows */
+    .css-1y0tads {{
+        background: rgb(255, 255, 255);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }}
+    
+    /* Add shadows to text areas and inputs */
+    .stTextArea textarea, .stTextInput input, .stSelectbox select {{
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }}
+    
+    /* Add shadows to metric containers */
+    .metric-container, [data-testid="metric-container"] {{
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        border-radius: 8px !important;
+        background: rgb(255, 255, 255) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }}
+    
+    /* Add shadows to expander containers */
+    .streamlit-expanderHeader, .streamlit-expanderContent {{
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }}
+    
+    /* Add shadows to alert boxes */
+    .stAlert {{
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }}
+    
+    /* Ensure text remains dark and readable */
+    .stMarkdown, .stText {{
+        color: #1a1a1a;
+    }}
+    
+    /* Make all buttons more visible with darker shadows */
+    .stButton button {{
+        opacity: 1 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }}
+    
+    .stButton button:hover {{
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+    }}
+    
+    /* Form submit buttons with darker shadows */
+    .stFormSubmitButton button {{
+        opacity: 1 !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+        border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    }}
+    </style>
+    """
+    
+    st.markdown(css_style, unsafe_allow_html=True)
+
+
+def _get_base64_image():
+    """Convert the office.jpg image to base64 for CSS embedding"""
+    import base64
+    import os
+    
+    image_path = os.path.join(os.path.dirname(__file__), "images", "office_3.png")
+    
+    try:
+        with open(image_path, "rb") as image_file:
+            return base64.b64encode(image_file.read()).decode()
+    except FileNotFoundError:
+        st.warning("Background image not found. Using default styling.")
+        return ""
+
+
 def show_user_interface_with_levels(available_scenarios, api_keys_available):
     """Main entry point for user mode - handles session selection and game interface"""
+    
+    # Apply background image styling
+    apply_background_image()
     
     # Check if user has a valid session
     game_session_id = st.session_state.get('game_session_id')
@@ -387,18 +500,8 @@ def re_evaluate_existing_turn(session_id: str, level: float, turn_number: int,
 
 def _build_conversation_context(conversation_history, turn_number):
     """Build conversation context for re-evaluation"""
-    conversation_context = ""
-    
-    if conversation_history:
-        conversation_context = "\n\nPrevious conversation:\n"
-        for turn_data in conversation_history:
-            if turn_data['turn_number'] < turn_number:
-                conversation_context += f"\nTurn {turn_data['turn_number']}:\n"
-                conversation_context += f"HR: {turn_data['email_content']}\n"
-                if turn_data['recipient_reply']:
-                    conversation_context += f"Adam: {turn_data['recipient_reply']}\n"
-    
-    return conversation_context
+    from utils import build_conversation_context
+    return build_conversation_context(conversation_history, current_turn_number=turn_number)
 
 
 def _generate_evaluation(email_evaluator, rubric_generator, scenario_content, 

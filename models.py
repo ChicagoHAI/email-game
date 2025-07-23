@@ -318,6 +318,376 @@ class EmailRecipient:
                 'replies': replies,
                 'evaluations': evaluations
             }
+    
+    def validate_email_consistency(self, user_email: str, recipient_prompt: str,
+                                 scenario: str, rubric: str = None,
+                                 scenario_filename: str = None,
+                                 model: str = DEFAULT_MODEL,
+                                 num_paraphrases: int = 3) -> dict:
+        """
+        Validate email consistency by paraphrasing and testing outcomes.
+        
+        This method helps prevent adversarial hacking by testing if paraphrased
+        versions of a successful email still achieve consistent outcomes.
+        Should be called AFTER an email passes the majority vote.
+        
+        Args:
+            user_email: The original user email that passed majority vote
+            recipient_prompt: The recipient persona prompt
+            scenario: The scenario context
+            rubric: Optional evaluation rubric
+            scenario_filename: Scenario filename for evaluation context
+            model: Model to use for paraphrasing and evaluation
+            num_paraphrases: Number of paraphrases to generate and test
+            
+        Returns:
+            dict: {
+                'consistency_score': float,       # Ratio of consistent outcomes (0-1)
+                'paraphrases': list,             # Generated paraphrases
+                'original_outcome': str,         # Original email outcome (always "PASS")
+                'paraphrase_outcomes': list,     # Outcomes for each paraphrase
+                'paraphrase_replies': list,      # Recipient replies to paraphrases
+                'is_consistent': bool,           # True if consistency_score >= 0.7
+                'analysis': str                  # Summary of consistency analysis
+            }
+        """
+        try:
+            # Since this is called AFTER majority vote passes, we know the original outcome is PASS
+            original_outcome = "PASS"
+            
+            # Generate paraphrases of the user email
+            paraphrases = self._generate_email_paraphrases(user_email, model, num_paraphrases)
+            if not paraphrases:
+                return None
+            
+            # Test each paraphrase with concurrent reply generation and evaluation
+            def test_single_paraphrase(paraphrase):
+                """Test a single paraphrase and return outcome and reply."""
+                try:
+                    # Generate reply to paraphrase
+                    reply = self.generate_reply(recipient_prompt, paraphrase, model)
+                    if reply:
+                        # Evaluate the paraphrased email
+                        from models import EmailEvaluator
+                        from utils import extract_goal_achievement_score
+                        evaluator = EmailEvaluator()
+                        
+                        evaluation = evaluator.evaluate_email(
+                            scenario, paraphrase, rubric, reply, model,
+                            scenario_filename=scenario_filename
+                        )
+                        
+                        if evaluation:
+                            outcome = "PASS" if extract_goal_achievement_score(evaluation) else "FAIL"
+                        else:
+                            outcome = "FAIL"
+                    else:
+                        outcome = "FAIL"
+                        reply = None
+                    
+                    return outcome, reply
+                except Exception as e:
+                    return "FAIL", None
+            
+            # Process all paraphrases concurrently
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(paraphrases), 8)) as executor:
+                future_to_paraphrase = {
+                    executor.submit(test_single_paraphrase, paraphrase): paraphrase
+                    for paraphrase in paraphrases
+                }
+                
+                paraphrase_outcomes = []
+                paraphrase_replies = []
+                
+                for future in concurrent.futures.as_completed(future_to_paraphrase):
+                    outcome, reply = future.result()
+                    paraphrase_outcomes.append(outcome)
+                    paraphrase_replies.append(reply)
+            
+            # Calculate consistency score
+            consistent_outcomes = sum(1 for outcome in paraphrase_outcomes 
+                                    if outcome == original_outcome)
+            consistency_score = consistent_outcomes / len(paraphrase_outcomes) if paraphrase_outcomes else 0
+            
+            # Determine if email is consistent (threshold: 70%)
+            is_consistent = consistency_score >= 0.7
+            
+            # Generate analysis summary
+            analysis = self._generate_consistency_analysis(
+                original_outcome, paraphrase_outcomes, consistency_score, is_consistent
+            )
+            
+            return {
+                'consistency_score': consistency_score,
+                'paraphrases': paraphrases,
+                'original_outcome': original_outcome,
+                'paraphrase_outcomes': paraphrase_outcomes,
+                'paraphrase_replies': paraphrase_replies,
+                'is_consistent': is_consistent,
+                'analysis': analysis
+            }
+            
+        except Exception as e:
+            st.error(f"Error validating email consistency: {str(e)}")
+            return None
+    
+    def _generate_email_paraphrases(self, user_email: str, model: str = DEFAULT_MODEL,
+                                  num_paraphrases: int = 3) -> list:
+        """Generate paraphrased versions of the user email while preserving intent."""
+        return self._generate_paraphrases_concurrent(user_email, model, num_paraphrases)
+    
+
+    
+    def _generate_paraphrases_concurrent(self, user_email: str, model: str = DEFAULT_MODEL,
+                                       num_paraphrases: int = 3) -> list:
+        """Generate paraphrases with concurrent individual API calls."""
+        def generate_single_paraphrase(user_email: str) -> str:
+            """Generate a single paraphrase with specific variation instruction."""
+            paraphrase_prompt = f"""
+            Please paraphrase the following email while preserving its core message, 
+            intent, and key information.
+            
+            Original email:
+            {user_email}
+            
+            Provide only the paraphrased version, no additional commentary.
+            """
+            
+            try:
+                response = self.client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": "You are an expert at paraphrasing text while preserving meaning and intent. Generate natural, varied paraphrases that maintain the original message's effectiveness."},
+                        {"role": "user", "content": paraphrase_prompt}
+                    ],
+                    temperature=0.5
+                )
+                return response.choices[0].message.content.strip()
+            except Exception as e:
+                return None
+        
+        # Different variation instructions to ensure diversity
+        # variation_instructions = [
+        #     # "Use more formal language and professional tone.",
+        #     # "Use more casual and conversational language.",
+        #     # "Restructure the sentences while keeping the same meaning.",
+        #     "Use different vocabulary but maintain the same level of formality.",
+        #     "Change the sentence structure and paragraph organization.",
+        #     "Use more concise language while preserving all key points.",
+        #     "Use more detailed explanations while maintaining the core message.",
+        #     "Change the opening and closing while keeping the main content."
+        # ]
+        
+        try:
+            # Use concurrent execution for individual paraphrases
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(num_paraphrases, 8)) as executor:
+                future_to_instruction = {
+                    executor.submit(generate_single_paraphrase, user_email): i
+                    for i in range(num_paraphrases)
+                }
+                
+                paraphrases = []
+                for future in concurrent.futures.as_completed(future_to_instruction):
+                    result = future.result()
+                    if result and len(result) > 20:  # Basic validation
+                        paraphrases.append(result)
+                
+                return paraphrases[:num_paraphrases]
+                
+        except Exception as e:
+            st.error(f"Error generating concurrent paraphrases: {str(e)}")
+            return []
+    
+    def _generate_consistency_analysis(self, original_outcome: str, 
+                                     paraphrase_outcomes: list,
+                                     consistency_score: float,
+                                     is_consistent: bool) -> str:
+        """Generate a human-readable analysis of consistency results."""
+        
+        total_paraphrases = len(paraphrase_outcomes)
+        consistent_count = sum(1 for outcome in paraphrase_outcomes 
+                             if outcome == original_outcome)
+        
+        analysis_parts = [
+            f"Email consistency validation results:",
+            f"- Original outcome: {original_outcome}",
+            f"- Paraphrases tested: {total_paraphrases}",
+            f"- Consistent outcomes: {consistent_count}/{total_paraphrases}",
+            f"- Consistency score: {consistency_score:.2%}",
+            f"- Assessment: {'CONSISTENT' if is_consistent else 'INCONSISTENT'}"
+        ]
+        
+        if not is_consistent:
+            analysis_parts.append(
+                f"- Warning: This email may be using adversarial techniques "
+                f"that don't work when paraphrased."
+            )
+        else:
+            analysis_parts.append(
+                f"- This email appears to achieve its goal through genuine "
+                f"effective communication rather than prompt exploitation."
+            )
+        
+        return "\n".join(analysis_parts)
+    
+
+    def validate_email_consistency_multi_turn(self, user_email: str, recipient_prompt: str,
+                                            scenario: str, rubric: str = None,
+                                            scenario_filename: str = None,
+                                            model: str = DEFAULT_MODEL,
+                                            num_paraphrases: int = 3,
+                                            conversation_history: list = None,
+                                            session_id: str = None,
+                                            level: float = None) -> dict:
+        """
+        Validate email consistency for multi-turn scenarios.
+        
+        Tests paraphrased emails with conversation context, matching the normal 
+        evaluation flow for multi-turn scenarios.
+        
+        Args:
+            user_email: The original user email that passed majority vote
+            recipient_prompt: The recipient persona prompt
+            scenario: The scenario context
+            rubric: Optional evaluation rubric
+            scenario_filename: Scenario filename for evaluation context
+            model: Model to use for paraphrasing and evaluation
+            num_paraphrases: Number of paraphrases to generate and test
+            conversation_history: Previous conversation turns for context
+            session_id: Session ID for context
+            level: Level number for context
+            
+        Returns:
+            dict: Consistency results with conversation context
+        """
+        try:
+            # Generate paraphrases of the user email
+            paraphrases = self._generate_email_paraphrases(user_email, model, num_paraphrases)
+            if not paraphrases:
+                return None
+            
+            # Build conversation context using utility function
+            from utils import build_conversation_context
+            conversation_context = build_conversation_context(conversation_history)
+            
+            # Create contextualized prompt (same as normal evaluation)
+            contextualized_prompt = recipient_prompt + conversation_context
+            
+            from models import EmailEvaluator
+            from utils import extract_goal_achievement_score
+            evaluator = EmailEvaluator()
+            
+            # Establish baseline with original email and context
+            original_contextualized_email_prompt = contextualized_prompt + f"\n\nNow respond to this new email from HR:\n{user_email}"
+            original_reply = self.generate_reply(contextualized_prompt, user_email, model)
+            if original_reply:
+                original_evaluation = evaluator.evaluate_email(
+                    scenario, user_email, rubric, original_reply, model,
+                    scenario_filename=scenario_filename
+                )
+                original_outcome = "PASS" if extract_goal_achievement_score(original_evaluation) else "FAIL"
+            else:
+                original_outcome = "FAIL"
+            
+            # Test each paraphrase with conversation context using concurrent processing
+            def test_multi_turn_paraphrase(paraphrase):
+                """Test a single paraphrase in multi-turn context."""
+                try:
+                    # Use contextualized prompt for paraphrase
+                    reply = self.generate_reply(contextualized_prompt, paraphrase, model)
+                    if reply:
+                        evaluation = evaluator.evaluate_email(
+                            scenario, paraphrase, rubric, reply, model,
+                            scenario_filename=scenario_filename
+                        )
+                        if evaluation:
+                            outcome = "PASS" if extract_goal_achievement_score(evaluation) else "FAIL"
+                        else:
+                            outcome = "FAIL"
+                    else:
+                        outcome = "FAIL"
+                        reply = None
+                    
+                    return outcome, reply
+                except Exception as e:
+                    return "FAIL", None
+            
+            # Process all paraphrases concurrently
+            with concurrent.futures.ThreadPoolExecutor(max_workers=min(len(paraphrases), 8)) as executor:
+                future_to_paraphrase = {
+                    executor.submit(test_multi_turn_paraphrase, paraphrase): paraphrase
+                    for paraphrase in paraphrases
+                }
+                
+                paraphrase_outcomes = []
+                paraphrase_replies = []
+                
+                for future in concurrent.futures.as_completed(future_to_paraphrase):
+                    outcome, reply = future.result()
+                    paraphrase_outcomes.append(outcome)
+                    paraphrase_replies.append(reply)
+            
+            # Calculate consistency score
+            consistent_outcomes = sum(1 for outcome in paraphrase_outcomes 
+                                    if outcome == original_outcome)
+            consistency_score = consistent_outcomes / len(paraphrase_outcomes) if paraphrase_outcomes else 0
+            is_consistent = consistency_score >= 0.7
+            
+            # Generate analysis with multi-turn context
+            analysis = self._generate_multi_turn_consistency_analysis(
+                original_outcome, paraphrase_outcomes, consistency_score, 
+                is_consistent, len(conversation_history) if conversation_history else 0
+            )
+            
+            return {
+                'consistency_score': consistency_score,
+                'paraphrases': paraphrases,
+                'original_outcome': original_outcome,
+                'paraphrase_outcomes': paraphrase_outcomes,
+                'paraphrase_replies': paraphrase_replies,
+                'is_consistent': is_consistent,
+                'analysis': analysis,
+                'conversation_context': conversation_context
+            }
+            
+        except Exception as e:
+            st.error(f"Error validating multi-turn email consistency: {str(e)}")
+            return None
+    
+
+    def _generate_multi_turn_consistency_analysis(self, original_outcome: str,
+                                                paraphrase_outcomes: list,
+                                                consistency_score: float,
+                                                is_consistent: bool,
+                                                num_previous_turns: int) -> str:
+        """Generate analysis for multi-turn consistency results."""
+        
+        total_paraphrases = len(paraphrase_outcomes)
+        consistent_count = sum(1 for outcome in paraphrase_outcomes 
+                             if outcome == original_outcome)
+        
+        analysis_parts = [
+            f"Multi-turn email consistency validation results:",
+            f"- Turn context: {num_previous_turns} previous turns",
+            f"- Original outcome: {original_outcome}",
+            f"- Paraphrases tested: {total_paraphrases}",
+            f"- Consistent outcomes: {consistent_count}/{total_paraphrases}",
+            f"- Consistency score: {consistency_score:.2%}",
+            f"- Assessment: {'CONSISTENT' if is_consistent else 'INCONSISTENT'}"
+        ]
+        
+        if not is_consistent:
+            analysis_parts.append(
+                f"- Warning: This email may be using adversarial techniques "
+                f"that don't work when paraphrased within the conversation context."
+            )
+        else:
+            analysis_parts.append(
+                f"- This email appears to achieve its goal through genuine "
+                f"effective communication that works consistently with conversation context."
+            )
+        
+        return "\n".join(analysis_parts)
 
 
 class RubricGenerator:

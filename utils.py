@@ -576,3 +576,33 @@ def has_game_master(scenario_filename: str) -> bool:
     """
     gm_prompt = load_game_master_prompt(scenario_filename)
     return bool(gm_prompt.strip())
+
+
+def build_conversation_context(conversation_history: list, current_turn_number: int = None) -> str:
+    """
+    Build conversation context string from conversation history.
+    
+    This function creates a formatted string representation of previous conversation
+    turns for use in multi-turn scenarios. It only includes turns before the current
+    turn number if specified.
+    
+    Args:
+        conversation_history: List of conversation turn dictionaries
+        current_turn_number: Current turn number (optional, for filtering)
+        
+    Returns:
+        str: Formatted conversation context string
+    """
+    conversation_context = ""
+    
+    if conversation_history:
+        conversation_context = "\n\nPrevious conversation:\n"
+        for turn_data in conversation_history:
+            # Include turn only if it's before current turn (if specified)
+            if current_turn_number is None or turn_data['turn_number'] < current_turn_number:
+                conversation_context += f"\nTurn {turn_data['turn_number']}:\n"
+                conversation_context += f"HR: {turn_data['email_content']}\n"
+                if turn_data['recipient_reply']:
+                    conversation_context += f"Adam: {turn_data['recipient_reply']}\n"
+    
+    return conversation_context

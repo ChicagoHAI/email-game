@@ -335,15 +335,15 @@ def create_level_display(level: float) -> str:
     """Create level display string"""
     if level == 0:
         return "Tutorial"
-    elif level == 2.5:
-        return "Challenge Level 2.5"
+    elif level == 3.5:
+        return "Challenge Level 3.5"
     else:
-        return f"Level {level}"
+        return f"Level {int(level)}"
 
 
 def create_success_message(level: float) -> str:
     """Create success message for level completion"""
-    if level == 2.5:
+    if level == 3.5:
         return "🎉 **Success!** You completed the challenge level!"
     else:
         return "🎉 **Success!** You persuaded the recipient and completed this level!"
@@ -352,7 +352,7 @@ def create_success_message(level: float) -> str:
 def create_strategy_warning() -> None:
     """Create strategy analysis warning display"""
     st.warning("⚠️ **Strategy Analysis**: You used forbidden strategies (layoffs or salary increases)!")
-    st.info("🎯 **Next Challenge**: You'll be directed to Level 2.5 where these strategies are prohibited.")
+    st.info("🎯 **Next Challenge**: You'll be directed to Level 3.5 where these strategies are prohibited.")
 
 
 def create_strategy_success() -> None:

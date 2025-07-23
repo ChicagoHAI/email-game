@@ -20,7 +20,7 @@ def show_level_navigation(session_id: str, current_level: float):
     
     with col2:
         level_display = create_level_display(current_level)
-        st.markdown(f"<div style='text-align: center;'><strong>{level_display}</strong></div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align: center; font-size: 20px;'><strong>{level_display}</strong></div>", unsafe_allow_html=True)
         # st.markdown(f"<strong>{level_display}</strong>", unsafe_allow_html=True)
     
     with col3:

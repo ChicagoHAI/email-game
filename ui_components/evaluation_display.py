@@ -35,6 +35,9 @@ def show_level_results(level: float):
     # DEBUG: Show persistent majority reply analysis (TODO: Remove after debugging)
     _show_debug_reply_analysis(level)
     
+    # DEBUG: Show consistency validation analysis for successful emails
+    show_consistency_analysis(level)
+    
     # Show the recipient reply(ies)
     _show_recipient_replies(result)
     
@@ -390,4 +393,104 @@ def _show_debug_reply_analysis(level: float):
                     )
                 
                 if i < len(all_replies) - 1:  # Not the last reply
+                    st.markdown("---")
+
+
+def show_consistency_analysis(level: float):
+    """Show consistency validation analysis for a level"""
+    consistency_data = st.session_state.get('consistency_data', {}).get(level)
+    
+    if not consistency_data:
+        return
+    
+    consistency_score = consistency_data.get('consistency_score', 0)
+    is_consistent = consistency_data.get('is_consistent', False)
+    analysis = consistency_data.get('analysis', '')
+    
+    # Determine expander color and icon based on consistency
+    if is_consistent:
+        expander_icon = "✅"
+        expander_title = f"Email Consistency Validation - CONSISTENT ({consistency_score:.1%})"
+    else:
+        expander_icon = "⚠️"
+        expander_title = f"Email Consistency Validation - POTENTIALLY ADVERSARIAL ({consistency_score:.1%})"
+    
+    with st.expander(f"{expander_icon} Debug: {expander_title}", expanded=False):
+        st.markdown(f"**Consistency Score:** `{consistency_score:.1%}`")
+        st.markdown(f"**Assessment:** {'CONSISTENT' if is_consistent else 'INCONSISTENT'}")
+        
+        if analysis:
+            st.markdown("**Analysis Summary:**")
+            st.text(analysis)
+        
+        if not is_consistent:
+            st.warning("⚠️ This email may be using adversarial techniques that don't work when paraphrased.")
+        else:
+            st.success("✅ This email appears to achieve its goal through genuine effective communication.")
+        
+        st.markdown("---")
+        
+        # Check if this is multi-recipient results
+        recipient_results = consistency_data.get('recipient_results')
+        if recipient_results:
+            # Multi-recipient scenario - show results for each recipient
+            st.markdown("**Multi-Recipient Paraphrase Testing Results:**")
+            for recipient_name, recipient_result in recipient_results.items():
+                st.markdown(f"### {recipient_name.title()}'s Consistency Results")
+                
+                paraphrases = recipient_result.get('paraphrases', [])
+                paraphrase_outcomes = recipient_result.get('paraphrase_outcomes', [])
+                paraphrase_replies = recipient_result.get('paraphrase_replies', [])
+                
+                for i, (paraphrase, outcome, reply) in enumerate(zip(paraphrases, paraphrase_outcomes, paraphrase_replies)):
+                    outcome_color = {
+                        'PASS': '✅',
+                        'FAIL': '❌'
+                    }.get(outcome, '⚪')
+                    
+                    st.markdown(f"**Paraphrase {i+1}** - {outcome_color} {outcome}")
+                    
+                    # Show paraphrase content
+                    st.markdown("**Paraphrased Email:**")
+                    st.code(paraphrase, language=None)
+                    
+                    # Show recipient reply
+                    if reply:
+                        st.markdown(f"**{recipient_name.title()}'s Reply:**")
+                        st.code(reply, language=None)
+                    else:
+                        st.markdown(f"**{recipient_name.title()}'s Reply:** *Failed to generate*")
+                    
+                    if i < len(paraphrases) - 1:  # Not the last paraphrase
+                        st.markdown("---")
+                
+                if recipient_name != list(recipient_results.keys())[-1]:  # Not the last recipient
+                    st.markdown("---")
+        else:
+            # Single recipient scenario - show paraphrase results
+            paraphrases = consistency_data.get('paraphrases', [])
+            paraphrase_outcomes = consistency_data.get('paraphrase_outcomes', [])
+            paraphrase_replies = consistency_data.get('paraphrase_replies', [])
+            
+            st.markdown("**Paraphrase Testing Results:**")
+            for i, (paraphrase, outcome, reply) in enumerate(zip(paraphrases, paraphrase_outcomes, paraphrase_replies)):
+                outcome_color = {
+                    'PASS': '✅',
+                    'FAIL': '❌'
+                }.get(outcome, '⚪')
+                
+                st.markdown(f"**Paraphrase {i+1}** - {outcome_color} {outcome}")
+                
+                # Show paraphrase content
+                st.markdown("**Paraphrased Email:**")
+                st.code(paraphrase, language=None)
+                
+                # Show recipient reply
+                if reply:
+                    st.markdown("**Recipient Reply:**")
+                    st.code(reply, language=None)
+                else:
+                    st.markdown("**Recipient Reply:** *Failed to generate*")
+                
+                if i < len(paraphrases) - 1:  # Not the last paraphrase
                     st.markdown("---")

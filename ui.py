@@ -251,7 +251,7 @@ def show_game_page():
     </style>
     <div class="compact-header">
     
-    ## 📧 The Ghostwriter
+    ## The Ghostwriter
     
     </div>
     """, unsafe_allow_html=True)
